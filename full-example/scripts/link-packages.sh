@@ -1,10 +1,19 @@
 #!/bin/bash
 # Creates symlinks to local @hiyve packages for live development
 # Run this after npm install to restore symlinks
+# Skips silently if hiyve-components is not found (PROD mode)
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-PACKAGES_DIR="$(cd "$PROJECT_DIR/../../hiyve-components/packages" && pwd)"
+COMPONENTS_DIR="$PROJECT_DIR/../../hiyve-components/packages"
+
+# Check if hiyve-components exists - if not, we're in PROD mode
+if [ ! -d "$COMPONENTS_DIR" ]; then
+  echo "ℹ Using S3 packages (hiyve-components not found locally)"
+  exit 0
+fi
+
+PACKAGES_DIR="$(cd "$COMPONENTS_DIR" && pwd)"
 
 cd "$PROJECT_DIR"
 
@@ -30,7 +39,9 @@ packages=(
 )
 
 for pkg in "${packages[@]}"; do
-  ln -s "$PACKAGES_DIR/$pkg" "node_modules/@hiyve/$pkg"
+  if [ -d "$PACKAGES_DIR/$pkg" ]; then
+    ln -s "$PACKAGES_DIR/$pkg" "node_modules/@hiyve/$pkg"
+  fi
 done
 
 echo "✓ Symlinked ${#packages[@]} @hiyve packages to $PACKAGES_DIR"
