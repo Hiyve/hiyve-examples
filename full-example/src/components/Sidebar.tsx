@@ -9,6 +9,7 @@
  * - Settings (audio gain, intelligence config)
  * - File manager
  * - Whiteboard
+ * - Q&A panel
  * - Captions (owner only)
  *
  * @example
@@ -52,6 +53,7 @@ import {
   Folder as FolderIcon,
   Draw as WhiteboardIcon,
   Add as AddIcon,
+  QuestionAnswer as QAIcon,
 } from '@mui/icons-material';
 import {
   useRoom,
@@ -66,9 +68,10 @@ import { ParticipantList } from '@hiyve/participant-list';
 import { ChatPanel } from '@hiyve/chat';
 import { GainControl, type GainControlLabels } from '@hiyve/audio-monitor';
 import { TranscriptViewer } from '@hiyve/transcription';
-import { FileManager } from '@hiyve/file-manager';
+import { FileManager, type CustomViewerMap } from '@hiyve/file-manager';
 import { IntelligenceSettings, type IntelligenceConfig } from '@hiyve/control-bar';
 import { Whiteboard, CreateWhiteboardDialog, type WhiteboardFile } from '@hiyve/whiteboard';
+import { QAPanel, useQAListener, QASessionViewer, type Question, type QASessionFile } from '@hiyve/qa';
 
 interface SidebarProps {
   /** Local user's display name */
@@ -89,14 +92,24 @@ export function Sidebar({
   const [whiteboardFileId, setWhiteboardFileId] = useState<string | null>(null);
   const [whiteboardFileData, setWhiteboardFileData] = useState<WhiteboardFile | null>(null);
   const [showCreateWhiteboardDialog, setShowCreateWhiteboardDialog] = useState(false);
+  const [qaQuestions, setQAQuestions] = useState<Question[]>([]);
+  const [qaFileId, setQAFileId] = useState<string | null>(null);
 
   // Get state from ClientProvider
   const { isOwner, room } = useRoom();
-  const { participantCount } = useParticipants();
+  const { participantCount, localUserId } = useParticipants();
   const { unreadCount, clearUnread } = useChat();
   const { setGain } = useAudioProcessing();
   const { isRecording } = useRecording();
   const { isTranscribing } = useTranscription();
+
+  // Q&A listener - stays active even when QA tab is not visible
+  useQAListener({
+    isOwner,
+    localUserId: localUserId || '',
+    questions: qaQuestions,
+    onQuestionsChange: setQAQuestions,
+  });
 
   // Handle tab change
   const handleTabChange = useCallback(
@@ -141,6 +154,19 @@ export function Sidebar({
     []
   );
 
+  // Custom viewers for FileManager (demonstrates extensible file viewer system)
+  const customViewers = useMemo<CustomViewerMap>(
+    () => ({
+      'qa-session': (data, _file, onClose) => (
+        <QASessionViewer
+          sessionData={data as QASessionFile}
+          onClose={onClose}
+        />
+      ),
+    }),
+    []
+  );
+
   // Define tabs configuration
   const tabs = useMemo<SidebarTab[]>(() => {
     const baseTabs: SidebarTab[] = [
@@ -171,6 +197,12 @@ export function Sidebar({
         id: 'whiteboard',
         label: 'Whiteboard',
         icon: <WhiteboardIcon />,
+      },
+      {
+        id: 'qa',
+        label: 'Q&A',
+        icon: <QAIcon />,
+        tooltip: 'Questions & Answers',
       },
     ];
 
@@ -255,6 +287,7 @@ export function Sidebar({
               showBreadcrumbs
               enableDragDrop
               enableMultiSelect
+              customViewers={customViewers}
               onFileOpen={(file) => console.log('Opening file:', file.fileName)}
             />
           );
@@ -319,6 +352,25 @@ export function Sidebar({
             />
           );
 
+        case 'qa':
+          // Display QAPanel with synced state from the always-mounted hidden instance
+          return (
+            <QAPanel
+              showHeader={false}
+              maxHeight="100%"
+              initialQuestions={qaQuestions}
+              onQuestionsChange={setQAQuestions}
+              enableAutoSave={true}
+              initialFileId={qaFileId ?? undefined}
+              onAutoSave={(fileId) => {
+                console.log('[QA] Auto-saved to file:', fileId);
+                setQAFileId(fileId);
+              }}
+              onAutoSaveError={(error) => console.error('[QA] Auto-save error:', error)}
+              sx={{ height: '100%' }}
+            />
+          );
+
         case 'captions':
           return (
             <TranscriptViewer
@@ -343,6 +395,7 @@ export function Sidebar({
       micGain,
       handleGainChange,
       customGainLabels,
+      customViewers,
       isOwner,
       intelligenceConfig,
       onIntelligenceConfigChange,

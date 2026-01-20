@@ -32,6 +32,7 @@ const HIYVE_PACKAGES = [
   'file-manager',
   'mood-analysis',
   'participant-list',
+  'qa',
   'recording',
   'sidebar',
   'transcription',

@@ -77,8 +77,8 @@ do_dev() {
     node scripts/toggle-packages.js dev
 
     # Clean and reinstall
-    print_status "Cleaning node_modules..."
-    rm -rf node_modules
+    print_status "Cleaning node_modules and package-lock.json..."
+    rm -rf node_modules package-lock.json
 
     print_status "Installing dependencies..."
     npm install
@@ -108,8 +108,8 @@ do_prod() {
     npm cache clean --force 2>/dev/null || true
 
     # Clean and reinstall
-    print_status "Cleaning node_modules..."
-    rm -rf node_modules
+    print_status "Cleaning node_modules and package-lock.json..."
+    rm -rf node_modules package-lock.json
 
     print_status "Installing dependencies from S3..."
     npm install

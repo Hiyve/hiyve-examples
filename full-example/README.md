@@ -50,7 +50,8 @@ Open http://localhost:5173
 - Real-time chat
 - Participant list
 - Waiting room
-- File management
+- File management with custom viewers
+- Q&A panel (questions, upvoting, answers, auto-save)
 - Device selection & preview
 - Audio gain control
 - Collaborative whiteboard
@@ -74,6 +75,7 @@ Open http://localhost:5173
 | `@hiyve/mood-analysis` | MoodAnalysisProvider | Sentiment detection |
 | `@hiyve/sidebar` | Sidebar | Tabbed sidebar container |
 | `@hiyve/whiteboard` | Whiteboard | Collaborative drawing |
+| `@hiyve/qa` | QAPanel, QASessionViewer | Questions & answers |
 
 ## Architecture
 
@@ -95,7 +97,7 @@ src/
     │   ├── VideoGrid               # Video tiles
     │   ├── ControlBar              # Media controls
     │   └── Sidebar                 # Tabbed panel
-    └── Sidebar.tsx             # Participants, chat, settings, files, captions
+    └── Sidebar.tsx             # Participants, chat, settings, files, Q&A, captions
 ```
 
 ### Component Responsibilities
@@ -104,7 +106,7 @@ src/
 |-----------|------------|---------|
 | `JoinForm` | `useConnection` | Room creation/join form |
 | `VideoRoom` | `useRoom`, `useConnection`, `useRecording`, `useChat`, `useWaitingRoom` | Main room layout |
-| `Sidebar` | `useRoom`, `useParticipants`, `useChat`, `useAudioProcessing`, `useRecording`, `useTranscription` | Tabbed sidebar |
+| `Sidebar` | `useRoom`, `useParticipants`, `useChat`, `useAudioProcessing`, `useRecording`, `useTranscription`, `useQAListener` | Tabbed sidebar |
 | `WaitingScreen` | `useWaitingRoom`, `useRoom`, `useConnection` | Waiting room UI |
 | `ConnectingScreen` | (none - presentational) | Loading state |
 
@@ -135,6 +137,10 @@ const { feedbackDetected, setGain } = useAudioProcessing();
 // File Management (from @hiyve/file-manager)
 import { useFileCache } from '@hiyve/file-manager';
 const { isReady, getFileTree, uploadFile } = useFileCache();
+
+// Q&A (from @hiyve/qa)
+import { useQAListener } from '@hiyve/qa';
+useQAListener({ isOwner, localUserId, questions, onQuestionsChange });
 ```
 
 ## Component Customization
@@ -171,6 +177,18 @@ All components support customization via props:
 
 // MUI sx prop
 <VideoGrid sx={{ flex: 1, background: '#1a1a1a' }} />
+
+// Custom file viewers (for specialized file types)
+import { FileManager, type CustomViewerMap } from '@hiyve/file-manager';
+import { QASessionViewer, type QASessionFile } from '@hiyve/qa';
+
+const customViewers: CustomViewerMap = {
+  'qa-session': (data, file, onClose) => (
+    <QASessionViewer sessionData={data as QASessionFile} onClose={onClose} />
+  ),
+};
+
+<FileManager customViewers={customViewers} />
 ```
 
 ## Intelligence Mode
