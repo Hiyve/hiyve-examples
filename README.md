@@ -94,6 +94,28 @@ A complete video conferencing application demonstrating all features:
 
 See [full-example/README.md](full-example/README.md) for details.
 
+### Token Room Example
+
+A minimal example demonstrating token-based room joining with shareable invite links:
+
+- Room creation with invite links
+- Token-based joining (no room name needed for guests)
+- Simple video grid and controls
+- No advanced features (chat, recording, etc.)
+
+This example is ideal for understanding the invite link flow:
+1. Owner creates a room
+2. Owner generates an invite link with a join token
+3. Guest opens the link and joins directly
+
+See [token-room-example/README.md](token-room-example/README.md) for details.
+
+```bash
+cd token-room-example
+npm run setup
+npm run dev
+```
+
 ## Architecture
 
 ### Provider Setup
@@ -280,7 +302,8 @@ npm run packages:prod
 
 ## Documentation
 
-- [Full Example README](full-example/README.md) - Detailed setup and usage
+- [Full Example README](full-example/README.md) - Feature-rich example with all components
+- [Token Room Example README](token-room-example/README.md) - Minimal token-based joining example
 - [API Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-components/latest/index.html) - Component API reference
 
 ## License

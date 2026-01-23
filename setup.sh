@@ -6,13 +6,16 @@
 # after downloading (via git clone or zip download).
 #
 # Usage:
-#   ./setup.sh           # Full interactive setup
-#   ./setup.sh --quick   # Skip prompts, use defaults
+#   ./setup.sh                    # Full interactive setup (all examples)
+#   ./setup.sh --quick            # Skip prompts, use defaults
+#   ./setup.sh full-example       # Setup only full-example
+#   ./setup.sh token-room-example # Setup only token-room-example
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
+TOKEN_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 
 # Colors
 RED='\033[0;31m'
@@ -24,9 +27,18 @@ NC='\033[0m'
 
 # Parse arguments
 QUICK_MODE=false
-if [[ "$1" == "--quick" ]] || [[ "$1" == "-q" ]]; then
-    QUICK_MODE=true
-fi
+TARGET_EXAMPLE=""
+
+for arg in "$@"; do
+    case $arg in
+        --quick|-q)
+            QUICK_MODE=true
+            ;;
+        full-example|token-room-example)
+            TARGET_EXAMPLE="$arg"
+            ;;
+    esac
+done
 
 print_banner() {
     echo ""
@@ -92,44 +104,86 @@ check_npm() {
     print_status "npm $(npm -v) detected"
 }
 
+# Install dependencies for a single example
+install_example_dependencies() {
+    local EXAMPLE_DIR="$1"
+    local EXAMPLE_NAME="$(basename "$EXAMPLE_DIR")"
+
+    print_info "Installing $EXAMPLE_NAME frontend dependencies..."
+    cd "$EXAMPLE_DIR"
+    npm install
+    print_status "$EXAMPLE_NAME frontend dependencies installed"
+
+    if [ -d "$EXAMPLE_DIR/server" ]; then
+        print_info "Installing $EXAMPLE_NAME server dependencies..."
+        cd "$EXAMPLE_DIR/server"
+        npm install
+        print_status "$EXAMPLE_NAME server dependencies installed"
+    fi
+}
+
 # Install dependencies
 install_dependencies() {
     print_step "Installing dependencies..."
 
-    cd "$FULL_EXAMPLE_DIR"
+    if [ -n "$TARGET_EXAMPLE" ]; then
+        # Install only the specified example
+        install_example_dependencies "$SCRIPT_DIR/$TARGET_EXAMPLE"
+    else
+        # Install all examples
+        install_example_dependencies "$FULL_EXAMPLE_DIR"
+        install_example_dependencies "$TOKEN_EXAMPLE_DIR"
+    fi
+}
 
-    print_info "Installing frontend dependencies..."
-    npm install
-    print_status "Frontend dependencies installed"
+# Setup environment file for a single example
+setup_example_env() {
+    local EXAMPLE_DIR="$1"
+    local EXAMPLE_NAME="$(basename "$EXAMPLE_DIR")"
 
-    print_info "Installing server dependencies..."
-    cd "$FULL_EXAMPLE_DIR/server"
-    npm install
-    print_status "Server dependencies installed"
+    if [ ! -d "$EXAMPLE_DIR/server" ]; then
+        return
+    fi
+
+    local ENV_FILE="$EXAMPLE_DIR/server/.env"
+    local ENV_EXAMPLE="$EXAMPLE_DIR/server/.env.example"
+
+    if [ -f "$ENV_FILE" ]; then
+        print_status "$EXAMPLE_NAME environment file already exists"
+
+        # Check if it's configured
+        if grep -q "your-api-key-here\|your-client-secret-here" "$ENV_FILE" 2>/dev/null; then
+            print_warning "$EXAMPLE_NAME environment file needs configuration"
+            return 1
+        fi
+    else
+        print_info "Creating $EXAMPLE_NAME environment file from template..."
+        cp "$ENV_EXAMPLE" "$ENV_FILE"
+        print_status "$EXAMPLE_NAME environment file created"
+        return 1
+    fi
+    return 0
 }
 
 # Setup environment file
 setup_env() {
     print_step "Setting up environment..."
 
-    ENV_FILE="$FULL_EXAMPLE_DIR/server/.env"
-    ENV_EXAMPLE="$FULL_EXAMPLE_DIR/server/.env.example"
+    NEEDS_CONFIG=false
 
-    if [ -f "$ENV_FILE" ]; then
-        print_status "Environment file already exists"
-
-        # Check if it's configured
-        if grep -q "your-api-key-here\|your-client-secret-here" "$ENV_FILE" 2>/dev/null; then
-            print_warning "Environment file needs configuration"
+    if [ -n "$TARGET_EXAMPLE" ]; then
+        # Setup only the specified example
+        if ! setup_example_env "$SCRIPT_DIR/$TARGET_EXAMPLE"; then
             NEEDS_CONFIG=true
-        else
-            NEEDS_CONFIG=false
         fi
     else
-        print_info "Creating environment file from template..."
-        cp "$ENV_EXAMPLE" "$ENV_FILE"
-        print_status "Environment file created"
-        NEEDS_CONFIG=true
+        # Setup all examples
+        if ! setup_example_env "$FULL_EXAMPLE_DIR"; then
+            NEEDS_CONFIG=true
+        fi
+        if ! setup_example_env "$TOKEN_EXAMPLE_DIR"; then
+            NEEDS_CONFIG=true
+        fi
     fi
 
     # Prompt for credentials if needed and not in quick mode
@@ -140,25 +194,21 @@ setup_env() {
         echo ""
 
         read -p "  Enter your API Key (or press Enter to skip): " APIKEY
-        if [ -n "$APIKEY" ]; then
-            # Update APIKEY in .env file (macOS and Linux compatible)
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                sed -i '' "s/APIKEY=.*/APIKEY=$APIKEY/" "$ENV_FILE"
-            else
-                sed -i "s/APIKEY=.*/APIKEY=$APIKEY/" "$ENV_FILE"
-            fi
-        fi
-
         read -p "  Enter your Client Secret (or press Enter to skip): " CLIENT_SECRET
-        if [ -n "$CLIENT_SECRET" ]; then
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                sed -i '' "s/CLIENT_SECRET=.*/CLIENT_SECRET=$CLIENT_SECRET/" "$ENV_FILE"
-            else
-                sed -i "s/CLIENT_SECRET=.*/CLIENT_SECRET=$CLIENT_SECRET/" "$ENV_FILE"
-            fi
-        fi
 
         if [ -n "$APIKEY" ] && [ -n "$CLIENT_SECRET" ]; then
+            # Update all env files
+            for ENV_FILE in "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env"; do
+                if [ -f "$ENV_FILE" ]; then
+                    if [[ "$OSTYPE" == "darwin"* ]]; then
+                        sed -i '' "s/APIKEY=.*/APIKEY=$APIKEY/" "$ENV_FILE"
+                        sed -i '' "s/CLIENT_SECRET=.*/CLIENT_SECRET=$CLIENT_SECRET/" "$ENV_FILE"
+                    else
+                        sed -i "s/APIKEY=.*/APIKEY=$APIKEY/" "$ENV_FILE"
+                        sed -i "s/CLIENT_SECRET=.*/CLIENT_SECRET=$CLIENT_SECRET/" "$ENV_FILE"
+                    fi
+                fi
+            done
             print_status "API credentials configured"
         fi
     fi
@@ -173,23 +223,35 @@ print_success() {
     echo ""
 
     # Check if credentials are configured
-    ENV_FILE="$FULL_EXAMPLE_DIR/server/.env"
-    if grep -q "your-api-key-here\|your-client-secret-here" "$ENV_FILE" 2>/dev/null; then
+    NEEDS_CREDS=false
+    for ENV_FILE in "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env"; do
+        if [ -f "$ENV_FILE" ] && grep -q "your-api-key-here\|your-client-secret-here" "$ENV_FILE" 2>/dev/null; then
+            NEEDS_CREDS=true
+            break
+        fi
+    done
+
+    if [ "$NEEDS_CREDS" = true ]; then
         echo -e "${YELLOW}Before starting, configure your API credentials:${NC}"
         echo ""
-        echo "  1. Edit full-example/server/.env"
-        echo "  2. Set APIKEY and CLIENT_SECRET"
+        echo "  Edit the .env file in the server folder of the example you want to run:"
+        echo "  - full-example/server/.env"
+        echo "  - token-room-example/server/.env"
         echo ""
+        echo "  Set APIKEY and CLIENT_SECRET in the .env file."
         echo "  Contact MuzieRTC for API credentials if you don't have them."
         echo ""
     fi
 
-    echo -e "${BOLD}To start the application:${NC}"
+    echo -e "${BOLD}Available Examples:${NC}"
     echo ""
-    echo -e "  ${CYAN}cd full-example${NC}"
-    echo -e "  ${CYAN}npm run dev${NC}"
+    echo -e "  ${CYAN}Full Example${NC} - Feature-rich video conferencing app"
+    echo -e "    cd full-example && npm run dev"
     echo ""
-    echo "  This starts both the frontend (port 5173) and backend (port 3001)."
+    echo -e "  ${CYAN}Token Room Example${NC} - Minimal token-based joining"
+    echo -e "    cd token-room-example && npm run dev"
+    echo ""
+    echo "  Each example starts frontend (port 5173) and backend (port 3001)."
     echo ""
     echo -e "  Open ${CYAN}http://localhost:5173${NC} in your browser."
     echo ""

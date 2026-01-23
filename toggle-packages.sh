@@ -14,6 +14,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
+TOKEN_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-components"
 
 # Colors
@@ -44,15 +45,42 @@ show_usage() {
     echo "Commands:"
     echo "  dev     Switch to local packages and rebuild"
     echo "  prod    Switch to S3 packages and reinstall"
-    echo "  status  Show current mode"
+    echo "  status  Show current mode for all examples"
     echo ""
     echo -e "${YELLOW}IMPORTANT:${NC} Always run './toggle-packages.sh prod' before committing!"
     echo ""
 }
 
 do_status() {
+    echo ""
+    echo -e "${CYAN}=== full-example ===${NC}"
     cd "$FULL_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== token-room-example ===${NC}"
+    cd "$TOKEN_ROOM_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+}
+
+toggle_example() {
+    local example_dir="$1"
+    local example_name="$2"
+    local mode="$3"
+
+    print_status "[$example_name] Updating package.json..."
+    cd "$example_dir"
+    node scripts/toggle-packages.js "$mode"
+
+    if [ "$mode" = "prod" ]; then
+        # Clean npm cache to ensure fresh packages
+        npm cache clean --force 2>/dev/null || true
+    fi
+
+    print_status "[$example_name] Cleaning node_modules and package-lock.json..."
+    rm -rf node_modules package-lock.json
+
+    print_status "[$example_name] Installing dependencies..."
+    npm install
 }
 
 do_dev() {
@@ -71,22 +99,14 @@ do_dev() {
     cd "$COMPONENTS_DIR"
     pnpm build
 
-    # Switch to dev mode
-    print_status "Updating package.json to use local packages..."
-    cd "$FULL_EXAMPLE_DIR"
-    node scripts/toggle-packages.js dev
-
-    # Clean and reinstall
-    print_status "Cleaning node_modules and package-lock.json..."
-    rm -rf node_modules package-lock.json
-
-    print_status "Installing dependencies..."
-    npm install
+    # Toggle both examples
+    toggle_example "$FULL_EXAMPLE_DIR" "full-example" "dev"
+    toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
     echo ""
-    echo -e "  Run ${CYAN}npm run dev${NC} in full-example to start the app"
+    echo -e "  Run ${CYAN}npm run dev${NC} in either example to start the app"
     echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-components for watch mode"
     echo ""
     print_warning "Remember to run './toggle-packages.sh prod' before committing!"
@@ -98,26 +118,14 @@ do_prod() {
     print_status "Switching to PROD mode (S3 packages)"
     echo ""
 
-    # Switch to prod mode
-    print_status "Updating package.json to use S3 packages..."
-    cd "$FULL_EXAMPLE_DIR"
-    node scripts/toggle-packages.js prod
-
-    # Clean npm cache to ensure fresh packages
-    print_status "Cleaning npm cache..."
-    npm cache clean --force 2>/dev/null || true
-
-    # Clean and reinstall
-    print_status "Cleaning node_modules and package-lock.json..."
-    rm -rf node_modules package-lock.json
-
-    print_status "Installing dependencies from S3..."
-    npm install
+    # Toggle both examples
+    toggle_example "$FULL_EXAMPLE_DIR" "full-example" "prod"
+    toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"
     echo ""
-    echo -e "  Run ${CYAN}npm run dev${NC} in full-example to start the app"
+    echo -e "  Run ${CYAN}npm run dev${NC} in either example to start the app"
     echo ""
 }
 

@@ -1,7 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(xargs cat:*)",
+      "Bash(grep:*)",
+      "Bash(npm install)",
+      "Bash(npx tsc:*)",
+      "Bash(npm update:*)",
+      "Bash(npm cache clean:*)",
+      "Bash(pnpm update:*)",
+      "Bash(pnpm build)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(ls:*)",
+      "Bash(./toggle-packages.sh:*)",
+      "Bash(node scripts/toggle-packages.js:*)"
     ]
   }
 }
