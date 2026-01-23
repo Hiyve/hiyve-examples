@@ -7,20 +7,23 @@ Example applications demonstrating how to build video conferencing apps with `@h
 ```bash
 # 1. Clone or download this repository
 git clone https://github.com/your-org/hiyve-examples.git
-cd hiyve-examples/full-example
+cd hiyve-examples
 
-# 2. Install dependencies
-npm run setup
+# 2. Run the setup script
+./setup.sh
 
-# 3. Configure your MuzieRTC credentials
-cp server/.env.example server/.env
-# Edit server/.env with your API key and secret
-
-# 4. Start the app
+# 3. Start the app
+cd full-example
 npm run dev
 ```
 
 Open http://localhost:5173
+
+The setup script will:
+- Check Node.js version (18+ required)
+- Install all dependencies
+- Create the environment file
+- Prompt for your MuzieRTC API credentials
 
 ## Overview
 
