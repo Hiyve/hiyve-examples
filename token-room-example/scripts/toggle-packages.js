@@ -20,27 +20,33 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PACKAGE_JSON = path.join(ROOT, 'package.json');
 
-// Relative path from token-room-example to hiyve-components packages
-const COMPONENTS_PATH = '../../hiyve-components/packages';
+// Relative path from token-room-example to hiyve-sdk packages
+const COMPONENTS_PATH = '../../hiyve-sdk/packages';
 
 // Only the packages used by token-room-example
 // video-grid requires mood-analysis and video-tile as peer dependencies
 const HIYVE_PACKAGES = [
   'client-provider',
   'control-bar',
+  'join-token',
   'mood-analysis',
-  'video-tile',
+  'rtc-client',
+  'utilities',
   'video-grid',
+  'video-tile',
 ];
 
-const S3_BASE = 'https://s3.amazonaws.com/muzie.media/npm-registry';
+// Production uses latest tag from the private registry (except rtc-client which uses alpha)
+const PROD_VERSION = 'latest';
+const RTC_CLIENT_VERSION = 'alpha';
 
 function getLocalPath(pkg) {
   return `file:${COMPONENTS_PATH}/${pkg}`;
 }
 
-function getS3Path(pkg) {
-  return `${S3_BASE}/hiyve-${pkg}/hiyve-${pkg}-latest.tgz`;
+function getProdPath(pkg) {
+  // rtc-client uses alpha tag, all others use latest
+  return pkg === 'rtc-client' ? RTC_CLIENT_VERSION : PROD_VERSION;
 }
 
 function readPackageJson() {
@@ -54,6 +60,9 @@ function writePackageJson(pkg) {
 function getCurrentMode(pkg) {
   const firstHiyve = pkg.dependencies['@hiyve/control-bar'];
   if (firstHiyve?.startsWith('file:')) return 'dev';
+  // Prod mode: semver ranges, dist-tags (latest, alpha), or S3 URLs
+  if (firstHiyve?.startsWith('^') || firstHiyve?.startsWith('~')) return 'prod';
+  if (firstHiyve === 'latest' || firstHiyve === 'alpha') return 'prod';
   if (firstHiyve?.includes('s3.amazonaws.com')) return 'prod';
   return 'unknown';
 }
@@ -70,7 +79,7 @@ function setMode(mode) {
   for (const name of HIYVE_PACKAGES) {
     const key = `@hiyve/${name}`;
     if (pkg.dependencies[key]) {
-      pkg.dependencies[key] = mode === 'dev' ? getLocalPath(name) : getS3Path(name);
+      pkg.dependencies[key] = mode === 'dev' ? getLocalPath(name) : getProdPath(name);
     }
   }
 
@@ -89,7 +98,7 @@ function showStatus() {
     const key = `@hiyve/${name}`;
     const value = pkg.dependencies[key];
     if (value) {
-      const source = value.startsWith('file:') ? 'LOCAL' : 'S3';
+      const source = value.startsWith('file:') ? 'LOCAL' : 'REGISTRY';
       console.log(`  ${key}: ${source}`);
     } else {
       console.log(`  ${key}: \x1b[33mNOT IN PACKAGE.JSON\x1b[0m`);

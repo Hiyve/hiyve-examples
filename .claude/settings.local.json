@@ -17,7 +17,24 @@
       "Bash(npx eslint:*)",
       "Bash(npm run build:*)",
       "Bash(pnpm install:*)",
-      "Bash(pnpm run build:*)"
+      "Bash(pnpm run build:*)",
+      "Bash(./scripts/link-packages.sh:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm store:*)",
+      "Bash(DEBUG=vitest*)",
+      "Bash(npx vitest:*)",
+      "Bash(pnpm --filter @hiyve/join-token test)",
+      "Bash(pnpm --filter @hiyve/join-token --filter @hiyve/control-bar test)",
+      "Bash(find:*)",
+      "Bash(for pkg in audio-monitor chat client-provider control-bar device-selector file-manager join-token mood-analysis participant-list qa recording sidebar transcription utilities video-grid video-tile waiting-room whiteboard)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(aws s3 sync:*)",
+      "Bash(done)",
+      "Bash(aws s3:*)",
+      "Bash(npm test:*)",
+      "Bash(node bin/hiyve.js:*)",
+      "Bash(pnpm add:*)"
     ]
   }
 }

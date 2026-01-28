@@ -35,8 +35,6 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,
-  Tooltip,
   Badge,
   Snackbar,
 } from '@mui/material';
@@ -45,6 +43,7 @@ import {
   MeetingRoom as WaitingRoomIcon,
   Slideshow as PresentationIcon,
 } from '@mui/icons-material';
+import { LiveClock, TooltipIconButton, useContainerBreakpoint } from '@hiyve/utilities';
 import {
   useRoom,
   useConnection,
@@ -95,6 +94,9 @@ export function VideoRoom({ userName }: VideoRoomProps) {
   const { leaveRoom } = useConnection();
   const { isRecording, recordingDuration } = useRecording();
   const { waitingUsers } = useWaitingRoom();
+
+  // Responsive container breakpoint
+  const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(800);
 
   // ============================================================================
   // Customization Examples
@@ -230,13 +232,14 @@ export function VideoRoom({ userName }: VideoRoomProps) {
       {/* Header */}
       <AppBar position="static" color="default" elevation={1}>
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
             {room?.name}
             {isOwner && (
               <Typography component="span" variant="caption" sx={{ ml: 1 }}>
                 (Owner)
               </Typography>
             )}
+            {!isCompact && <LiveClock variant="body2" sx={{ ml: 2, opacity: 0.7 }} />}
           </Typography>
 
           {/* Recording Indicator
@@ -257,26 +260,27 @@ export function VideoRoom({ userName }: VideoRoomProps) {
 
           {/* Copy room name button - owner only */}
           {isOwner && (
-            <Tooltip title="Copy room name to share">
-              <IconButton onClick={handleCopyRoomName} color="primary">
-                <CopyIcon />
-              </IconButton>
-            </Tooltip>
+            <TooltipIconButton
+              tooltip="Copy room name to share"
+              onClick={handleCopyRoomName}
+              color="primary"
+            >
+              <CopyIcon />
+            </TooltipIconButton>
           )}
 
           {/* Waiting Room button - owner only */}
           {isOwner && (
             <>
-              <Tooltip title="Waiting Room">
-                <IconButton
-                  onClick={(e) => setWaitingRoomAnchorEl(e.currentTarget)}
-                  color={waitingUsers.length > 0 ? 'warning' : 'default'}
-                >
-                  <Badge badgeContent={waitingUsers.length} color="warning">
-                    <WaitingRoomIcon />
-                  </Badge>
-                </IconButton>
-              </Tooltip>
+              <TooltipIconButton
+                tooltip="Waiting Room"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => setWaitingRoomAnchorEl(e.currentTarget)}
+                color={waitingUsers.length > 0 ? 'warning' : 'default'}
+              >
+                <Badge badgeContent={waitingUsers.length} color="warning">
+                  <WaitingRoomIcon />
+                </Badge>
+              </TooltipIconButton>
               <WaitingRoomAdmittance
                 variant="popover"
                 anchorEl={waitingRoomAnchorEl}
@@ -294,7 +298,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
       {/* Main content area */}
       <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         {/* Video area */}
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <Box ref={containerRef} sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
           {/* Video Grid */}
           <VideoGrid
             localVideoElementId="local-video"

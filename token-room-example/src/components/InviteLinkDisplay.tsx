@@ -5,9 +5,9 @@
  */
 
 import { useState } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
 import { Share as ShareIcon } from '@mui/icons-material';
 import { InviteLinkDialog } from '@hiyve/join-token';
+import { TooltipIconButton } from '@hiyve/utilities';
 
 interface InviteLinkDisplayProps {
   roomName: string;
@@ -19,11 +19,13 @@ export function InviteLinkDisplay({ roomName, onCopySuccess }: InviteLinkDisplay
 
   return (
     <>
-      <Tooltip title="Get invite link">
-        <IconButton onClick={() => setOpen(true)} color="primary">
-          <ShareIcon />
-        </IconButton>
-      </Tooltip>
+      <TooltipIconButton
+        tooltip="Get invite link"
+        onClick={() => setOpen(true)}
+        color="primary"
+      >
+        <ShareIcon />
+      </TooltipIconButton>
 
       <InviteLinkDialog
         roomName={roomName}

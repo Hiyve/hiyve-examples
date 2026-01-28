@@ -4,7 +4,17 @@ A complete video conferencing application demonstrating all `@hiyve/*` packages.
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Authenticate with Hiyve
+
+The `@hiyve/*` packages require authentication. If you haven't already:
+
+```bash
+npx hiyve-cli login
+```
+
+Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
+
+### 2. Install Dependencies
 
 ```bash
 npm run setup
@@ -12,7 +22,7 @@ npm run setup
 
 This installs both frontend and server dependencies.
 
-### 2. Configure Server Credentials
+### 3. Configure Server Credentials
 
 ```bash
 cp server/.env.example server/.env
@@ -28,7 +38,7 @@ SERVER_REGION=us-west-2
 
 Contact MuzieRTC for API credentials if you don't have them.
 
-### 3. Start the App
+### 4. Start the App
 
 ```bash
 npm run dev
@@ -58,12 +68,14 @@ Open http://localhost:5173
 - Audio gain control
 - Collaborative whiteboard
 - Customizable overlay order for video tiles
+- Live clock display in header
+- Responsive layout with container breakpoints
 
 ## Packages Used
 
 | Package | Components | Purpose |
 |---------|------------|---------|
-| `@hiyve/client-provider` | ClientProvider, hooks | State management |
+| `hiyve-client-provider` | ClientProvider, hooks | State management |
 | `@hiyve/video-grid` | VideoGrid | Video tile layout |
 | `@hiyve/video-tile` | VideoTile, LocalVideoTile | Individual tiles |
 | `@hiyve/control-bar` | ControlBar | Media controls |
@@ -79,6 +91,7 @@ Open http://localhost:5173
 | `@hiyve/sidebar` | Sidebar | Tabbed sidebar container |
 | `@hiyve/whiteboard` | Whiteboard, CreateWhiteboardDialog | Collaborative drawing |
 | `@hiyve/qa` | QAPanel, QASessionViewer, useQAListener | Questions & answers |
+| `@hiyve/utilities` | LiveClock, TooltipIconButton, useContainerBreakpoint | Shared utilities |
 
 ## Architecture
 
@@ -204,6 +217,24 @@ const customViewers: CustomViewerMap = {
 };
 
 <FileManager customViewers={customViewers} />
+
+// Utilities - LiveClock, TooltipIconButton, responsive breakpoints
+import { LiveClock, TooltipIconButton, useContainerBreakpoint } from '@hiyve/utilities';
+
+// LiveClock - auto-updating time display
+<LiveClock variant="body2" sx={{ ml: 2, opacity: 0.7 }} />
+
+// TooltipIconButton - combines Tooltip and IconButton
+<TooltipIconButton tooltip="Copy room name" onClick={handleCopy} color="primary">
+  <CopyIcon />
+</TooltipIconButton>
+
+// useContainerBreakpoint - responsive container queries
+const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(800);
+
+<Box ref={containerRef}>
+  {!isCompact && <LiveClock />}  {/* Hide clock on small screens */}
+</Box>
 ```
 
 ## Q&A Feature
@@ -284,14 +315,14 @@ npm run dev:server
 npm run build
 ```
 
-### Toggle Between Local and S3 Packages
+### Toggle Between Local and Registry Packages
 
-For development with local `hiyve-components`:
+For development with local `hiyve-sdk`:
 
 ```bash
 # From the hiyve-examples root directory:
 
-# Switch to local packages (builds hiyve-components first)
+# Switch to local packages (builds hiyve-sdk first)
 ./toggle-packages.sh dev
 
 # Switch to S3 packages
@@ -358,4 +389,4 @@ See the JSDoc comments in source files:
 ## API Documentation
 
 Full component API documentation:
-https://doawc2271w91z.cloudfront.net/docs/hiyve-components/latest/index.html
+https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html

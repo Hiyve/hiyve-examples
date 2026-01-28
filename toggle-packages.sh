@@ -1,21 +1,22 @@
 #!/bin/bash
 
-# Toggle between local development packages and S3 production packages
+# Toggle between local development packages and registry production packages
 #
 # Usage:
-#   ./toggle-packages.sh dev    # Use local packages from hiyve-components
-#   ./toggle-packages.sh prod   # Use S3 packages
+#   ./toggle-packages.sh dev    # Use local packages from hiyve-sdk
+#   ./toggle-packages.sh prod   # Use registry packages
 #   ./toggle-packages.sh status # Show current mode
 #
 # IMPORTANT: Always run `./toggle-packages.sh prod` before committing to the public
-# examples repo, so it references the S3 packages (not local file paths).
+# examples repo, so it references the registry packages (not local file paths).
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASIC_EXAMPLE_DIR="$SCRIPT_DIR/basic-example"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
-COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-components"
+COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-sdk"
 
 # Colors
 RED='\033[0;31m'
@@ -38,13 +39,13 @@ print_error() {
 
 show_usage() {
     echo ""
-    echo -e "${CYAN}Toggle Packages - Switch between local and S3 packages${NC}"
+    echo -e "${CYAN}Toggle Packages - Switch between local and registry packages${NC}"
     echo ""
     echo "Usage: ./toggle-packages.sh <command>"
     echo ""
     echo "Commands:"
     echo "  dev     Switch to local packages and rebuild"
-    echo "  prod    Switch to S3 packages and reinstall"
+    echo "  prod    Switch to registry packages and reinstall"
     echo "  status  Show current mode for all examples"
     echo ""
     echo -e "${YELLOW}IMPORTANT:${NC} Always run './toggle-packages.sh prod' before committing!"
@@ -53,6 +54,10 @@ show_usage() {
 
 do_status() {
     echo ""
+    echo -e "${CYAN}=== basic-example ===${NC}"
+    cd "$BASIC_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+
     echo -e "${CYAN}=== full-example ===${NC}"
     cd "$FULL_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
@@ -88,26 +93,27 @@ do_dev() {
     print_status "Switching to DEV mode (local packages)"
     echo ""
 
-    # Check if hiyve-components exists
+    # Check if hiyve-sdk exists
     if [ ! -d "$COMPONENTS_DIR" ]; then
-        print_error "hiyve-components not found at: $COMPONENTS_DIR"
+        print_error "hiyve-sdk not found at: $COMPONENTS_DIR"
         exit 1
     fi
 
-    # Build hiyve-components first
-    print_status "Building hiyve-components packages..."
+    # Build hiyve-sdk first
+    print_status "Building hiyve-sdk packages..."
     cd "$COMPONENTS_DIR"
     pnpm build
 
-    # Toggle both examples
+    # Toggle all examples
+    toggle_example "$BASIC_EXAMPLE_DIR" "basic-example" "dev"
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "dev"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
     echo ""
-    echo -e "  Run ${CYAN}npm run dev${NC} in either example to start the app"
-    echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-components for watch mode"
+    echo -e "  Run ${CYAN}npm run dev${NC} in any example to start the app"
+    echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-sdk for watch mode"
     echo ""
     print_warning "Remember to run './toggle-packages.sh prod' before committing!"
     echo ""
@@ -115,17 +121,18 @@ do_dev() {
 
 do_prod() {
     echo ""
-    print_status "Switching to PROD mode (S3 packages)"
+    print_status "Switching to PROD mode (registry packages)"
     echo ""
 
-    # Toggle both examples
+    # Toggle all examples
+    toggle_example "$BASIC_EXAMPLE_DIR" "basic-example" "prod"
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "prod"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"
     echo ""
-    echo -e "  Run ${CYAN}npm run dev${NC} in either example to start the app"
+    echo -e "  Run ${CYAN}npm run dev${NC} in any example to start the app"
     echo ""
 }
 

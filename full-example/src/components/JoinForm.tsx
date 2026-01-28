@@ -38,13 +38,13 @@ import {
   Alert,
   Container,
   IconButton,
-  Tooltip,
   ToggleButton,
   ToggleButtonGroup,
   Dialog,
   DialogTitle,
   DialogContent,
 } from '@mui/material';
+import { TooltipIconButton } from '@hiyve/utilities';
 import {
   VideoCall as VideoCallIcon,
   Settings as SettingsIcon,
@@ -196,11 +196,13 @@ export function JoinForm() {
           >
             {userRole === 'owner' ? 'Create Room' : 'Join Room'}
           </Button>
-          <Tooltip title="Test camera & microphone">
-            <IconButton onClick={() => setShowDevicePreview(true)} color="default">
-              <SettingsIcon />
-            </IconButton>
-          </Tooltip>
+          <TooltipIconButton
+            tooltip="Test camera & microphone"
+            onClick={() => setShowDevicePreview(true)}
+            color="default"
+          >
+            <SettingsIcon />
+          </TooltipIconButton>
         </Box>
       </Paper>
 

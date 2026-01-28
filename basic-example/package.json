@@ -1,5 +1,5 @@
 {
-  "name": "@hiyve/token-room-example",
+  "name": "@hiyve/basic-example",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -21,8 +21,7 @@
     "@mui/material": "^5.15.0",
     "@hiyve/client-provider": "latest",
     "@hiyve/control-bar": "latest",
-    "@hiyve/join-token": "latest",
-    "@hiyve/mood-analysis": "latest",
+    "@hiyve/device-selector": "latest",
     "@hiyve/rtc-client": "alpha",
     "@hiyve/utilities": "latest",
     "@hiyve/video-grid": "latest",

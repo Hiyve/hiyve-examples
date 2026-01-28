@@ -1,15 +1,15 @@
 #!/bin/bash
 # Creates symlinks to local @hiyve packages for live development
 # Run this after npm install to restore symlinks
-# Skips silently if hiyve-components is not found (PROD mode)
+# Skips silently if hiyve-sdk is not found (PROD mode)
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-COMPONENTS_DIR="$PROJECT_DIR/../../hiyve-components/packages"
+COMPONENTS_DIR="$PROJECT_DIR/../../hiyve-sdk/packages"
 
-# Check if hiyve-components exists - if not, we're in PROD mode
+# Check if hiyve-sdk exists - if not, we're in PROD mode
 if [ ! -d "$COMPONENTS_DIR" ]; then
-  echo "ℹ Using S3 packages (hiyve-components not found locally)"
+  echo "ℹ Using registry packages (hiyve-sdk not found locally)"
   exit 0
 fi
 
@@ -33,6 +33,7 @@ packages=(
   "recording"
   "sidebar"
   "transcription"
+  "utilities"
   "video-grid"
   "video-tile"
   "waiting-room"

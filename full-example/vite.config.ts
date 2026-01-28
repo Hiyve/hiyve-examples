@@ -8,7 +8,6 @@ export default defineConfig({
   optimizeDeps: {
     // Include dependencies used by @hiyve packages so they're properly pre-bundled
     include: [
-      'muziertcclient-alpha',
       '@mui/material',
       '@mui/icons-material',
       '@emotion/react',
@@ -19,11 +18,10 @@ export default defineConfig({
   resolve: {
     // Dedupe dependencies to ensure single instance resolution
     // This prevents "multiple instances" warnings for packages shared between
-    // hiyve-components and full-example
+    // hiyve-sdk and full-example
     dedupe: [
       'react',
       'react-dom',
-      'muziertcclient-alpha',
       '@emotion/react',
       '@emotion/styled',
       '@emotion/cache',
@@ -46,14 +44,14 @@ export default defineConfig({
       },
     },
     watch: {
-      // Watch hiyve-components for changes
+      // Watch hiyve-sdk for changes
       ignored: ['!**/node_modules/@hiyve/**'],
     },
     fs: {
-      // Allow serving files from hiyve-components
+      // Allow serving files from hiyve-sdk
       allow: [
         '.',
-        path.resolve(__dirname, '../../hiyve-components'),
+        path.resolve(__dirname, '../../hiyve-sdk'),
       ],
     },
   },

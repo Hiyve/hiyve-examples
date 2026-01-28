@@ -104,6 +104,62 @@ check_npm() {
     print_status "npm $(npm -v) detected"
 }
 
+# Check and setup Hiyve authentication
+check_hiyve_auth() {
+    print_step "Checking Hiyve authentication..."
+
+    # Check if @hiyve registry is configured in user's npmrc
+    if grep -q "@hiyve:registry=https://console.hiyve.dev/api/registry" ~/.npmrc 2>/dev/null; then
+        # Also check for auth token
+        if grep -q "console.hiyve.dev/api/registry/:_authToken" ~/.npmrc 2>/dev/null; then
+            print_status "Hiyve authentication configured"
+            return 0
+        fi
+    fi
+
+    echo ""
+    print_warning "Hiyve authentication not configured."
+    echo ""
+    echo "  The @hiyve/* packages require authentication to install."
+    echo "  You need a Hiyve API key to access these packages."
+    echo ""
+
+    if [ "$QUICK_MODE" = true ]; then
+        print_warning "Quick mode: skipping authentication setup."
+        print_warning "Run 'npx hiyve-cli login' manually before npm install."
+        return 0
+    fi
+
+    read -p "  Do you have a Hiyve API key? [y/N] " -n 1 -r
+    echo ""
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo ""
+        print_info "Running Hiyve CLI login..."
+        echo ""
+        if npx hiyve-cli login; then
+            print_status "Hiyve authentication configured"
+        else
+            print_error "Authentication failed"
+            echo ""
+            echo "  Please try again with: npx hiyve-cli login"
+            echo "  Or get an API key at: https://console.hiyve.dev"
+            echo ""
+            exit 1
+        fi
+    else
+        echo ""
+        print_info "To get a Hiyve API key:"
+        echo "  1. Visit https://console.hiyve.dev"
+        echo "  2. Create an account or sign in"
+        echo "  3. Generate an API key from your dashboard"
+        echo ""
+        print_info "Then run: npx hiyve-cli login"
+        echo ""
+        exit 1
+    fi
+}
+
 # Install dependencies for a single example
 install_example_dependencies() {
     local EXAMPLE_DIR="$1"
@@ -263,6 +319,7 @@ main() {
 
     check_node
     check_npm
+    check_hiyve_auth
     install_dependencies
     setup_env
 

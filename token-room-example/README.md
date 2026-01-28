@@ -9,16 +9,28 @@ A minimal example demonstrating token-based room joining with shareable invite l
 - **Token-Based Joining**: Guests join using invite links (no room name needed)
 - **Password Protection**: Optional password protection for invite links
 - **Simple Video Room**: Basic video grid with audio/video controls
+- **Live Clock**: Auto-updating time display in room header
+- **Responsive Layout**: Adaptive controls based on container size
 
 ## Quick Start
 
-1. **Install dependencies**
+1. **Authenticate with Hiyve**
+
+   The `@hiyve/*` packages require authentication. If you haven't already:
+
+   ```bash
+   npx hiyve-cli login
+   ```
+
+   Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
+
+2. **Install dependencies**
 
    ```bash
    npm run setup
    ```
 
-2. **Configure API credentials**
+3. **Configure API credentials**
 
    Copy the example environment file and add your credentials:
 
@@ -33,7 +45,7 @@ A minimal example demonstrating token-based room joining with shareable invite l
    CLIENT_SECRET=your-client-secret
    ```
 
-3. **Start the application**
+4. **Start the application**
 
    ```bash
    npm run dev
@@ -41,7 +53,7 @@ A minimal example demonstrating token-based room joining with shareable invite l
 
    This starts both the frontend (port 5173) and backend (port 3001).
 
-4. **Open in browser**
+5. **Open in browser**
 
    Visit `http://localhost:5173`
 
@@ -122,18 +134,41 @@ This example uses reusable components from the Hiyve SDK:
 
 These components handle all the complexity of token generation, validation, and error handling.
 
-### @hiyve/client-provider
+### hiyve-client-provider
 
 - **`useJoinToken`** - Hook for programmatic token validation and joining
 - Error code constants: `TOKEN_NOT_FOUND`, `TOKEN_EXPIRED`, `INVALID_PASSWORD`, etc.
 
+### @hiyve/utilities
+
+- **`LiveClock`** - Auto-updating time display in the room header
+- **`TooltipIconButton`** - Combines Tooltip and IconButton for cleaner code
+- **`useContainerBreakpoint`** - Responsive container queries for adaptive layouts
+
+```tsx
+import { LiveClock, TooltipIconButton, useContainerBreakpoint } from '@hiyve/utilities';
+
+// LiveClock in the header
+<LiveClock variant="body2" sx={{ ml: 2, opacity: 0.7 }} />
+
+// TooltipIconButton for the share button
+<TooltipIconButton tooltip="Get invite link" onClick={openDialog} color="primary">
+  <ShareIcon />
+</TooltipIconButton>
+
+// Responsive layout - hide layout selector on small screens
+const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(600);
+<ControlBar showLayoutSelector={!isCompact} />
+```
+
 ## Dependencies
 
 ### Frontend
-- `@hiyve/client-provider` - State management and hooks
+- `hiyve-client-provider` - State management and hooks
 - `@hiyve/join-token` - Invite link components
 - `@hiyve/video-grid` - Video layout
 - `@hiyve/control-bar` - Media controls
+- `@hiyve/utilities` - Shared utilities (LiveClock, TooltipIconButton, useContainerBreakpoint)
 - React 18, MUI 5
 
 ### Backend

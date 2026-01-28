@@ -9,10 +9,13 @@ Example applications demonstrating how to build video conferencing apps with `@h
 git clone https://github.com/your-org/hiyve-examples.git
 cd hiyve-examples
 
-# 2. Run the setup script
+# 2. Authenticate with Hiyve (required for @hiyve/* packages)
+npx hiyve-cli login
+
+# 3. Run the setup script
 ./setup.sh
 
-# 3. Start the app
+# 4. Start the app
 cd full-example
 npm run dev
 ```
@@ -21,6 +24,7 @@ Open http://localhost:5173
 
 The setup script will:
 - Check Node.js version (18+ required)
+- Verify Hiyve authentication (or prompt you to login)
 - Install all dependencies
 - Create the environment file
 - Prompt for your MuzieRTC API credentials
@@ -33,7 +37,22 @@ The `@hiyve/*` packages provide React components for building video conferencing
 
 - Node.js 18+
 - npm
+- **Hiyve API Key** - Get one at [console.hiyve.dev](https://console.hiyve.dev)
 - MuzieRTC API credentials (contact MuzieRTC for access)
+
+## Authentication
+
+The `@hiyve/*` packages are hosted on a private npm registry. You must authenticate before installing:
+
+```bash
+# Login with your Hiyve API key
+npx hiyve-cli login
+
+# Verify your authentication
+npx hiyve-cli whoami
+```
+
+This configures npm to access `@hiyve/*` packages from `https://console.hiyve.dev/api/registry/`.
 
 ## Available Packages
 
@@ -41,7 +60,7 @@ All `@hiyve/*` packages are hosted on S3 and referenced directly via URL in pack
 
 | Package | Description |
 |---------|-------------|
-| `@hiyve/client-provider` | Core state management, hooks, and WebRTC client wrapper |
+| `hiyve-client-provider` | Core state management, hooks, and WebRTC client wrapper |
 | `@hiyve/video-grid` | Auto-layout video grid with multiple layout modes |
 | `@hiyve/video-tile` | Individual video tile components with mood indicators |
 | `@hiyve/control-bar` | Media controls, recording, screen share, intelligence mode |
@@ -57,22 +76,49 @@ All `@hiyve/*` packages are hosted on S3 and referenced directly via URL in pack
 | `@hiyve/sidebar` | Configurable tabbed sidebar container |
 | `@hiyve/whiteboard` | Collaborative whiteboard with real-time sync |
 | `@hiyve/qa` | Q&A panel with questions, voting, answers, and auto-save |
+| `@hiyve/utilities` | Shared utilities: LiveClock, TooltipIconButton, useContainerBreakpoint |
 
-### Package URLs
+### Package Installation
 
-Packages are installed from S3 URLs in package.json:
+Packages are installed from the private Hiyve registry. After authenticating with `npx hiyve-cli login`, add packages to your project:
 
 ```json
 {
   "dependencies": {
-    "@hiyve/client-provider": "https://s3.amazonaws.com/muzie.media/npm-registry/hiyve-client-provider/hiyve-client-provider-latest.tgz",
-    "@hiyve/video-grid": "https://s3.amazonaws.com/muzie.media/npm-registry/hiyve-video-grid/hiyve-video-grid-latest.tgz",
-    "@hiyve/qa": "https://s3.amazonaws.com/muzie.media/npm-registry/hiyve-qa/hiyve-qa-latest.tgz"
+    "hiyve-client-provider": "^1.0.0",
+    "@hiyve/video-grid": "^1.0.0",
+    "@hiyve/qa": "^1.0.0"
   }
 }
 ```
 
+Your project needs an `.npmrc` file to configure the registry:
+
+```
+@hiyve:registry=https://console.hiyve.dev/api/registry/
+```
+
 ## Examples
+
+### Basic Example
+
+The simplest possible video conferencing application - ideal for getting started:
+
+- Create/join video rooms by name
+- Real-time video/audio with WebRTC
+- Screen sharing
+- Device selection and preview
+- Layout switching
+
+This example uses only 6 packages: `client-provider`, `video-grid`, `video-tile`, `control-bar`, `device-selector`, and `utilities`.
+
+See [basic-example/README.md](basic-example/README.md) for details.
+
+```bash
+cd basic-example
+npm run setup
+npm run dev
+```
 
 ### Full Example
 
@@ -123,7 +169,7 @@ npm run dev
 All `@hiyve/*` components work inside a `ClientProvider`:
 
 ```tsx
-import { ClientProvider } from '@hiyve/client-provider';
+import { ClientProvider } from 'hiyve-client-provider';
 import { FileCacheProvider } from '@hiyve/file-manager';
 import { MoodAnalysisProvider } from '@hiyve/mood-analysis';
 import { VideoGrid } from '@hiyve/video-grid';
@@ -270,7 +316,7 @@ app.post('/api/room-token', async (req, res) => {
 
 ## Development Workflow
 
-For developers working on `hiyve-components` alongside examples:
+For developers working on `hiyve-sdk` alongside examples:
 
 ### Toggle Between Local and S3 Packages
 
@@ -302,9 +348,10 @@ npm run packages:prod
 
 ## Documentation
 
+- [Basic Example README](basic-example/README.md) - Simplest video app with minimal packages
 - [Full Example README](full-example/README.md) - Feature-rich example with all components
-- [Token Room Example README](token-room-example/README.md) - Minimal token-based joining example
-- [API Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-components/latest/index.html) - Component API reference
+- [Token Room Example README](token-room-example/README.md) - Token-based joining with invite links
+- [API Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html) - Component API reference
 
 ## License
 

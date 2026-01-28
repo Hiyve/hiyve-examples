@@ -16,6 +16,7 @@ import {
 import { useRoom, useConnection } from '@hiyve/client-provider';
 import { ControlBar, type LayoutMode } from '@hiyve/control-bar';
 import { VideoGrid } from '@hiyve/video-grid';
+import { LiveClock, useContainerBreakpoint } from '@hiyve/utilities';
 import { InviteLinkDisplay } from './InviteLinkDisplay';
 
 interface VideoRoomProps {
@@ -28,6 +29,9 @@ export function VideoRoom({ userName }: VideoRoomProps) {
 
   const { room, isOwner } = useRoom();
   const { leaveRoom } = useConnection();
+
+  // Responsive container breakpoint
+  const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(600);
 
   const handleLeave = useCallback(() => {
     leaveRoom();
@@ -44,13 +48,14 @@ export function VideoRoom({ userName }: VideoRoomProps) {
       {/* Header */}
       <AppBar position="static" color="default" elevation={1}>
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
             {room?.name}
             {isOwner && (
               <Typography component="span" variant="caption" sx={{ ml: 1 }}>
                 (Owner)
               </Typography>
             )}
+            <LiveClock variant="body2" sx={{ ml: 2, opacity: 0.7 }} />
           </Typography>
 
           {/* Invite link button for owners */}
@@ -64,7 +69,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
       </AppBar>
 
       {/* Main content */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <Box ref={containerRef} sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Video Grid */}
         <VideoGrid
           localVideoElementId="local-video"
@@ -78,12 +83,12 @@ export function VideoRoom({ userName }: VideoRoomProps) {
           sx={{ flex: 1 }}
         />
 
-        {/* Control Bar - minimal controls */}
+        {/* Control Bar - minimal controls, hide layout selector on compact screens */}
         <ControlBar
           onLeave={handleLeave}
           showLeaveConfirmation
           showScreenShare
-          showLayoutSelector
+          showLayoutSelector={!isCompact}
           layout={layout}
           onLayoutChange={setLayout}
         />

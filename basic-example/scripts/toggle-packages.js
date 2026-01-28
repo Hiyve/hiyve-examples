@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * Toggle between local development packages and S3 production packages
+ * Toggle between local development packages and registry production packages
  *
  * This script only updates package.json. The shell script (toggle-packages.sh)
  * handles building, cleaning, and installing.
  *
  * Usage:
  *   node scripts/toggle-packages.js dev    # Update to local packages
- *   node scripts/toggle-packages.js prod   # Update to S3 packages
+ *   node scripts/toggle-packages.js prod   # Update to registry packages
  *   node scripts/toggle-packages.js status # Show current mode
  */
 
@@ -20,28 +20,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PACKAGE_JSON = path.join(ROOT, 'package.json');
 
-// Relative path from full-example to hiyve-sdk packages
+// Relative path from basic-example to hiyve-sdk packages
 const COMPONENTS_PATH = '../../hiyve-sdk/packages';
 
+// Only the packages used by basic-example
 const HIYVE_PACKAGES = [
-  'audio-monitor',
-  'chat',
   'client-provider',
   'control-bar',
   'device-selector',
-  'file-manager',
-  'mood-analysis',
-  'participant-list',
-  'qa',
-  'recording',
   'rtc-client',
-  'sidebar',
-  'transcription',
   'utilities',
   'video-grid',
   'video-tile',
-  'waiting-room',
-  'whiteboard',
 ];
 
 // Production uses latest tag from the private registry (except rtc-client which uses alpha)
@@ -134,7 +124,7 @@ Usage: node scripts/toggle-packages.js <command>
 
 Commands:
   dev     Update package.json to use local packages
-  prod    Update package.json to use S3 packages
+  prod    Update package.json to use registry packages
   status  Show current mode and package sources
 `);
 }

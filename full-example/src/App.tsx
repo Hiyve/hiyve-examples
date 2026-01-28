@@ -1,7 +1,7 @@
 /**
  * @hiyve/components Example Application
  *
- * A complete video conferencing application demonstrating all hiyve-components.
+ * A complete video conferencing application demonstrating all hiyve-sdk packages.
  * Use this as a reference for building your own video conferencing UI.
  *
  * ## Quick Start
