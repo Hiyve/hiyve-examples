@@ -2,7 +2,7 @@
  * Hiyve Example - Server
  *
  * This server provides:
- * - Room token generation for MuzieClient
+ * - Room token generation for Hiyve Client
  * - Join link generation for inviting participants
  */
 
@@ -29,13 +29,13 @@ if (!APIKEY || !CLIENT_SECRET) {
   console.warn('   Set them in server/.env file:');
   console.warn('   APIKEY=your-api-key');
   console.warn('   CLIENT_SECRET=your-client-secret');
-  console.warn('   You can get these from your MuzieRTC account.');
+  console.warn('   You can get these from your Hiyve account.');
 }
 
 /**
  * Generate a room token
  *
- * The room token is used by MuzieClient to authenticate with the signaling server.
+ * The room token is used by Hiyve Client to authenticate with the signaling server.
  * This token should be generated server-side to keep the API key and secret secure.
  */
 app.post('/api/generate-room-token', async (req, res) => {
@@ -94,7 +94,7 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`\n🚀 Example server running on http://localhost:${PORT}`);
   console.log(`\n📋 Available endpoints:`);
-  console.log(`   POST /api/generate-room-token - Generate room token for MuzieClient`);
+  console.log(`   POST /api/generate-room-token - Generate room token for Hiyve Client`);
   console.log(`   GET  /api/health - Health check\n`);
 
   if (!APIKEY || !CLIENT_SECRET) {

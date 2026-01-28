@@ -27,18 +27,17 @@ The setup script will:
 - Verify Hiyve authentication (or prompt you to login)
 - Install all dependencies
 - Create the environment file
-- Prompt for your MuzieRTC API credentials
+- Prompt for your Hiyve API credentials
 
 ## Overview
 
-The `@hiyve/*` packages provide React components for building video conferencing applications powered by MuzieRTC infrastructure. These examples show how to use the components to create fully-featured video apps.
+The `@hiyve/*` packages provide React components for building video conferencing applications. These examples show how to use the components to create fully-featured video apps.
 
 ## Prerequisites
 
 - Node.js 18+
 - npm
 - **Hiyve API Key** - Get one at [console.hiyve.dev](https://console.hiyve.dev)
-- MuzieRTC API credentials (contact MuzieRTC for access)
 
 ## Authentication
 
@@ -296,7 +295,7 @@ const customViewers: CustomViewerMap = {
 
 ## Server Setup
 
-Your server must generate room tokens by calling the MuzieRTC signaling server:
+Your server must generate room tokens by calling the Hiyve signaling server:
 
 ```javascript
 // server.js

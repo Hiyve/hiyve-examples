@@ -38,7 +38,7 @@ A minimal example demonstrating token-based room joining with shareable invite l
    cp server/.env.example server/.env
    ```
 
-   Edit `server/.env` with your MuzieRTC API credentials:
+   Edit `server/.env` with your Hiyve API credentials:
 
    ```
    APIKEY=your-api-key
@@ -179,7 +179,7 @@ const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(60
 
 ### POST /api/generate-room-token
 
-Generates a room token for MuzieClient authentication.
+Generates a room token for Hiyve Client authentication.
 
 **Response:**
 ```json

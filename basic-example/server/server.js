@@ -33,7 +33,7 @@ if (!APIKEY || !CLIENT_SECRET) {
  * Generate a room token
  *
  * The room token is a JWT that allows the client to authenticate
- * with the MuzieRTC signaling server.
+ * with the Hiyve signaling server.
  */
 app.post('/api/generate-room-token', async (req, res) => {
   if (!APIKEY || !CLIENT_SECRET) {

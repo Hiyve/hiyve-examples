@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
-// MuzieClient global types (loaded from CDN)
-interface MuzieClientConstructorOptions {
+// HiyveClient global types (loaded from CDN)
+interface HiyveClientConstructorOptions {
   roomToken: string;
 }
 
@@ -43,7 +43,7 @@ interface DeviceInfo {
   kind: string;
 }
 
-interface MuzieClientInstance {
+interface HiyveClientInstance {
   // Room operations
   createRoom(options: CreateRoomOptions): Promise<RoomInfo>;
   joinRoomWithToken(options: JoinRoomWithTokenOptions): Promise<RoomInfo>;
@@ -76,8 +76,8 @@ interface MuzieClientInstance {
   removeEventListener(event: string, handler: (event: CustomEvent) => void): void;
 }
 
-interface MuzieClientModule {
-  Client: new (options: MuzieClientConstructorOptions) => MuzieClientInstance;
+interface HiyveClientModule {
+  Client: new (options: HiyveClientConstructorOptions) => HiyveClientInstance;
   ClientEvents: {
     CONNECTED: string;
     DISCONNECTED: string;
@@ -100,6 +100,6 @@ interface MuzieClientModule {
 
 declare global {
   interface Window {
-    MuzieClient: MuzieClientModule;
+    HiyveClient: HiyveClientModule;
   }
 }

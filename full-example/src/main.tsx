@@ -30,7 +30,7 @@
  *
  * ## Room Token Generation
  *
- * Your server must generate room tokens by calling the MuzieRTC signaling server:
+ * Your server must generate room tokens by calling the Hiyve signaling server:
  *
  * ```javascript
  * // server.js
@@ -154,7 +154,7 @@ const darkTheme = createTheme({
  *
  * In production, this function should:
  * 1. Call your authenticated backend endpoint
- * 2. Your backend calls MuzieRTC signaling server with API credentials
+ * 2. Your backend calls Hiyve signaling server with API credentials
  * 3. Return the roomToken to the client
  *
  * @returns Promise resolving to a room token string

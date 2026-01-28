@@ -1,8 +1,8 @@
 /**
  * Token Room Example - Server
  *
- * This server provides room token generation for MuzieClient.
- * Join tokens are created client-side via the MuzieClient API.
+ * This server provides room token generation for Hiyve Client.
+ * Join tokens are created client-side via the Hiyve Client API.
  */
 
 import 'dotenv/config';
@@ -93,7 +93,7 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`\n Token Room Example server running on http://localhost:${PORT}`);
   console.log(`\n Available endpoints:`);
-  console.log(`   POST /api/generate-room-token - Generate room token for MuzieClient`);
+  console.log(`   POST /api/generate-room-token - Generate room token for Hiyve Client`);
   console.log(`   GET  /api/health - Health check\n`);
 
   if (!APIKEY || !CLIENT_SECRET) {

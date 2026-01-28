@@ -47,7 +47,7 @@ const darkTheme = createTheme({
 /**
  * Fetches a room token from the backend server.
  *
- * The room token is a JWT that authenticates the client with the MuzieRTC
+ * The room token is a JWT that authenticates the client with the Hiyve
  * signaling server. It's generated server-side using your API credentials
  * to keep them secure (never expose API keys in client code).
  *

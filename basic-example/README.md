@@ -26,11 +26,11 @@ npm run setup
 cp server/.env.example server/.env
 ```
 
-Edit `server/.env` with your MuzieRTC credentials:
+Edit `server/.env` with your Hiyve credentials:
 
 ```env
-APIKEY=your-muzie-api-key
-CLIENT_SECRET=your-muzie-secret
+APIKEY=your-hiyve-api-key
+CLIENT_SECRET=your-hiyve-secret
 SERVER_REGION=us-west-2
 ```
 
@@ -173,7 +173,7 @@ For development with local `hiyve-sdk`:
 ## Troubleshooting
 
 ### "Server not configured" error
-Create `server/.env` with valid MuzieRTC API credentials.
+Create `server/.env` with valid Hiyve API credentials.
 
 ### Camera/microphone not working
 Grant camera and microphone permissions in your browser settings.

@@ -28,15 +28,15 @@ This installs both frontend and server dependencies.
 cp server/.env.example server/.env
 ```
 
-Edit `server/.env` with your MuzieRTC credentials:
+Edit `server/.env` with your Hiyve credentials:
 
 ```env
-APIKEY=your-muzie-api-key
-CLIENT_SECRET=your-muzie-secret
+APIKEY=your-hiyve-api-key
+CLIENT_SECRET=your-hiyve-secret
 SERVER_REGION=us-west-2
 ```
 
-Contact MuzieRTC for API credentials if you don't have them.
+Contact Hiyve for API credentials if you don't have them.
 
 ### 4. Start the App
 
@@ -294,7 +294,7 @@ The backend server provides:
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
-| `/api/generate-room-token` | POST | Generate MuzieRTC room token |
+| `/api/generate-room-token` | POST | Generate Hiyve room token |
 | `/api/health` | GET | Health check |
 
 ## Development
@@ -350,7 +350,7 @@ npm run packages:prod
 ## Troubleshooting
 
 ### "Server not configured" error
-Create `server/.env` with valid MuzieRTC API credentials.
+Create `server/.env` with valid Hiyve API credentials.
 
 ### "Cannot connect to server" error
 Ensure the server is running on port 3001. Run `npm run dev` to start both frontend and backend.
