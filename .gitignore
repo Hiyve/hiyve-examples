@@ -7,6 +7,12 @@ dist/
 build/
 *.tsbuildinfo
 
+# Next.js
+.next/
+out/
+next-env.d.ts
+.vercel
+
 # Environment files (contain secrets)
 .env
 .env.local

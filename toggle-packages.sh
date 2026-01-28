@@ -16,6 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASIC_EXAMPLE_DIR="$SCRIPT_DIR/basic-example"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
+NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
 COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-sdk"
 
 # Colors
@@ -65,6 +66,10 @@ do_status() {
     echo -e "${CYAN}=== token-room-example ===${NC}"
     cd "$TOKEN_ROOM_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== nextjs-example ===${NC}"
+    cd "$NEXTJS_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
 }
 
 toggle_example() {
@@ -108,6 +113,7 @@ do_dev() {
     toggle_example "$BASIC_EXAMPLE_DIR" "basic-example" "dev"
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "dev"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "dev"
+    toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
@@ -128,6 +134,7 @@ do_prod() {
     toggle_example "$BASIC_EXAMPLE_DIR" "basic-example" "prod"
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "prod"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "prod"
+    toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"

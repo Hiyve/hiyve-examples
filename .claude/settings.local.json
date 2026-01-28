@@ -34,7 +34,9 @@
       "Bash(aws s3:*)",
       "Bash(npm test:*)",
       "Bash(node bin/hiyve.js:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(npm run dev:*)",
+      "Bash(lsof:*)"
     ]
   }
 }
