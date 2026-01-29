@@ -112,12 +112,9 @@ check_npm() {
     print_status "npm $(npm -v) detected"
 }
 
-# Collect Hiyve credentials (API Key and Client Secret)
+# Collect and validate Hiyve credentials
 collect_credentials() {
     print_step "Hiyve API Credentials"
-    echo ""
-    echo "  The @hiyve/* packages require authentication to install,"
-    echo "  and the server needs credentials to generate room tokens."
     echo ""
     echo "  Get your credentials at: ${CYAN}https://console.hiyve.dev${NC}"
     echo ""
@@ -128,63 +125,39 @@ collect_credentials() {
         return 0
     fi
 
-    # Check if already authenticated with npm registry
-    if grep -q "@hiyve:registry=https://console.hiyve.dev/api/registry" ~/.npmrc 2>/dev/null && \
-       grep -q "console.hiyve.dev/api/registry/:_authToken" ~/.npmrc 2>/dev/null; then
-        print_status "npm registry authentication already configured"
-        echo ""
-        echo "  Do you want to configure server credentials (.env files)?"
-        read -p "  Enter your API Key (or press Enter to skip): " HIYVE_APIKEY
-        if [ -n "$HIYVE_APIKEY" ]; then
-            read -p "  Enter your Client Secret: " HIYVE_CLIENT_SECRET
-        fi
-        return 0
-    fi
-
-    # Need to collect credentials for npm auth
+    # Collect API Key
     read -p "  Enter your API Key: " HIYVE_APIKEY
     echo ""
 
     if [ -z "$HIYVE_APIKEY" ]; then
-        print_error "API Key is required to install @hiyve/* packages"
+        print_error "API Key is required"
         echo ""
         echo "  Get your API key at: https://console.hiyve.dev"
         echo ""
         exit 1
     fi
 
-    read -p "  Enter your Client Secret: " HIYVE_CLIENT_SECRET
-    echo ""
-}
-
-# Setup npm registry authentication
-setup_npm_auth() {
-    print_step "Configuring npm registry authentication..."
-
-    # Check if already configured
-    if grep -q "@hiyve:registry=https://console.hiyve.dev/api/registry" ~/.npmrc 2>/dev/null && \
-       grep -q "console.hiyve.dev/api/registry/:_authToken" ~/.npmrc 2>/dev/null; then
-        print_status "npm registry already configured"
-        return 0
-    fi
-
-    if [ -z "$HIYVE_APIKEY" ]; then
-        print_error "No API key provided - cannot configure npm registry"
+    # Validate API Key by authenticating with the registry
+    print_info "Validating API Key..."
+    if npx hiyve-cli login --key "$HIYVE_APIKEY" 2>/dev/null; then
+        print_status "API Key validated and npm registry configured"
+    else
+        print_error "Invalid API Key"
         echo ""
-        echo "  Run: npx hiyve-cli login"
+        echo "  Please check your API key and try again."
+        echo "  Get your API key at: https://console.hiyve.dev"
         echo ""
         exit 1
     fi
 
-    # Run hiyve-cli login with the API key
+    # Collect Client Secret
+    read -p "  Enter your Client Secret: " HIYVE_CLIENT_SECRET
     echo ""
-    print_info "Running hiyve-cli login..."
-    if echo "$HIYVE_APIKEY" | npx hiyve-cli login; then
-        print_status "npm registry authentication configured"
-    else
-        print_error "Failed to configure npm registry"
+
+    if [ -z "$HIYVE_CLIENT_SECRET" ]; then
+        print_error "Client Secret is required"
         echo ""
-        echo "  Try running manually: npx hiyve-cli login"
+        echo "  Get your credentials at: https://console.hiyve.dev"
         echo ""
         exit 1
     fi
@@ -337,7 +310,6 @@ main() {
     check_node
     check_npm
     collect_credentials
-    setup_npm_auth
     install_dependencies
     setup_env
 
