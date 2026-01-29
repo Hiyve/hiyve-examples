@@ -177,7 +177,7 @@ See [nextjs-example/README.md](nextjs-example/README.md) for details.
 
 ```bash
 cd nextjs-example
-npm install
+npm run setup
 npm run dev
 # Open http://localhost:3000
 ```

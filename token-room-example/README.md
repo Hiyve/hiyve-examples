@@ -14,6 +14,27 @@ A minimal example demonstrating token-based room joining with shareable invite l
 
 ## Quick Start
 
+You can either run the root setup script (recommended) or set up manually:
+
+### Option A: Root Setup Script (Recommended)
+
+From the `hiyve-examples` root directory:
+
+```bash
+./setup.sh token-room-example
+```
+
+This handles authentication, dependencies, and environment setup automatically.
+
+Then start the app:
+
+```bash
+cd token-room-example
+npm run dev
+```
+
+### Option B: Manual Setup
+
 1. **Authenticate with Hiyve**
 
    The `@hiyve/*` packages require authentication. If you haven't already:

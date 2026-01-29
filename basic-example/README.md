@@ -4,7 +4,21 @@ The simplest possible video conferencing application using the Hiyve SDK. This e
 
 ## Quick Start
 
-### 1. Authenticate with Hiyve
+You can either run the root setup script (recommended) or set up manually:
+
+### Option A: Root Setup Script (Recommended)
+
+From the `hiyve-examples` root directory:
+
+```bash
+./setup.sh basic-example
+```
+
+This handles authentication, dependencies, and environment setup automatically.
+
+### Option B: Manual Setup
+
+#### 1. Authenticate with Hiyve
 
 The `@hiyve/*` packages require authentication:
 
@@ -14,13 +28,13 @@ npx hiyve-cli login
 
 Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
 
-### 2. Install Dependencies
+#### 2. Install Dependencies
 
 ```bash
 npm run setup
 ```
 
-### 3. Configure Server Credentials
+#### 3. Configure Server Credentials
 
 ```bash
 cp server/.env.example server/.env
@@ -34,7 +48,7 @@ CLIENT_SECRET=your-hiyve-secret
 SERVER_REGION=us-west-2
 ```
 
-### 4. Start the App
+#### 4. Start the App
 
 ```bash
 npm run dev

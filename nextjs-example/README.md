@@ -12,13 +12,36 @@ A minimal video conferencing application built with **Next.js 14** and the **Hiy
 
 ## Quick Start
 
-### 1. Install Dependencies
+You can either run the root setup script (recommended) or set up manually:
+
+### Option A: Root Setup Script (Recommended)
+
+From the `hiyve-examples` root directory:
 
 ```bash
-npm install
+./setup.sh nextjs-example
 ```
 
-### 2. Configure Environment
+This handles authentication, dependencies, and environment setup automatically.
+
+Then start the app:
+
+```bash
+cd nextjs-example
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Option B: Manual Setup
+
+#### 1. Install Dependencies
+
+```bash
+npm run setup
+```
+
+#### 2. Configure Environment
 
 Copy the example environment file and add your credentials:
 
@@ -34,7 +57,7 @@ CLIENT_SECRET=your-client-secret
 SERVER_REGION=us-west-2
 ```
 
-### 3. Run Development Server
+#### 3. Run Development Server
 
 ```bash
 npm run dev
