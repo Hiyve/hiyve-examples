@@ -2,9 +2,9 @@
  * VideoRoom Component
  *
  * Main in-room view containing:
- * - Header with room info, recording indicator, waiting room controls
+ * - Header with room info, recording/streaming indicators, waiting room controls
  * - Video grid with all participants
- * - Control bar for media, recording, screen share
+ * - Control bar for media, recording, streaming, screen share
  * - Collapsible sidebar (participants, chat, settings, files, captions)
  *
  * @example
@@ -25,11 +25,12 @@
  * - `useRoom()` - room info, isOwner
  * - `useConnection()` - leaveRoom
  * - `useRecording()` - isRecording, recordingDuration
+ * - `useStreaming()` - isStreaming, streamingDuration
  * - `useChat()` - unreadCount
  * - `useWaitingRoom()` - waitingUsers
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   Box,
   AppBar,
@@ -48,7 +49,9 @@ import {
   useRoom,
   useConnection,
   useRecording,
+  useStreaming,
   useWaitingRoom,
+  useLayout,
 } from '@hiyve/client-provider';
 import {
   ControlBar,
@@ -71,6 +74,7 @@ import {
   type RecordingIndicatorColors,
   type RecordingIndicatorStyles,
 } from '@hiyve/recording';
+import { StreamingIndicator, StreamingUrlDisplay } from '@hiyve/streaming';
 import { Sidebar } from './Sidebar';
 
 interface VideoRoomProps {
@@ -93,7 +97,17 @@ export function VideoRoom({ userName }: VideoRoomProps) {
   const { room, isOwner } = useRoom();
   const { leaveRoom } = useConnection();
   const { isRecording, recordingDuration } = useRecording();
+  const { isStreaming, streamingDuration, streamingUrl, switchStreamingUser } = useStreaming();
   const { waitingUsers } = useWaitingRoom();
+  const { dominantSpeaker } = useLayout();
+
+  // Sync dominant speaker with streaming presenter
+  // When the owner sets a dominant speaker, switch the streaming user to match
+  useEffect(() => {
+    if (isStreaming && isOwner && dominantSpeaker) {
+      switchStreamingUser(dominantSpeaker);
+    }
+  }, [dominantSpeaker, isStreaming, isOwner, switchStreamingUser]);
 
   // Responsive container breakpoint
   const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(800);
@@ -258,6 +272,28 @@ export function VideoRoom({ userName }: VideoRoomProps) {
             />
           )}
 
+          {/* Streaming Indicator
+              - Owners see "LIVE" with duration
+              - Guests see "Streaming" text */}
+          {isStreaming && (
+            <StreamingIndicator
+              isStreaming={isStreaming}
+              duration={streamingDuration}
+              showDuration={isOwner}
+              label={isOwner ? 'LIVE' : 'Streaming'}
+              size="small"
+              sx={{ mr: 2 }}
+            />
+          )}
+
+          {/* Streaming URL - owner only, shows playback URL with copy button */}
+          {isStreaming && isOwner && streamingUrl && (
+            <StreamingUrlDisplay
+              url={streamingUrl}
+              sx={{ mr: 2, minWidth: 200, maxWidth: 300 }}
+            />
+          )}
+
           {/* Copy room name button - owner only */}
           {isOwner && (
             <TooltipIconButton
@@ -330,6 +366,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
             showSettings
             showLayoutSelector
             showRecordingMenu
+            showStreamingOption
             showHandRaise
             intelligenceConfig={intelligenceConfig}
             onIntelligenceConfigChange={setIntelligenceConfig}

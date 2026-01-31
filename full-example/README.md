@@ -69,6 +69,7 @@ Open http://localhost:5173
 - Mute/unmute audio and video
 - Screen sharing
 - Recording with auto-compose
+- Live streaming to external platforms (YouTube, Twitch, etc.)
 - Live transcription (captions)
 - Mood/sentiment analysis with visual indicators
 - Engagement tracking (attentive, distracted, looking away)
@@ -97,6 +98,7 @@ Open http://localhost:5173
 | `@hiyve/participant-list` | ParticipantList | User list |
 | `@hiyve/transcription` | TranscriptViewer | Live captions |
 | `@hiyve/recording` | RecordingIndicator | Recording UI |
+| `@hiyve/streaming` | StreamingIndicator | Live streaming UI |
 | `@hiyve/device-selector` | DevicePreview | Camera/mic selection |
 | `@hiyve/audio-monitor` | GainControl | Mic volume control |
 | `@hiyve/waiting-room` | WaitingRoomSetup, WaitingRoomGuest | Waiting room UI |
@@ -135,7 +137,7 @@ src/
 | Component | Hooks Used | Purpose |
 |-----------|------------|---------|
 | `JoinForm` | `useConnection` | Room creation/join form |
-| `VideoRoom` | `useRoom`, `useConnection`, `useRecording`, `useChat`, `useWaitingRoom` | Main room layout |
+| `VideoRoom` | `useRoom`, `useConnection`, `useRecording`, `useStreaming`, `useChat`, `useWaitingRoom` | Main room layout |
 | `Sidebar` | `useRoom`, `useParticipants`, `useChat`, `useAudioProcessing`, `useRecording`, `useTranscription`, `useQAListener` | Tabbed sidebar |
 | `WaitingScreen` | `useWaitingRoom`, `useRoom`, `useConnection` | Waiting room UI |
 | `ConnectingScreen` | (none - presentational) | Loading state |
@@ -157,6 +159,7 @@ const { setVideoDevice, setAudioInputDevice, setAudioOutputDevice } = useDevices
 
 // Features
 const { isRecording, recordingDuration, startRecording, stopRecording } = useRecording();
+const { isStreaming, streamingDuration, startStreaming, stopStreaming } = useStreaming();
 const { isTranscribing, transcriptions, enrichTranscription } = useTranscription();
 const { messages, unreadCount, sendMessage, clearUnread } = useChat();
 const { waitingUsers, admitUser, rejectUser } = useWaitingRoom();

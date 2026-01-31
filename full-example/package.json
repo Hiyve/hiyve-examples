@@ -31,6 +31,7 @@
     "@hiyve/participant-list": "latest",
     "@hiyve/qa": "latest",
     "@hiyve/recording": "latest",
+    "@hiyve/streaming": "latest",
     "@hiyve/rtc-client": "alpha",
     "@hiyve/sidebar": "latest",
     "@hiyve/transcription": "latest",

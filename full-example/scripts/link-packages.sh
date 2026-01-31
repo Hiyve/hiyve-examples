@@ -32,6 +32,7 @@ packages=(
   "qa"
   "recording"
   "sidebar"
+  "streaming"
   "transcription"
   "utilities"
   "video-grid"
