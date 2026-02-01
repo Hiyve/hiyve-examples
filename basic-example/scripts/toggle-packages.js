@@ -23,9 +23,44 @@ const PACKAGE_JSON = path.join(ROOT, 'package.json');
 // Relative path from this example to hiyve-sdk packages
 const COMPONENTS_PATH = '../../hiyve-sdk/packages';
 
-// Production uses latest tag from the private registry (except rtc-client which uses alpha)
-const PROD_VERSION = 'latest';
-const RTC_CLIENT_VERSION = 'alpha';
+// Path to package metadata (contains actual version numbers)
+const METADATA_PATH = path.resolve(__dirname, '../../../hiyve-sdk/package-metadata');
+
+// Cache for version lookups
+const versionCache = new Map();
+
+/**
+ * Get the actual version number from package metadata
+ * @param {string} pkg - Package name without @hiyve/ prefix (e.g., 'video-grid')
+ * @param {string} tag - Dist tag to use ('latest' or 'alpha')
+ * @returns {string} The actual version number or the tag as fallback
+ */
+function getVersionFromMetadata(pkg, tag = 'latest') {
+  const cacheKey = `${pkg}:${tag}`;
+  if (versionCache.has(cacheKey)) {
+    return versionCache.get(cacheKey);
+  }
+
+  // Map package name to metadata filename (e.g., 'video-grid' -> 'hiyve-video-grid.json')
+  const metadataFile = path.join(METADATA_PATH, `hiyve-${pkg}.json`);
+
+  try {
+    if (fs.existsSync(metadataFile)) {
+      const metadata = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
+      const version = metadata['dist-tags']?.[tag];
+      if (version) {
+        versionCache.set(cacheKey, version);
+        return version;
+      }
+    }
+  } catch (error) {
+    console.warn(`Warning: Could not read metadata for ${pkg}: ${error.message}`);
+  }
+
+  // Fallback to tag if metadata not found
+  console.warn(`Warning: Using '${tag}' tag as fallback for @hiyve/${pkg}`);
+  return tag;
+}
 
 /**
  * Dynamically find all @hiyve/* packages in package.json
@@ -46,7 +81,8 @@ function getLocalPath(pkg) {
 
 function getProdPath(pkg) {
   // rtc-client uses alpha tag, all others use latest
-  return pkg === 'rtc-client' ? RTC_CLIENT_VERSION : PROD_VERSION;
+  const tag = pkg === 'rtc-client' ? 'alpha' : 'latest';
+  return getVersionFromMetadata(pkg, tag);
 }
 
 function readPackageJson() {
@@ -92,12 +128,6 @@ function getCurrentMode(pkg) {
 function setMode(mode) {
   const pkg = readPackageJson();
   const hiyvePackages = getHiyvePackages(pkg);
-  const currentMode = getCurrentMode(pkg);
-
-  if (currentMode === mode) {
-    console.log(`Already in ${mode} mode (all ${hiyvePackages.length} packages)`);
-    return;
-  }
 
   let updated = 0;
   for (const name of hiyvePackages) {
@@ -107,6 +137,11 @@ function setMode(mode) {
       pkg.dependencies[key] = targetVersion;
       updated++;
     }
+  }
+
+  if (updated === 0) {
+    console.log(`Already in ${mode} mode (all ${hiyvePackages.length} packages up to date)`);
+    return;
   }
 
   writePackageJson(pkg);
@@ -126,10 +161,13 @@ function showStatus() {
   for (const name of hiyvePackages) {
     const key = `@hiyve/${name}`;
     const value = pkg.dependencies[key];
-    const source = isDevVersion(value) ? 'LOCAL' : 'REGISTRY';
+    const isDev = isDevVersion(value);
+    const source = isDev ? 'LOCAL' : 'REGISTRY';
+    // Show version info for registry packages
+    const versionInfo = isDev ? '' : ` (v${value})`;
     // Highlight mismatched packages in mixed mode
-    const highlight = mode === 'mixed' ? (isDevVersion(value) ? '' : ' ⚠️') : '';
-    console.log(`  ${key}: ${source}${highlight}`);
+    const highlight = mode === 'mixed' ? (isDev ? '' : ' ⚠️') : '';
+    console.log(`  ${key}: ${source}${versionInfo}${highlight}`);
   }
   console.log('');
 }

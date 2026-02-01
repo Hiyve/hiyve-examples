@@ -66,7 +66,9 @@ import {
   useAudioProcessing,
   useRecording,
   useTranscription,
+  useStreaming,
 } from '@hiyve/client-provider';
+import { StreamingSettingsForm, type StreamingMode } from '@hiyve/streaming';
 import { Sidebar as HiyveSidebar, type SidebarTab } from '@hiyve/sidebar';
 import { ParticipantList } from '@hiyve/participant-list';
 import { ChatPanel } from '@hiyve/chat';
@@ -76,7 +78,14 @@ import { FileManager, type CustomViewerMap } from '@hiyve/file-manager';
 import { IntelligenceSettings, type IntelligenceConfig } from '@hiyve/control-bar';
 import { Whiteboard, CreateWhiteboardDialog, type WhiteboardFile } from '@hiyve/whiteboard';
 import { QAPanel, useQAListener, QASessionViewer, type Question, type QASessionFile } from '@hiyve/qa';
-import { PollsWindow, usePollListener, type Poll } from '@hiyve/polls';
+import { PollsWindow, usePollListener, PollsSessionViewer, type Poll, type PollsSessionFile } from '@hiyve/polls';
+
+/** Streaming configuration for the sidebar */
+export interface StreamingConfig {
+  mode: StreamingMode;
+  createMp4: boolean;
+  rtmpUrl: string;
+}
 
 interface SidebarProps {
   /** Local user's display name */
@@ -85,12 +94,18 @@ interface SidebarProps {
   intelligenceConfig: IntelligenceConfig;
   /** Callback when intelligence config changes */
   onIntelligenceConfigChange: (config: IntelligenceConfig) => void;
+  /** Streaming configuration */
+  streamingConfig: StreamingConfig;
+  /** Callback when streaming config changes */
+  onStreamingConfigChange: (config: StreamingConfig) => void;
 }
 
 export function Sidebar({
   userName,
   intelligenceConfig,
   onIntelligenceConfigChange,
+  streamingConfig,
+  onStreamingConfigChange,
 }: SidebarProps) {
   const [activeTab, setActiveTab] = useState('participants');
   const [micGain, setMicGain] = useState(100);
@@ -109,6 +124,7 @@ export function Sidebar({
   const { setGain } = useAudioProcessing();
   const { isRecording } = useRecording();
   const { isTranscribing } = useTranscription();
+  const { isStreaming } = useStreaming();
 
   // Q&A listener - stays active even when QA tab is not visible
   useQAListener({
@@ -119,11 +135,12 @@ export function Sidebar({
   });
 
   // Polls listener - stays active even when Polls tab is not visible
-  usePollListener({
-    isOwner,
-    localUserId: localUserId || '',
-    polls,
-    onPollsChange: setPolls,
+  // Provides activePoll and hasUnvotedActivePoll for notifications/badges
+  const { hasUnvotedActivePoll } = usePollListener({
+    enabled: true,
+    onNewActivePoll: (poll) => {
+      console.log('[Polls] New active poll:', poll.question);
+    },
   });
 
   // Handle tab change
@@ -178,6 +195,12 @@ export function Sidebar({
           onClose={onClose}
         />
       ),
+      'polls-session': (data, _file, onClose) => (
+        <PollsSessionViewer
+          sessionData={data as PollsSessionFile}
+          onClose={onClose}
+        />
+      ),
     }),
     []
   );
@@ -224,6 +247,8 @@ export function Sidebar({
         label: 'Polls',
         icon: <PollIcon />,
         tooltip: 'Live Polls',
+        badge: hasUnvotedActivePoll ? 1 : undefined,
+        badgeColor: 'error',
       },
     ];
 
@@ -238,7 +263,7 @@ export function Sidebar({
     }
 
     return baseTabs;
-  }, [participantCount, unreadCount, isOwner, isTranscribing]);
+  }, [participantCount, unreadCount, isOwner, isTranscribing, hasUnvotedActivePoll]);
 
   // Render content for each tab
   const renderContent = useCallback(
@@ -297,6 +322,34 @@ export function Sidebar({
                   disabled={isRecording}
                   sx={{ mt: 2 }}
                 />
+              )}
+
+              {/* Streaming Settings - owner only */}
+              {isOwner && (
+                <>
+                  <Typography variant="subtitle2" gutterBottom sx={{ mt: 3 }}>
+                    Streaming Settings
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                  <StreamingSettingsForm
+                    mode={streamingConfig.mode}
+                    onModeChange={(mode) => onStreamingConfigChange({ ...streamingConfig, mode })}
+                    createMp4={streamingConfig.createMp4}
+                    onCreateMp4Change={(createMp4) => onStreamingConfigChange({ ...streamingConfig, createMp4 })}
+                    rtmpUrl={streamingConfig.rtmpUrl}
+                    onRtmpUrlChange={(rtmpUrl) => onStreamingConfigChange({ ...streamingConfig, rtmpUrl })}
+                    disabled={isStreaming}
+                  />
+                  {isStreaming && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: 'block', mt: 1 }}
+                    >
+                      Settings cannot be changed while streaming is active.
+                    </Typography>
+                  )}
+                </>
               )}
             </Box>
           );
@@ -441,6 +494,7 @@ export function Sidebar({
       onIntelligenceConfigChange,
       isRecording,
       isTranscribing,
+      isStreaming,
       whiteboardFileId,
       whiteboardFileData,
       showCreateWhiteboardDialog,
@@ -451,6 +505,8 @@ export function Sidebar({
       pollsFileId,
       qaQuestions,
       qaFileId,
+      streamingConfig,
+      onStreamingConfigChange,
     ]
   );
 

@@ -30,7 +30,7 @@
  * - `useWaitingRoom()` - waitingUsers
  */
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   Box,
   AppBar,
@@ -75,11 +75,54 @@ import {
   type RecordingIndicatorStyles,
 } from '@hiyve/recording';
 import { StreamingIndicator, StreamingUrlDisplay } from '@hiyve/streaming';
-import { Sidebar } from './Sidebar';
+import { Sidebar, type StreamingConfig } from './Sidebar';
 
 interface VideoRoomProps {
   /** Local user's display name */
   userName: string;
+}
+
+const STREAMING_CONFIG_KEY = 'hiyve-streaming-config';
+
+const defaultStreamingConfig: StreamingConfig = {
+  mode: 'single',
+  createMp4: true,
+  rtmpUrl: '',
+};
+
+/**
+ * Hook to persist streaming config to localStorage
+ */
+function useStreamingConfig() {
+  const [config, setConfigState] = useState<StreamingConfig>(() => {
+    try {
+      const stored = localStorage.getItem(STREAMING_CONFIG_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return { ...defaultStreamingConfig, ...parsed };
+      }
+    } catch {
+      // Ignore parse errors
+    }
+    return defaultStreamingConfig;
+  });
+
+  const isFirstRender = useRef(true);
+
+  // Save to localStorage when config changes (skip first render)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    try {
+      localStorage.setItem(STREAMING_CONFIG_KEY, JSON.stringify(config));
+    } catch {
+      // Ignore storage errors
+    }
+  }, [config]);
+
+  return [config, setConfigState] as const;
 }
 
 export function VideoRoom({ userName }: VideoRoomProps) {
@@ -92,6 +135,9 @@ export function VideoRoom({ userName }: VideoRoomProps) {
   const [intelligenceConfig, setIntelligenceConfig] = useState<IntelligenceConfig>(
     defaultIntelligenceConfig
   );
+
+  // Streaming configuration (persisted to localStorage)
+  const [streamingConfig, setStreamingConfig] = useStreamingConfig();
 
   // Get state from ClientProvider
   const { room, isOwner } = useRoom();
@@ -370,6 +416,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
             showHandRaise
             intelligenceConfig={intelligenceConfig}
             onIntelligenceConfigChange={setIntelligenceConfig}
+            streamingConfig={streamingConfig}
             layout={layout}
             onLayoutChange={setLayout}
             layouts={customLayouts}
@@ -381,6 +428,8 @@ export function VideoRoom({ userName }: VideoRoomProps) {
           userName={userName}
           intelligenceConfig={intelligenceConfig}
           onIntelligenceConfigChange={setIntelligenceConfig}
+          streamingConfig={streamingConfig}
+          onStreamingConfigChange={setStreamingConfig}
         />
       </Box>
 
