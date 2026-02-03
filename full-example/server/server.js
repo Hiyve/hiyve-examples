@@ -24,6 +24,9 @@ const SERVER_REGION = process.env.SERVER_REGION || 'us-west-2';
 const SERVER_REGION_URL = process.env.SERVER_REGION_URL || '.rtc.muziemedia.com';
 const SIGNALING_SERVER = `${SERVER_REGION}${SERVER_REGION_URL}`;
 
+// Hiyve Cloud API configuration (uses same APIKEY as signaling server)
+const HIYVE_CLOUD_URL = process.env.HIYVE_CLOUD_URL || 'https://api.muziemedia.com';
+
 if (!APIKEY || !CLIENT_SECRET) {
   console.warn('⚠️  Warning: APIKEY and CLIENT_SECRET are not set.');
   console.warn('   Set them in server/.env file:');
@@ -80,13 +83,63 @@ app.post('/api/generate-room-token', async (req, res) => {
 });
 
 /**
+ * Generate a cloud token for Hiyve Cloud AI features
+ *
+ * The cloud token is used by Hiyve Cloud Provider to authenticate with the AI service.
+ * This token should be generated server-side to keep the API key secure.
+ * Uses the same APIKEY as the signaling server.
+ *
+ * @returns {Object} { cloudToken: string, expiresAt: string }
+ */
+app.post('/api/generate-cloud-token', async (req, res) => {
+  if (!APIKEY) {
+    return res.status(500).json({
+      error: 'Server not configured',
+      message: 'APIKEY must be set in environment variables for cloud features'
+    });
+  }
+
+  try {
+    const response = await fetch(`${HIYVE_CLOUD_URL}/cloud-token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hiyve-Api-Key': APIKEY,
+      },
+      body: JSON.stringify({
+        expiresIn: '24h',
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Cloud token generation failed:', response.status, errorText);
+      return res.status(response.status).json({
+        error: 'Failed to generate cloud token',
+        details: errorText
+      });
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error generating cloud token:', error);
+    res.status(500).json({
+      error: 'Error generating cloud token',
+      message: error.message
+    });
+  }
+});
+
+/**
  * Health check endpoint
  */
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     configured: !!(APIKEY && CLIENT_SECRET),
-    signalingServer: SIGNALING_SERVER
+    signalingServer: SIGNALING_SERVER,
+    cloudUrl: HIYVE_CLOUD_URL
   });
 });
 
@@ -94,8 +147,10 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`\n🚀 Example server running on http://localhost:${PORT}`);
   console.log(`\n📋 Available endpoints:`);
-  console.log(`   POST /api/generate-room-token - Generate room token for Hiyve Client`);
-  console.log(`   GET  /api/health - Health check\n`);
+  console.log(`   POST /api/generate-room-token  - Generate room token for Hiyve Client`);
+  console.log(`   POST /api/generate-cloud-token - Generate cloud token for AI features`);
+  console.log(`   GET  /api/health               - Health check\n`);
+  console.log(`☁️  Cloud API: ${HIYVE_CLOUD_URL}\n`);
 
   if (!APIKEY || !CLIENT_SECRET) {
     console.log(`⚠️  Server running but not fully configured.`);

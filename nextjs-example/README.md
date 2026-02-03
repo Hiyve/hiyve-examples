@@ -78,6 +78,8 @@ nextjs-example/
 ├── components/
 │   ├── JoinForm.tsx           # Room entry form with device preview
 │   └── VideoRoom.tsx          # Video grid and controls
+├── types/
+│   └── hiyve.d.ts             # Type declarations for @hiyve packages
 ├── theme.ts                   # MUI dark theme configuration
 ├── next.config.mjs            # Next.js configuration
 └── package.json
@@ -98,6 +100,16 @@ nextjs-example/
 - `@hiyve/device-selector` - Camera/microphone preview and selection
 - `@hiyve/video-grid` - Participant video layout
 - `@hiyve/control-bar` - Media controls and leave button
+
+## TypeScript Support
+
+This example includes TypeScript type declarations for all `@hiyve/*` packages in `types/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
+
+The declarations cover:
+- `@hiyve/client-provider` - hooks and ClientProvider component
+- `@hiyve/control-bar` - ControlBar component and LayoutMode type
+- `@hiyve/device-selector` - DevicePreview component
+- `@hiyve/video-grid` - VideoGrid component
 
 ## Development Mode
 

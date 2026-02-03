@@ -104,5 +104,3 @@ export function VideoRoom({ userName }: VideoRoomProps) {
     </Box>
   );
 }
-
-export default VideoRoom;

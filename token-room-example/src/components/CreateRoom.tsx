@@ -16,7 +16,6 @@ import {
   Paper,
   TextField,
   Button,
-  Alert,
   Container,
 } from '@mui/material';
 import { VideoCall as VideoCallIcon } from '@mui/icons-material';
@@ -39,7 +38,7 @@ export function CreateRoom({ onUserNameChange }: CreateRoomProps) {
     () => localStorage.getItem(STORAGE_KEYS.userName) || ''
   );
 
-  const { error, createRoom } = useConnection();
+  const { createRoom } = useConnection();
 
   // Persist form values
   useEffect(() => {
@@ -72,12 +71,6 @@ export function CreateRoom({ onUserNameChange }: CreateRoomProps) {
         <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
           Create a room and share the invite link with others
         </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
 
         <TextField
           fullWidth
@@ -112,5 +105,3 @@ export function CreateRoom({ onUserNameChange }: CreateRoomProps) {
     </Container>
   );
 }
-
-export default CreateRoom;

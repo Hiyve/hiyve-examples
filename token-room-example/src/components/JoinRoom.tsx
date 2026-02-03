@@ -30,5 +30,3 @@ export function JoinRoom({ joinToken, region, onUserNameChange }: JoinRoomProps)
     />
   );
 }
-
-export default JoinRoom;

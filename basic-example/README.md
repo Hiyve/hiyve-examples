@@ -84,6 +84,7 @@ This is a minimal example with only essential features:
 src/
 ├── main.tsx              # Provider setup with ClientProvider
 ├── App.tsx               # Routes between JoinForm and VideoRoom
+├── hiyve.d.ts            # Type declarations for @hiyve packages
 └── components/
     ├── JoinForm.tsx      # Room name input with device preview
     └── VideoRoom.tsx     # Video grid and control bar
@@ -146,17 +147,25 @@ const { leaveRoom } = useConnection();
 
 ## Hooks Reference
 
+### Used in This Example
+
 ```tsx
-// Connection
-const { createRoom, joinRoom, leaveRoom, isConnecting, error } = useConnection();
+// Connection - create/join/leave rooms
+const { createRoom, joinRoom, leaveRoom, isConnecting } = useConnection();
 
-// Room state
+// Room state - check room info and ownership
 const { room, isOwner, isInRoom } = useRoom();
+```
 
-// Participants (available but not used in this example)
+### Advanced (Not Used Here)
+
+These hooks are available for more complex implementations:
+
+```tsx
+// Participants - access participant list
 const { participants, localUserId, participantCount } = useParticipants();
 
-// Media controls (handled by ControlBar, but available)
+// Media controls - programmatic mute control (ControlBar handles this)
 const { isAudioMuted, isVideoMuted, toggleAudio, toggleVideo } = useLocalMedia();
 ```
 
@@ -183,6 +192,16 @@ For development with local `hiyve-sdk`:
 ./toggle-packages.sh prod   # Use registry packages
 ./toggle-packages.sh status # Check current mode
 ```
+
+## TypeScript Support
+
+This example includes TypeScript type declarations for all `@hiyve/*` packages in `src/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
+
+The declarations cover:
+- `@hiyve/client-provider` - hooks and ClientProvider component
+- `@hiyve/control-bar` - ControlBar component and LayoutMode type
+- `@hiyve/device-selector` - DevicePreview component
+- `@hiyve/video-grid` - VideoGrid component
 
 ## Troubleshooting
 

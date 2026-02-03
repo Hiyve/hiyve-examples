@@ -1,33 +1,5 @@
 /**
- * VideoRoom Component
- *
- * Main in-room view containing:
- * - Header with room info, recording/streaming indicators, waiting room controls
- * - Video grid with all participants
- * - Control bar for media, recording, streaming, screen share
- * - Collapsible sidebar (participants, chat, settings, files, captions)
- *
- * @example
- * ```tsx
- * import { VideoRoom } from './components/VideoRoom';
- *
- * function App() {
- *   const { isInRoom } = useRoom();
- *
- *   if (isInRoom) {
- *     return <VideoRoom userName="John" />;
- *   }
- *   return <JoinForm />;
- * }
- * ```
- *
- * ## Hooks Used
- * - `useRoom()` - room info, isOwner
- * - `useConnection()` - leaveRoom
- * - `useRecording()` - isRecording, recordingDuration
- * - `useStreaming()` - isStreaming, streamingDuration
- * - `useChat()` - unreadCount
- * - `useWaitingRoom()` - waitingUsers
+ * VideoRoom Component - Main in-room view with video grid, controls, and sidebar.
  */
 
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
@@ -38,11 +10,13 @@ import {
   Typography,
   Badge,
   Snackbar,
+  Button,
 } from '@mui/material';
 import {
   ContentCopy as CopyIcon,
   MeetingRoom as WaitingRoomIcon,
   Slideshow as PresentationIcon,
+  PanTool as HandRaiseIcon,
 } from '@mui/icons-material';
 import { LiveClock, TooltipIconButton, useContainerBreakpoint } from '@hiyve/utilities';
 import {
@@ -52,6 +26,7 @@ import {
   useStreaming,
   useWaitingRoom,
   useLayout,
+  useHandRaise,
 } from '@hiyve/client-provider';
 import {
   ControlBar,
@@ -74,15 +49,16 @@ import {
   type RecordingIndicatorColors,
   type RecordingIndicatorStyles,
 } from '@hiyve/recording';
-import { StreamingIndicator, StreamingUrlDisplay } from '@hiyve/streaming';
-import { Sidebar, type StreamingConfig } from './Sidebar';
+import { StreamingIndicator, StreamingUrlDisplay, type StreamingMode } from '@hiyve/streaming';
+import { Sidebar } from './Sidebar';
+import { STORAGE_KEYS } from '../constants';
 
-interface VideoRoomProps {
-  /** Local user's display name */
-  userName: string;
+// Streaming configuration type
+export interface StreamingConfig {
+  mode: StreamingMode;
+  createMp4: boolean;
+  rtmpUrl: string;
 }
-
-const STREAMING_CONFIG_KEY = 'hiyve-streaming-config';
 
 const defaultStreamingConfig: StreamingConfig = {
   mode: 'single',
@@ -90,39 +66,28 @@ const defaultStreamingConfig: StreamingConfig = {
   rtmpUrl: '',
 };
 
-/**
- * Hook to persist streaming config to localStorage
- */
-function useStreamingConfig() {
-  const [config, setConfigState] = useState<StreamingConfig>(() => {
-    try {
-      const stored = localStorage.getItem(STREAMING_CONFIG_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return { ...defaultStreamingConfig, ...parsed };
-      }
-    } catch {
-      // Ignore parse errors
-    }
-    return defaultStreamingConfig;
-  });
+// Static customization values (outside component - no useMemo needed)
+const RECORDING_COLORS: Partial<RecordingIndicatorColors> = {
+  background: 'rgba(255, 0, 0, 0.15)',
+  indicator: '#ff1744',
+  text: '#ff1744',
+};
 
-  const isFirstRender = useRef(true);
+const RECORDING_STYLES: Partial<RecordingIndicatorStyles> = {
+  animationDuration: '1.2s',
+  fontWeight: 700,
+};
 
-  // Save to localStorage when config changes (skip first render)
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    try {
-      localStorage.setItem(STREAMING_CONFIG_KEY, JSON.stringify(config));
-    } catch {
-      // Ignore storage errors
-    }
-  }, [config]);
+const TILE_OVERLAY_ORDER: VideoTileOverlayElement[] = [
+  'engagement', 'mood', 'name', 'status', 'controls'
+];
 
-  return [config, setConfigState] as const;
+const LOCAL_TILE_OVERLAY_ORDER: LocalVideoTileOverlayElement[] = [
+  'indicator', 'timer', 'engagement', 'mood', 'name', 'status', 'controls'
+];
+
+interface VideoRoomProps {
+  userName: string;
 }
 
 export function VideoRoom({ userName }: VideoRoomProps) {
@@ -137,7 +102,32 @@ export function VideoRoom({ userName }: VideoRoomProps) {
   );
 
   // Streaming configuration (persisted to localStorage)
-  const [streamingConfig, setStreamingConfig] = useStreamingConfig();
+  const [streamingConfig, setStreamingConfigState] = useState<StreamingConfig>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.streamingConfig);
+      if (stored) {
+        return { ...defaultStreamingConfig, ...JSON.parse(stored) };
+      }
+    } catch {
+      // Ignore parse errors
+    }
+    return defaultStreamingConfig;
+  });
+
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    try {
+      localStorage.setItem(STORAGE_KEYS.streamingConfig, JSON.stringify(streamingConfig));
+    } catch {
+      // Ignore storage errors
+    }
+  }, [streamingConfig]);
+
+  const setStreamingConfig = setStreamingConfigState;
 
   // Get state from ClientProvider
   const { room, isOwner } = useRoom();
@@ -146,6 +136,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
   const { isStreaming, streamingDuration, streamingUrl, switchStreamingUser } = useStreaming();
   const { waitingUsers } = useWaitingRoom();
   const { dominantSpeaker } = useLayout();
+  const { raisedHandCount, lowerAllHands } = useHandRaise();
 
   // Sync dominant speaker with streaming presenter
   // When the owner sets a dominant speaker, switch the streaming user to match
@@ -158,13 +149,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
   // Responsive container breakpoint
   const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(800);
 
-  // ============================================================================
-  // Customization Examples
-  // These demonstrate how to customize component labels, colors, and styles.
-  // ============================================================================
-
-  // Custom layouts - demonstrates extending DEFAULT_LAYOUTS with custom layouts
-  // Note: Custom layouts require a customLayoutHandler in VideoGrid
+  // Custom layouts - extending DEFAULT_LAYOUTS with presentation layout
   const customLayouts = useMemo<LayoutDefinition[]>(
     () => [
       ...DEFAULT_LAYOUTS,
@@ -178,7 +163,6 @@ export function VideoRoom({ userName }: VideoRoomProps) {
   );
 
   // Custom layout handler for the "presentation" layout
-  // This demonstrates how developers can create their own layout algorithms
   const presentationLayoutHandler = useMemo<CustomLayoutHandler>(
     () =>
       ({ availableWidth, availableHeight, participants, padding, gap, isLocalDominant, dominantSpeaker }) => {
@@ -245,40 +229,6 @@ export function VideoRoom({ userName }: VideoRoomProps) {
     []
   );
 
-  // Custom colors for RecordingIndicator (demonstrates theming)
-  const customRecordingColors = useMemo<Partial<RecordingIndicatorColors>>(
-    () => ({
-      background: 'rgba(255, 0, 0, 0.15)',
-      indicator: '#ff1744',
-      text: '#ff1744',
-    }),
-    []
-  );
-
-  // Custom styles for RecordingIndicator
-  const customRecordingStyles = useMemo<Partial<RecordingIndicatorStyles>>(
-    () => ({
-      animationDuration: '1.2s',
-      fontWeight: 700,
-    }),
-    []
-  );
-
-  // Custom overlay order for video tiles
-  // This controls the render order of elements at the same position.
-  // Elements listed first appear first (leftmost for horizontal, topmost for vertical).
-  // Here we put engagement before mood so engagement appears to the left of mood.
-  const tileOverlayOrder = useMemo<VideoTileOverlayElement[]>(
-    () => ['engagement', 'mood', 'name', 'status', 'controls'],
-    []
-  );
-
-  // Custom overlay order for local video tile (includes indicator and timer)
-  const localTileOverlayOrder = useMemo<LocalVideoTileOverlayElement[]>(
-    () => ['indicator', 'timer', 'engagement', 'mood', 'name', 'status', 'controls'],
-    []
-  );
-
   // Copy room name to clipboard
   const handleCopyRoomName = useCallback(() => {
     if (room?.name) {
@@ -312,8 +262,8 @@ export function VideoRoom({ userName }: VideoRoomProps) {
               showDuration={isOwner}
               label={isOwner ? 'REC' : 'Recording'}
               size="small"
-              colors={customRecordingColors}
-              styles={customRecordingStyles}
+              colors={RECORDING_COLORS}
+              styles={RECORDING_STYLES}
               sx={{ mr: 2 }}
             />
           )}
@@ -374,6 +324,32 @@ export function VideoRoom({ userName }: VideoRoomProps) {
             </>
           )}
 
+          {/* Hand Raise indicator - shows count when hands are raised */}
+          {raisedHandCount > 0 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+              <TooltipIconButton
+                tooltip={`${raisedHandCount} hand${raisedHandCount !== 1 ? 's' : ''} raised`}
+                color="warning"
+              >
+                <Badge badgeContent={raisedHandCount} color="warning">
+                  <HandRaiseIcon />
+                </Badge>
+              </TooltipIconButton>
+              {/* Lower All Hands button - owner only */}
+              {isOwner && (
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="warning"
+                  onClick={lowerAllHands}
+                  sx={{ ml: 0.5, minWidth: 'auto', px: 1 }}
+                >
+                  Lower All
+                </Button>
+              )}
+            </Box>
+          )}
+
         </Toolbar>
       </AppBar>
 
@@ -399,8 +375,8 @@ export function VideoRoom({ userName }: VideoRoomProps) {
             timerPosition="top-right"
             moodPosition="top-left"
             engagementPosition="top-left"
-            tileOverlayOrder={tileOverlayOrder}
-            localTileOverlayOrder={localTileOverlayOrder}
+            tileOverlayOrder={TILE_OVERLAY_ORDER}
+            localTileOverlayOrder={LOCAL_TILE_OVERLAY_ORDER}
             sx={{ flex: 1 }}
           />
 
@@ -430,6 +406,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
           onIntelligenceConfigChange={setIntelligenceConfig}
           streamingConfig={streamingConfig}
           onStreamingConfigChange={setStreamingConfig}
+          persistWidth
         />
       </Box>
 
@@ -443,5 +420,3 @@ export function VideoRoom({ userName }: VideoRoomProps) {
     </Box>
   );
 }
-
-export default VideoRoom;

@@ -53,7 +53,6 @@ function App() {
   /**
    * Connection hook provides:
    * - isConnecting: true while establishing WebRTC connection
-   * - error: connection error message (if any)
    * - createRoom(roomName, userName): create and join a new room
    * - joinRoom(roomName, userName): join an existing room
    * - leaveRoom(): disconnect from current room

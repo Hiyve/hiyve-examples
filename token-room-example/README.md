@@ -131,6 +131,7 @@ token-room-example/
 ├── src/
 │   ├── main.tsx              # App entry with ClientProvider
 │   ├── App.tsx               # Routing based on URL and state
+│   ├── hiyve.d.ts            # Type declarations for @hiyve packages
 │   └── components/
 │       ├── CreateRoom.tsx    # Owner: create room form
 │       ├── JoinRoom.tsx      # Guest: join via token (uses SDK)
@@ -155,9 +156,9 @@ This example uses reusable components from the Hiyve SDK:
 
 These components handle all the complexity of token generation, validation, and error handling.
 
-### hiyve-client-provider
+### @hiyve/client-provider
 
-- **`useJoinToken`** - Hook for programmatic token validation and joining
+- Standard hooks: `useConnection`, `useRoom`, `useDevices`
 - Error code constants: `TOKEN_NOT_FOUND`, `TOKEN_EXPIRED`, `INVALID_PASSWORD`, etc.
 
 ### @hiyve/utilities
@@ -231,6 +232,17 @@ Health check endpoint.
 | File Sharing | No | Yes |
 
 This example demonstrates the token-based joining flow with minimal complexity.
+
+## TypeScript Support
+
+This example includes TypeScript type declarations for all `@hiyve/*` packages in `src/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
+
+The declarations cover:
+- `@hiyve/client-provider` - hooks and ClientProvider component
+- `@hiyve/control-bar` - ControlBar component and LayoutMode type
+- `@hiyve/join-token` - JoinWithTokenForm and InviteLinkDialog components
+- `@hiyve/video-grid` - VideoGrid component
+- `@hiyve/utilities` - LiveClock, TooltipIconButton, useContainerBreakpoint
 
 ## Troubleshooting
 

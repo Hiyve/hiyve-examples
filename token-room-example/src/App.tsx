@@ -44,16 +44,14 @@ function App() {
     }
   }, []);
 
-  // Sync userName from localStorage
+  // Sync userName from localStorage (cross-tab only - same-tab uses onUserNameChange callback)
   useEffect(() => {
     const handleStorage = () => {
       setUserName(localStorage.getItem('hiyve-token-example-userName') || '');
     };
     window.addEventListener('storage', handleStorage);
-    const interval = setInterval(handleStorage, 500);
     return () => {
       window.removeEventListener('storage', handleStorage);
-      clearInterval(interval);
     };
   }, []);
 

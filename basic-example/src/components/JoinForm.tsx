@@ -219,5 +219,3 @@ export function JoinForm({ onUserNameChange }: JoinFormProps) {
     </Box>
   );
 }
-
-export default JoinForm;

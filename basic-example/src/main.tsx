@@ -28,9 +28,9 @@
  * @see {@link https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html} API Documentation
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
 import { ClientProvider } from '@hiyve/client-provider';
 import App from './App';
 
@@ -74,26 +74,64 @@ async function generateRoomToken(): Promise<string> {
 }
 
 /**
- * Application root render.
- *
- * Wraps the app with required providers:
- * - StrictMode: React development checks
- * - ThemeProvider: MUI theming
- * - CssBaseline: Normalize CSS across browsers
- * - ClientProvider: Hiyve SDK state management
+ * Convert error to user-friendly message.
  */
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+function getErrorMessage(err: string): string {
+  const errLower = err.toLowerCase();
+  if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
+    return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
+  }
+  return err;
+}
+
+/**
+ * Root component with error handling.
+ *
+ * Wraps the app with required providers and displays connection errors
+ * in a Snackbar at the top of the screen.
+ */
+function Root() {
+  const [error, setError] = useState<string | null>(null);
+
+  return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <ClientProvider
         generateRoomToken={generateRoomToken}
         localVideoElementId="local-video"
         persistDeviceChanges
-        onError={(err) => console.error('[ClientProvider Error]', err)}
+        onError={(err: unknown) => {
+          console.error('[ClientProvider Error]', err);
+          const message = err instanceof Error ? err.message : String(err);
+          setError(message);
+        }}
       >
         <App />
       </ClientProvider>
+
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setError(null)} severity="warning" sx={{ width: '100%' }}>
+          {error && getErrorMessage(error)}
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
+  );
+}
+
+/**
+ * Application root render.
+ *
+ * Wraps the app with required providers:
+ * - StrictMode: React development checks
+ * - Root: Theme, ClientProvider, and error handling
+ */
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <Root />
   </React.StrictMode>
 );

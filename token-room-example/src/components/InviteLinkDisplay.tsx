@@ -36,5 +36,3 @@ export function InviteLinkDisplay({ roomName, onCopySuccess }: InviteLinkDisplay
     </>
   );
 }
-
-export default InviteLinkDisplay;

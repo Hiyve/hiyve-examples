@@ -63,7 +63,29 @@
       "Bash(xargs:*)",
       "Bash(ssh:*)",
       "Bash(aws s3api get-bucket-cors:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(pnpm --filter @hiyve/qa --filter @hiyve/polls --filter @hiyve/notes --filter @hiyve/whiteboard build:*)",
+      "Bash(pnpm dev)",
+      "Bash(for f in /Users/karl/Development/muzieRTC/hiyve-sdk/packages/*/tsconfig.json)",
+      "Bash(do if ! grep -q '\"\"extends\"\"' \"$f\")",
+      "Bash(then echo \"$f\")",
+      "Bash(fi)",
+      "Bash(pnpm list:*)",
+      "WebFetch(domain:nx.dev)",
+      "WebFetch(domain:turborepo.com)",
+      "WebFetch(domain:turborepo.dev)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm build:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:www.rickyspears.com)",
+      "Bash(timeout 15 pnpm:*)",
+      "Bash(for pkg in audio-monitor chat client-provider cloud-provider control-bar device-selector file-manager intelligence join-token mood-analysis notes participant-list polls qa recording session-common sidebar streaming transcription utilities video-grid video-tile waiting-room whiteboard)",
+      "Bash(if ! grep -q '!isWatchMode && dts' \"packages/$pkg/vite.config.ts\")",
+      "Bash(then)",
+      "Bash(curl:*)",
+      "Bash(tail:*)",
+      "Bash(npx vite build)"
     ]
   }
 }

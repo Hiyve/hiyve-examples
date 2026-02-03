@@ -1,9 +1,22 @@
 'use client';
 
 /**
- * JoinForm Component - Room Entry Interface
+ * @fileoverview JoinForm Component - Room Entry Interface
+ * @module nextjs-example/components/JoinForm
  *
- * A simple form for creating or joining video rooms with device preview.
+ * A simple form for creating or joining video rooms. Includes:
+ *
+ * - **Device Preview** - Camera/mic preview with device selection
+ * - **Room Name Input** - Name of the room to create or join
+ * - **User Name Input** - Display name for the participant
+ * - **Create/Join Buttons** - Create a new room or join existing
+ *
+ * ## Component Dependencies
+ *
+ * - `@hiyve/client-provider` - useConnection hook for room actions
+ * - `@hiyve/device-selector` - DevicePreview component
+ *
+ * @see {@link VideoRoom} - Component shown after joining
  */
 
 import { useState, useCallback } from 'react';
@@ -19,10 +32,27 @@ import {
 import { useConnection } from '@hiyve/client-provider';
 import { DevicePreview } from '@hiyve/device-selector';
 
+/**
+ * Props for the JoinForm component.
+ */
 interface JoinFormProps {
+  /**
+   * Callback when user name changes (called on create/join).
+   * Used to pass the user name to VideoRoom for display.
+   */
   onUserNameChange: (name: string) => void;
 }
 
+/**
+ * Room entry form with device preview.
+ *
+ * Allows users to preview their camera/microphone and select devices
+ * before joining a room. Supports both creating new rooms and joining
+ * existing ones.
+ *
+ * @param props - Component props
+ * @param props.onUserNameChange - Callback when user submits their name
+ */
 export default function JoinForm({ onUserNameChange }: JoinFormProps) {
   const [roomName, setRoomName] = useState('');
   const [userName, setUserName] = useState('');

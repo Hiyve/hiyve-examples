@@ -1,31 +1,5 @@
 /**
- * JoinForm Component
- *
- * Displays the room join/create form with:
- * - Role selection (owner/guest)
- * - User name input
- * - Room name input
- * - Waiting room toggle (for owners)
- * - Device preview dialog
- *
- * @example
- * ```tsx
- * import { JoinForm } from './components/JoinForm';
- *
- * function App() {
- *   const { isInRoom } = useRoom();
- *   if (!isInRoom) return <JoinForm />;
- *   return <VideoRoom />;
- * }
- * ```
- *
- * ## Hooks Used
- * - `useConnection()` - createRoom, joinRoom, error state
- *
- * ## Features
- * - Form values persisted to localStorage
- * - Device preview before joining
- * - Waiting room configuration for owners
+ * JoinForm Component - Room creation/join form with device preview.
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -35,7 +9,6 @@ import {
   Paper,
   TextField,
   Button,
-  Alert,
   Container,
   IconButton,
   ToggleButton,
@@ -53,16 +26,9 @@ import {
 import { useConnection } from '@hiyve/client-provider';
 import { DevicePreview, type SelectedDevices } from '@hiyve/device-selector';
 import { WaitingRoomSetup } from '@hiyve/waiting-room';
+import { STORAGE_KEYS } from '../constants';
 
 type UserRole = 'owner' | 'guest';
-
-// localStorage keys for form persistence
-const STORAGE_KEYS = {
-  userName: 'hiyve-example-userName',
-  roomName: 'hiyve-example-roomName',
-  userRole: 'hiyve-example-userRole',
-  enableWaitingRoom: 'hiyve-example-enableWaitingRoom',
-} as const;
 
 export function JoinForm() {
   // Form state - load from localStorage for convenience
@@ -84,7 +50,7 @@ export function JoinForm() {
   const [selectedDevices, setSelectedDevices] = useState<SelectedDevices>({});
 
   // Get connection actions from ClientProvider
-  const { error, createRoom, joinRoom } = useConnection();
+  const { createRoom, joinRoom } = useConnection();
 
   // Persist form values to localStorage
   useEffect(() => {
@@ -106,23 +72,15 @@ export function JoinForm() {
   // Handle room creation (owner flow)
   const handleCreateRoom = useCallback(async () => {
     if (!roomNameInput.trim() || !userName.trim()) return;
-    try {
-      await createRoom(roomNameInput.trim(), userName.trim(), {
-        requireWaitingRoom: enableWaitingRoom,
-      });
-    } catch (err) {
-      console.error('Create room failed', err);
-    }
+    await createRoom(roomNameInput.trim(), userName.trim(), {
+      requireWaitingRoom: enableWaitingRoom,
+    });
   }, [roomNameInput, userName, createRoom, enableWaitingRoom]);
 
   // Handle room join (guest flow)
   const handleJoinRoom = useCallback(async () => {
     if (!roomNameInput.trim() || !userName.trim()) return;
-    try {
-      await joinRoom(roomNameInput.trim(), userName.trim());
-    } catch (err) {
-      console.error('Join room failed', err);
-    }
+    await joinRoom(roomNameInput.trim(), userName.trim());
   }, [roomNameInput, userName, joinRoom]);
 
   const isFormValid = userName.trim().length >= 4 && roomNameInput.trim().length > 0;
@@ -133,12 +91,6 @@ export function JoinForm() {
         <Typography variant="h4" gutterBottom align="center">
           Video Room
         </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
 
         {/* Role selection toggle */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
@@ -239,5 +191,3 @@ export function JoinForm() {
     </Container>
   );
 }
-
-export default JoinForm;

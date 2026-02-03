@@ -10,7 +10,7 @@
 
 import { useState } from 'react';
 import { ClientProvider, useConnection, useRoom } from '@hiyve/client-provider';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography, Snackbar, Alert } from '@mui/material';
 import JoinForm from '@/components/JoinForm';
 import VideoRoom from '@/components/VideoRoom';
 
@@ -27,6 +27,17 @@ async function generateRoomToken(): Promise<string> {
     throw new Error(data.message || 'Failed to generate room token');
   }
   return (await response.json()).roomToken;
+}
+
+/**
+ * Convert error to user-friendly message.
+ */
+function getErrorMessage(err: string): string {
+  const errLower = err.toLowerCase();
+  if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
+    return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
+  }
+  return err;
 }
 
 /**
@@ -71,14 +82,33 @@ function AppContent() {
  * Wraps the app with ClientProvider for Hiyve SDK state management.
  */
 export default function Home() {
+  const [error, setError] = useState<string | null>(null);
+
   return (
-    <ClientProvider
-      generateRoomToken={generateRoomToken}
-      localVideoElementId="local-video"
-      persistDeviceChanges
-      onError={(err) => console.error('[ClientProvider Error]', err)}
-    >
-      <AppContent />
-    </ClientProvider>
+    <>
+      <ClientProvider
+        generateRoomToken={generateRoomToken}
+        localVideoElementId="local-video"
+        persistDeviceChanges
+        onError={(err: unknown) => {
+          console.error('[ClientProvider Error]', err);
+          const message = err instanceof Error ? err.message : String(err);
+          setError(message);
+        }}
+      >
+        <AppContent />
+      </ClientProvider>
+
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setError(null)} severity="warning" sx={{ width: '100%' }}>
+          {error && getErrorMessage(error)}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
