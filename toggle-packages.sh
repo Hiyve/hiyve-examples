@@ -91,6 +91,13 @@ toggle_example() {
 
     print_status "[$example_name] Installing dependencies..."
     pnpm install
+
+    # Clear Vite cache in dev mode so aliased @hiyve/* packages resolve
+    # correctly instead of using stale pre-bundled copies
+    if [ "$mode" = "dev" ] && [ -d "node_modules/.vite" ]; then
+        print_status "[$example_name] Clearing Vite cache..."
+        rm -rf node_modules/.vite
+    fi
 }
 
 do_dev() {
@@ -118,7 +125,12 @@ do_dev() {
     echo ""
     print_status "DEV mode ready!"
     echo ""
-    echo -e "  Run ${CYAN}pnpm run dev${NC} in any example to start the app"
+    echo -e "  Start an example:"
+    echo -e "    ${CYAN}cd basic-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd full-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
+    echo ""
     echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-sdk for watch mode"
     echo ""
     print_warning "Remember to run './toggle-packages.sh prod' before committing!"
@@ -139,7 +151,11 @@ do_prod() {
     echo ""
     print_status "PROD mode ready!"
     echo ""
-    echo -e "  Run ${CYAN}pnpm run dev${NC} in any example to start the app"
+    echo -e "  Start an example:"
+    echo -e "    ${CYAN}cd basic-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd full-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
     echo ""
 }
 

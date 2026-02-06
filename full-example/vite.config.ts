@@ -7,24 +7,41 @@ import fs from 'fs';
 const sdkPackages = path.resolve(__dirname, '../../hiyve-sdk/packages');
 const isDevMode = fs.existsSync(sdkPackages);
 
-// Build aliases for SDK packages when in dev mode
-// This is needed when SDK packages import from each other (e.g., qa imports utilities)
-function getDevAliases() {
+// Build aliases for ALL SDK packages when in dev mode.
+// Every @hiyve/* import must resolve to the same physical file — if some
+// packages are aliased and others are pre-bundled by Vite, React contexts
+// created by client-provider end up duplicated and useContext() returns undefined.
+function getDevAliases(): Record<string, string> {
   if (!isDevMode) return {};
 
-  return {
-    '@hiyve/utilities': path.join(sdkPackages, 'utilities'),
-    '@hiyve/session-common': path.join(sdkPackages, 'session-common'),
-    '@hiyve/file-manager': path.join(sdkPackages, 'file-manager'),
-    '@hiyve/client-provider': path.join(sdkPackages, 'client-provider'),
-  };
+  const aliases: Record<string, string> = {};
+  for (const dir of fs.readdirSync(sdkPackages)) {
+    const pkgJsonPath = path.join(sdkPackages, dir, 'package.json');
+    if (fs.existsSync(pkgJsonPath)) {
+      const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+      if (pkgJson.name?.startsWith('@hiyve/')) {
+        aliases[pkgJson.name] = path.join(sdkPackages, dir);
+      }
+    }
+  }
+  return aliases;
+}
+
+// In dev mode, exclude all @hiyve/* from pre-bundling so they resolve
+// through the aliases above instead of being duplicated in .vite/deps/
+function getDevExclude(): string[] {
+  if (!isDevMode) return [];
+  return Object.keys(getDevAliases());
 }
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    // Include dependencies used by @hiyve packages so they're properly pre-bundled
+    // Exclude @hiyve packages from pre-bundling in dev mode so they
+    // resolve through aliases (prevents duplicate React context issues)
+    exclude: getDevExclude(),
+    // Include shared deps so they're still pre-bundled for performance
     include: [
       '@mui/material',
       '@mui/icons-material',

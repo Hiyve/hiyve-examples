@@ -1,11 +1,30 @@
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const sdkPackages = path.join(__dirname, '../../hiyve-sdk/packages');
+const isDevMode = fs.existsSync(sdkPackages);
+
+// Dynamically discover all @hiyve/* package names from the SDK
+function getHiyvePackageNames() {
+  if (!isDevMode) return [];
+  return fs.readdirSync(sdkPackages)
+    .filter(dir => {
+      const pkgJsonPath = path.join(sdkPackages, dir, 'package.json');
+      if (!fs.existsSync(pkgJsonPath)) return false;
+      const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+      return pkgJson.name?.startsWith('@hiyve/');
+    })
+    .map(dir => {
+      const pkgJson = JSON.parse(fs.readFileSync(path.join(sdkPackages, dir, 'package.json'), 'utf-8'));
+      return pkgJson.name;
+    });
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Transpile Hiyve SDK packages
+  // Transpile all Hiyve SDK packages
   transpilePackages: [
     '@hiyve/client-provider',
     '@hiyve/control-bar',
@@ -14,6 +33,7 @@ const nextConfig = {
     '@hiyve/video-grid',
     '@hiyve/video-tile',
     '@hiyve/utilities',
+    ...(isDevMode ? getHiyvePackageNames() : []),
   ],
   // Webpack configuration for handling SDK packages
   webpack: (config, { isServer }) => {
@@ -27,8 +47,9 @@ const nextConfig = {
       };
     }
 
-    // Resolve Emotion and MUI to single instances to prevent hydration mismatches
-    // This ensures the @hiyve/* packages use the same Emotion/MUI as the app
+    // Resolve Emotion and MUI to single instances to prevent hydration mismatches.
+    // Note: Do NOT alias react/react-dom here — Next.js manages its own React
+    // resolution for server components (which require React.cache).
     config.resolve.alias = {
       ...config.resolve.alias,
       '@emotion/react': path.resolve(__dirname, 'node_modules/@emotion/react'),
