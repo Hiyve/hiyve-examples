@@ -107,7 +107,10 @@
       "Bash(node token-room-example/scripts/toggle-packages.js:*)",
       "Bash(pnpm --version:*)",
       "Bash(cat:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(du -sh:*)",
+      "Bash(git log:*)",
+      "Bash(scp:*)"
     ]
   }
 }

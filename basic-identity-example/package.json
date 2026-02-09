@@ -1,15 +1,13 @@
 {
-  "name": "@hiyve/basic-example",
+  "name": "@hiyve/basic-identity-example",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"pnpm run dev:server\" \"pnpm run dev:client\"",
-    "dev:client": "vite",
-    "dev:server": "cd server && pnpm run dev",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "setup": "pnpm install && cd server && pnpm install",
+    "setup": "pnpm install",
     "packages:dev": "node scripts/toggle-packages.js dev",
     "packages:prod": "node scripts/toggle-packages.js prod",
     "packages:status": "node scripts/toggle-packages.js status"
@@ -19,13 +17,9 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
-    "@hiyve/client-provider": "link:../../hiyve-sdk/packages/client-provider",
-    "@hiyve/control-bar": "link:../../hiyve-sdk/packages/control-bar",
-    "@hiyve/device-selector": "link:../../hiyve-sdk/packages/device-selector",
-    "@hiyve/rtc-client": "link:../../hiyve-sdk/packages/rtc-client",
+    "@hiyve/identity-react": "link:../../hiyve-sdk/packages/identity-react",
     "@hiyve/utilities": "link:../../hiyve-sdk/packages/utilities",
-    "@hiyve/video-grid": "link:../../hiyve-sdk/packages/video-grid",
-    "@hiyve/video-tile": "link:../../hiyve-sdk/packages/video-tile",
+    "@hiyve/identity-client": "link:../../hiyve-sdk/packages/identity-client",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -33,7 +27,6 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.3.0",
-    "concurrently": "^8.2.2",
     "typescript": "^5.4.0",
     "vite": "^5.4.0"
   }

@@ -34,11 +34,13 @@ interface AIPanelProps {
   roomName: string;
   /** Callback when the AI chat note is saved with the file ID */
   onNoteSaved?: (fileId: string) => void;
+  /** Whether the current user is the room owner (controls captions visibility) */
+  isOwner?: boolean;
 }
 
 type ViewMode = 'assistant' | 'captions';
 
-export function AIPanel({ userId, roomName, onNoteSaved }: AIPanelProps) {
+export function AIPanel({ userId, roomName, onNoteSaved, isOwner = false }: AIPanelProps) {
   // View mode toggle
   const [viewMode, setViewMode] = useState<ViewMode>('assistant');
 
@@ -114,23 +116,25 @@ export function AIPanel({ userId, roomName, onNoteSaved }: AIPanelProps) {
           AI-powered meeting intelligence using Hiyve Cloud
         </Typography>
 
-        {/* View Mode Toggle */}
-        <ToggleButtonGroup
-          value={viewMode}
-          exclusive
-          onChange={(_, newMode) => newMode && setViewMode(newMode)}
-          size="small"
-          fullWidth
-        >
-          <ToggleButton value="assistant">
-            <ChatIcon sx={{ mr: 1 }} fontSize="small" />
-            Assistant
-          </ToggleButton>
-          <ToggleButton value="captions">
-            <CaptionsIcon sx={{ mr: 1 }} fontSize="small" />
-            Captions
-          </ToggleButton>
-        </ToggleButtonGroup>
+        {/* View Mode Toggle - only shown to owners (guests see assistant only) */}
+        {isOwner && (
+          <ToggleButtonGroup
+            value={viewMode}
+            exclusive
+            onChange={(_, newMode) => newMode && setViewMode(newMode)}
+            size="small"
+            fullWidth
+          >
+            <ToggleButton value="assistant">
+              <ChatIcon sx={{ mr: 1 }} fontSize="small" />
+              Assistant
+            </ToggleButton>
+            <ToggleButton value="captions">
+              <CaptionsIcon sx={{ mr: 1 }} fontSize="small" />
+              Captions
+            </ToggleButton>
+          </ToggleButtonGroup>
+        )}
       </Box>
 
       {liveError && (

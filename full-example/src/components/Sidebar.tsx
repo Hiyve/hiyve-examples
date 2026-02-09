@@ -336,6 +336,7 @@ export function Sidebar({
             <AIPanel
               userId={localUserId}
               roomName={room.name}
+              isOwner={isOwner}
               onNoteSaved={() => {}}
             />
           ) : (

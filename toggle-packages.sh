@@ -14,6 +14,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASIC_EXAMPLE_DIR="$SCRIPT_DIR/basic-example"
+BASIC_IDENTITY_EXAMPLE_DIR="$SCRIPT_DIR/basic-identity-example"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
@@ -57,6 +58,10 @@ do_status() {
     echo ""
     echo -e "${CYAN}=== basic-example ===${NC}"
     cd "$BASIC_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== basic-identity-example ===${NC}"
+    cd "$BASIC_IDENTITY_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
 
     echo -e "${CYAN}=== full-example ===${NC}"
@@ -118,6 +123,7 @@ do_dev() {
 
     # Toggle all examples
     toggle_example "$BASIC_EXAMPLE_DIR" "basic-example" "dev"
+    toggle_example "$BASIC_IDENTITY_EXAMPLE_DIR" "basic-identity-example" "dev"
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "dev"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "dev"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "dev"
@@ -127,6 +133,7 @@ do_dev() {
     echo ""
     echo -e "  Start an example:"
     echo -e "    ${CYAN}cd basic-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd basic-identity-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd full-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
@@ -144,6 +151,7 @@ do_prod() {
 
     # Toggle all examples
     toggle_example "$BASIC_EXAMPLE_DIR" "basic-example" "prod"
+    toggle_example "$BASIC_IDENTITY_EXAMPLE_DIR" "basic-identity-example" "prod"
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "prod"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "prod"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "prod"
@@ -153,6 +161,7 @@ do_prod() {
     echo ""
     echo -e "  Start an example:"
     echo -e "    ${CYAN}cd basic-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd basic-identity-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd full-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"

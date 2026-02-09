@@ -17,6 +17,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASIC_EXAMPLE_DIR="$SCRIPT_DIR/basic-example"
+BASIC_IDENTITY_EXAMPLE_DIR="$SCRIPT_DIR/basic-identity-example"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
@@ -42,7 +43,7 @@ for arg in "$@"; do
         --quick|-q)
             QUICK_MODE=true
             ;;
-        basic-example|full-example|token-room-example|nextjs-example)
+        basic-example|basic-identity-example|full-example|token-room-example|nextjs-example)
             TARGET_EXAMPLE="$arg"
             ;;
     esac
@@ -191,6 +192,7 @@ install_dependencies() {
     else
         # Install all examples
         install_example_dependencies "$BASIC_EXAMPLE_DIR"
+        install_example_dependencies "$BASIC_IDENTITY_EXAMPLE_DIR"
         install_example_dependencies "$FULL_EXAMPLE_DIR"
         install_example_dependencies "$TOKEN_EXAMPLE_DIR"
         install_example_dependencies "$NEXTJS_EXAMPLE_DIR"
@@ -245,6 +247,7 @@ setup_env() {
         setup_example_env "$SCRIPT_DIR/$TARGET_EXAMPLE"
     else
         setup_example_env "$BASIC_EXAMPLE_DIR"
+        setup_example_env "$BASIC_IDENTITY_EXAMPLE_DIR"
         setup_example_env "$FULL_EXAMPLE_DIR"
         setup_example_env "$TOKEN_EXAMPLE_DIR"
         setup_example_env "$NEXTJS_EXAMPLE_DIR"
@@ -261,7 +264,7 @@ print_success() {
 
     # Check if credentials are configured
     NEEDS_CREDS=false
-    for ENV_FILE in "$BASIC_EXAMPLE_DIR/server/.env" "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env" "$NEXTJS_EXAMPLE_DIR/.env"; do
+    for ENV_FILE in "$BASIC_EXAMPLE_DIR/server/.env" "$BASIC_IDENTITY_EXAMPLE_DIR/.env" "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env" "$NEXTJS_EXAMPLE_DIR/.env"; do
         if [ -f "$ENV_FILE" ] && grep -q "your-api-key-here\|your-client-secret-here" "$ENV_FILE" 2>/dev/null; then
             NEEDS_CREDS=true
             break
@@ -273,6 +276,7 @@ print_success() {
         echo ""
         echo "  Edit the .env file in the example you want to run:"
         echo "  - basic-example/server/.env"
+        echo "  - basic-identity-example/.env (uses VITE_HIYVE_API_KEY)"
         echo "  - full-example/server/.env"
         echo "  - token-room-example/server/.env"
         echo "  - nextjs-example/.env"
@@ -286,6 +290,9 @@ print_success() {
     echo ""
     echo -e "  ${CYAN}Basic Example${NC} - Minimal video room (Vite + Express)"
     echo -e "    cd basic-example && pnpm run dev"
+    echo ""
+    echo -e "  ${CYAN}Basic Identity Example${NC} - Authentication with Identity SDK (Vite, no server)"
+    echo -e "    cd basic-identity-example && pnpm run dev"
     echo ""
     echo -e "  ${CYAN}Full Example${NC} - Feature-rich video conferencing app"
     echo -e "    cd full-example && pnpm run dev"
