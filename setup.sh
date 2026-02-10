@@ -12,6 +12,7 @@
 #   ./setup.sh full-example       # Setup only full-example
 #   ./setup.sh token-room-example # Setup only token-room-example
 #   ./setup.sh nextjs-example     # Setup only nextjs-example
+#   ./setup.sh angular-example    # Setup only angular-example
 
 set -e
 
@@ -21,6 +22,7 @@ BASIC_IDENTITY_EXAMPLE_DIR="$SCRIPT_DIR/basic-identity-example"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
+ANGULAR_EXAMPLE_DIR="$SCRIPT_DIR/angular-example"
 
 # Colors
 RED='\033[0;31m'
@@ -43,7 +45,7 @@ for arg in "$@"; do
         --quick|-q)
             QUICK_MODE=true
             ;;
-        basic-example|basic-identity-example|full-example|token-room-example|nextjs-example)
+        basic-example|basic-identity-example|full-example|token-room-example|nextjs-example|angular-example)
             TARGET_EXAMPLE="$arg"
             ;;
     esac
@@ -196,6 +198,7 @@ install_dependencies() {
         install_example_dependencies "$FULL_EXAMPLE_DIR"
         install_example_dependencies "$TOKEN_EXAMPLE_DIR"
         install_example_dependencies "$NEXTJS_EXAMPLE_DIR"
+        install_example_dependencies "$ANGULAR_EXAMPLE_DIR"
     fi
 }
 
@@ -251,6 +254,7 @@ setup_env() {
         setup_example_env "$FULL_EXAMPLE_DIR"
         setup_example_env "$TOKEN_EXAMPLE_DIR"
         setup_example_env "$NEXTJS_EXAMPLE_DIR"
+        setup_example_env "$ANGULAR_EXAMPLE_DIR"
     fi
 }
 
@@ -264,7 +268,7 @@ print_success() {
 
     # Check if credentials are configured
     NEEDS_CREDS=false
-    for ENV_FILE in "$BASIC_EXAMPLE_DIR/server/.env" "$BASIC_IDENTITY_EXAMPLE_DIR/.env" "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env" "$NEXTJS_EXAMPLE_DIR/.env"; do
+    for ENV_FILE in "$BASIC_EXAMPLE_DIR/server/.env" "$BASIC_IDENTITY_EXAMPLE_DIR/.env" "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env" "$NEXTJS_EXAMPLE_DIR/.env" "$ANGULAR_EXAMPLE_DIR/server/.env"; do
         if [ -f "$ENV_FILE" ] && grep -q "your-api-key-here\|your-client-secret-here" "$ENV_FILE" 2>/dev/null; then
             NEEDS_CREDS=true
             break
@@ -280,6 +284,7 @@ print_success() {
         echo "  - full-example/server/.env"
         echo "  - token-room-example/server/.env"
         echo "  - nextjs-example/.env"
+        echo "  - angular-example/server/.env"
         echo ""
         echo "  Set APIKEY and CLIENT_SECRET in the .env file."
         echo "  Get credentials at https://console.hiyve.dev"
@@ -303,10 +308,14 @@ print_success() {
     echo -e "  ${CYAN}Next.js Example${NC} - Next.js App Router integration"
     echo -e "    cd nextjs-example && pnpm run dev"
     echo ""
+    echo -e "  ${CYAN}Angular Example${NC} - Angular 19 with framework-agnostic SDK"
+    echo -e "    cd angular-example && pnpm run dev"
+    echo ""
     echo "  Vite examples start frontend (5173) + backend (3001)."
     echo "  Next.js runs on port 3000 with API routes built-in."
+    echo "  Angular runs on port 4200 + backend (3001)."
     echo ""
-    echo -e "  Open ${CYAN}http://localhost:5173${NC} (Vite) or ${CYAN}http://localhost:3000${NC} (Next.js)"
+    echo -e "  Open ${CYAN}http://localhost:5173${NC} (Vite), ${CYAN}http://localhost:3000${NC} (Next.js), or ${CYAN}http://localhost:4200${NC} (Angular)"
     echo ""
 }
 

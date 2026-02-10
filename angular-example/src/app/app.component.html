@@ -1,0 +1,12 @@
+@if (connection$ | async; as conn) {
+  @if (conn.isConnecting) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Connecting...</p>
+    </div>
+  } @else if (isInRoom$ | async) {
+    <app-video-room [userName]="userName"></app-video-room>
+  } @else {
+    <app-join-form (userNameChange)="onUserNameChange($event)"></app-join-form>
+  }
+}

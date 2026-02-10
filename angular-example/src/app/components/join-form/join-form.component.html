@@ -1,0 +1,61 @@
+<div class="join-form-container">
+  <div class="join-form-card">
+    <h1>Hiyve Angular Example</h1>
+    <p class="subtitle">Video conferencing with Angular 19 + Hiyve SDK</p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Room Name</mat-label>
+      <input
+        matInput
+        [(ngModel)]="roomName"
+        placeholder="Enter a room name"
+        (keyup.enter)="onJoinRoom()"
+      />
+      <mat-icon matPrefix>meeting_room</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Your Name</mat-label>
+      <input
+        matInput
+        [(ngModel)]="userName"
+        placeholder="Enter your name"
+        (keyup.enter)="onJoinRoom()"
+      />
+      <mat-icon matPrefix>person</mat-icon>
+    </mat-form-field>
+
+    @if (connection$ | async; as conn) {
+      <div class="button-row">
+        @if (conn.isConnecting) {
+          <button mat-raised-button color="primary" disabled>
+            <mat-spinner diameter="20"></mat-spinner>
+          </button>
+          <button mat-raised-button color="accent" disabled>
+            <mat-spinner diameter="20"></mat-spinner>
+          </button>
+        } @else {
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="onCreateRoom()"
+            [disabled]="!roomName.trim() || !userName.trim()"
+          >
+            <mat-icon>add</mat-icon>
+            Create Room
+          </button>
+
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="onJoinRoom()"
+            [disabled]="!roomName.trim() || !userName.trim()"
+          >
+            <mat-icon>login</mat-icon>
+            Join Room
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

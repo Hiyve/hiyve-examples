@@ -18,6 +18,7 @@ BASIC_IDENTITY_EXAMPLE_DIR="$SCRIPT_DIR/basic-identity-example"
 FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
+ANGULAR_EXAMPLE_DIR="$SCRIPT_DIR/angular-example"
 COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-sdk"
 
 # Colors
@@ -75,6 +76,10 @@ do_status() {
     echo -e "${CYAN}=== nextjs-example ===${NC}"
     cd "$NEXTJS_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== angular-example ===${NC}"
+    cd "$ANGULAR_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
 }
 
 toggle_example() {
@@ -127,6 +132,7 @@ do_dev() {
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "dev"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "dev"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "dev"
+    toggle_example "$ANGULAR_EXAMPLE_DIR" "angular-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
@@ -137,6 +143,7 @@ do_dev() {
     echo -e "    ${CYAN}cd full-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd angular-example && pnpm run dev${NC}"
     echo ""
     echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-sdk for watch mode"
     echo ""
@@ -155,6 +162,7 @@ do_prod() {
     toggle_example "$FULL_EXAMPLE_DIR" "full-example" "prod"
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "prod"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "prod"
+    toggle_example "$ANGULAR_EXAMPLE_DIR" "angular-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"
@@ -165,6 +173,7 @@ do_prod() {
     echo -e "    ${CYAN}cd full-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd angular-example && pnpm run dev${NC}"
     echo ""
 }
 

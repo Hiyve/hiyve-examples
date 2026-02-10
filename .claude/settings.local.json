@@ -110,7 +110,8 @@
       "Bash(python3:*)",
       "Bash(du -sh:*)",
       "Bash(git log:*)",
-      "Bash(scp:*)"
+      "Bash(scp:*)",
+      "Bash(pnpm run packages:status:*)"
     ]
   }
 }

@@ -31,7 +31,7 @@ The setup script will:
 
 ## Overview
 
-The `@hiyve/*` packages provide React components for building video conferencing applications. These examples show how to use the components to create fully-featured video apps.
+The `@hiyve/*` packages provide React and Angular components for building video conferencing applications. These examples show how to use the components to create fully-featured video apps.
 
 ## Prerequisites
 
@@ -75,7 +75,11 @@ All `@hiyve/*` packages are hosted on S3 and referenced directly via URL in pack
 | `@hiyve/sidebar` | Configurable tabbed sidebar container |
 | `@hiyve/whiteboard` | Collaborative whiteboard with real-time sync |
 | `@hiyve/qa` | Q&A panel with questions, voting, answers, and auto-save |
-| `@hiyve/utilities` | Shared utilities: LiveClock, TooltipIconButton, useContainerBreakpoint |
+| `@hiyve/utilities` | Shared utilities, video types, and layout algorithms |
+| `@hiyve/angular-provider` | Angular service wrapping HiyveStore with RxJS Observables |
+| `@hiyve/angular-video-tile` | Angular video tile components |
+| `@hiyve/angular-video-grid` | Angular video grid with layout modes |
+| `@hiyve/angular-control-bar` | Angular media controls component |
 
 ### Package Installation
 
@@ -180,6 +184,24 @@ cd nextjs-example
 pnpm run setup
 pnpm run dev
 # Open http://localhost:3000
+```
+
+### Angular Example
+
+A video conferencing application built with **Angular 20** and the `@hiyve/angular-*` SDK packages:
+
+- Angular Material dark theme UI
+- RxJS-based state management via `HiyveService`
+- Angular video grid, video tiles, and control bar components
+- Demonstrates integration pattern for non-React frameworks
+
+See [angular-example/README.md](angular-example/README.md) for details.
+
+```bash
+cd angular-example
+pnpm run setup
+pnpm run dev
+# Open http://localhost:4200
 ```
 
 ## Architecture
@@ -370,6 +392,7 @@ pnpm run packages:prod
 - [Full Example README](full-example/README.md) - Feature-rich example with all components
 - [Token Room Example README](token-room-example/README.md) - Token-based joining with invite links
 - [Next.js Example README](nextjs-example/README.md) - Next.js App Router integration
+- [Angular Example README](angular-example/README.md) - Angular 20 integration with RxJS
 - [API Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html) - Component API reference
 
 ## License

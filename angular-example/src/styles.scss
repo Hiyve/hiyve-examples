@@ -1,0 +1,15 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: #121212;
+  color: #ffffff;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.error-snackbar .mdc-snackbar__surface {
+  background-color: #d32f2f !important;
+}

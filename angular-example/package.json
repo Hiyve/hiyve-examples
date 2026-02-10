@@ -1,0 +1,46 @@
+{
+  "name": "@hiyve/angular-example",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "dev": "concurrently \"pnpm run dev:server\" \"pnpm run dev:client\"",
+    "dev:client": "ng serve --proxy-config proxy.conf.json",
+    "dev:server": "cd server && pnpm run dev",
+    "build": "ng build",
+    "setup": "pnpm install && cd server && pnpm install",
+    "packages:dev": "node scripts/toggle-packages.js dev",
+    "packages:prod": "node scripts/toggle-packages.js prod",
+    "packages:status": "node scripts/toggle-packages.js status"
+  },
+  "dependencies": {
+    "@angular/animations": "^20.0.0",
+    "@angular/cdk": "^20.0.0",
+    "@angular/common": "^20.0.0",
+    "@angular/compiler": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "@angular/material": "^20.0.0",
+    "@angular/platform-browser": "^20.0.0",
+    "@angular/platform-browser-dynamic": "^20.0.0",
+    "@hiyve/angular-control-bar": "1.0.2",
+    "@hiyve/angular-provider": "1.0.2",
+    "@hiyve/angular-video-grid": "1.0.2",
+    "@hiyve/angular-video-tile": "1.0.2",
+    "@hiyve/core": "1.3.0",
+    "@hiyve/utilities": "1.30.0",
+    "@hiyve/rtc-client": "1.39.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.6.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.0.0",
+    "@angular/cli": "^20.0.0",
+    "@angular/compiler-cli": "^20.0.0",
+    "concurrently": "^8.2.2",
+    "typescript": "~5.8.0"
+  }
+}

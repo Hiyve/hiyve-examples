@@ -1,0 +1,30 @@
+<!-- Header -->
+<mat-toolbar class="room-header">
+  <mat-icon class="room-icon">videocam</mat-icon>
+  <span class="room-name">{{ (room$ | async)?.room?.name }}</span>
+  @if (isOwner$ | async) {
+    <span class="owner-badge">Owner</span>
+  }
+  <span class="spacer"></span>
+  <span class="participant-count">
+    <mat-icon>group</mat-icon>
+    {{ participantCount$ | async }}
+  </span>
+</mat-toolbar>
+
+<!-- Video Grid (SDK component) -->
+<div class="video-area">
+  <hiyve-video-grid
+    localVideoElementId="local-video"
+    [localUserName]="userName"
+    [showNames]="true"
+    [showMuteIndicators]="true"
+  ></hiyve-video-grid>
+</div>
+
+<!-- Control Bar (SDK component) -->
+<hiyve-control-bar
+  [showScreenShare]="true"
+  [showLeaveButton]="true"
+  (leave)="onLeave()"
+></hiyve-control-bar>
