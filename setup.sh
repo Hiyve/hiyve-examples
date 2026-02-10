@@ -12,7 +12,8 @@
 #   ./setup.sh full-example       # Setup only full-example
 #   ./setup.sh token-room-example # Setup only token-room-example
 #   ./setup.sh nextjs-example     # Setup only nextjs-example
-#   ./setup.sh angular-example    # Setup only angular-example
+#   ./setup.sh angular-example        # Setup only angular-example
+#   ./setup.sh react-native-example  # Setup only react-native-example (uses npm)
 
 set -e
 
@@ -23,6 +24,7 @@ FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
 ANGULAR_EXAMPLE_DIR="$SCRIPT_DIR/angular-example"
+RN_EXAMPLE_DIR="$SCRIPT_DIR/react-native-example"
 
 # Colors
 RED='\033[0;31m'
@@ -45,7 +47,7 @@ for arg in "$@"; do
         --quick|-q)
             QUICK_MODE=true
             ;;
-        basic-example|basic-identity-example|full-example|token-room-example|nextjs-example|angular-example)
+        basic-example|basic-identity-example|full-example|token-room-example|nextjs-example|angular-example|react-native-example)
             TARGET_EXAMPLE="$arg"
             ;;
     esac
@@ -184,13 +186,47 @@ install_example_dependencies() {
     fi
 }
 
+# Install dependencies for react-native-example (uses npm, not pnpm)
+install_rn_example_dependencies() {
+    local EXAMPLE_DIR="$1"
+
+    print_info "Installing react-native-example dependencies (npm)..."
+    cd "$EXAMPLE_DIR"
+    npm install
+    print_status "react-native-example frontend dependencies installed"
+
+    if [ -d "$EXAMPLE_DIR/server" ]; then
+        print_info "Installing react-native-example server dependencies..."
+        cd "$EXAMPLE_DIR/server"
+        npm install
+        print_status "react-native-example server dependencies installed"
+    fi
+
+    # Install CocoaPods on macOS
+    if [[ "$OSTYPE" == "darwin"* ]] && [ -d "$EXAMPLE_DIR/ios" ]; then
+        print_info "Installing react-native-example iOS CocoaPods..."
+        cd "$EXAMPLE_DIR/ios"
+        if command -v bundle &> /dev/null; then
+            bundle install
+            bundle exec pod install
+            print_status "react-native-example CocoaPods installed"
+        else
+            print_warning "Ruby bundler not found. Run 'cd ios && bundle install && bundle exec pod install' manually."
+        fi
+    fi
+}
+
 # Install dependencies
 install_dependencies() {
     print_step "Installing dependencies..."
 
     if [ -n "$TARGET_EXAMPLE" ]; then
         # Install only the specified example
-        install_example_dependencies "$SCRIPT_DIR/$TARGET_EXAMPLE"
+        if [ "$TARGET_EXAMPLE" = "react-native-example" ]; then
+            install_rn_example_dependencies "$RN_EXAMPLE_DIR"
+        else
+            install_example_dependencies "$SCRIPT_DIR/$TARGET_EXAMPLE"
+        fi
     else
         # Install all examples
         install_example_dependencies "$BASIC_EXAMPLE_DIR"
@@ -268,7 +304,7 @@ print_success() {
 
     # Check if credentials are configured
     NEEDS_CREDS=false
-    for ENV_FILE in "$BASIC_EXAMPLE_DIR/server/.env" "$BASIC_IDENTITY_EXAMPLE_DIR/.env" "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env" "$NEXTJS_EXAMPLE_DIR/.env" "$ANGULAR_EXAMPLE_DIR/server/.env"; do
+    for ENV_FILE in "$BASIC_EXAMPLE_DIR/server/.env" "$BASIC_IDENTITY_EXAMPLE_DIR/.env" "$FULL_EXAMPLE_DIR/server/.env" "$TOKEN_EXAMPLE_DIR/server/.env" "$NEXTJS_EXAMPLE_DIR/.env" "$ANGULAR_EXAMPLE_DIR/server/.env" "$RN_EXAMPLE_DIR/server/.env"; do
         if [ -f "$ENV_FILE" ] && grep -q "your-api-key-here\|your-client-secret-here" "$ENV_FILE" 2>/dev/null; then
             NEEDS_CREDS=true
             break
@@ -285,6 +321,7 @@ print_success() {
         echo "  - token-room-example/server/.env"
         echo "  - nextjs-example/.env"
         echo "  - angular-example/server/.env"
+        echo "  - react-native-example/server/.env"
         echo ""
         echo "  Set APIKEY and CLIENT_SECRET in the .env file."
         echo "  Get credentials at https://console.hiyve.dev"
@@ -311,9 +348,14 @@ print_success() {
     echo -e "  ${CYAN}Angular Example${NC} - Angular 19 with framework-agnostic SDK"
     echo -e "    cd angular-example && pnpm run dev"
     echo ""
+    echo -e "  ${CYAN}React Native Example${NC} - Mobile app (iOS + Android)"
+    echo -e "    cd react-native-example && npm run dev"
+    echo -e "    Then: npm run ios  ${YELLOW}# or npm run android${NC}"
+    echo ""
     echo "  Vite examples start frontend (5173) + backend (3001)."
     echo "  Next.js runs on port 3000 with API routes built-in."
     echo "  Angular runs on port 4200 + backend (3001)."
+    echo "  React Native runs via Metro + Xcode/Android Studio."
     echo ""
     echo -e "  Open ${CYAN}http://localhost:5173${NC} (Vite), ${CYAN}http://localhost:3000${NC} (Next.js), or ${CYAN}http://localhost:4200${NC} (Angular)"
     echo ""
@@ -324,10 +366,18 @@ main() {
     print_banner
 
     check_node
-    check_pnpm
-    collect_credentials
-    install_dependencies
-    setup_env
+
+    # React Native example uses npm (not pnpm) and doesn't need hiyve-cli auth
+    if [ "$TARGET_EXAMPLE" = "react-native-example" ]; then
+        collect_credentials
+        install_rn_example_dependencies "$RN_EXAMPLE_DIR"
+        setup_env
+    else
+        check_pnpm
+        collect_credentials
+        install_dependencies
+        setup_env
+    fi
 
     print_success
 }

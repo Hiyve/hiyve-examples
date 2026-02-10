@@ -204,6 +204,31 @@ pnpm run dev
 # Open http://localhost:4200
 ```
 
+### React Native Example
+
+A **mobile** video conferencing app built with React Native CLI and `muziertcclientrn`:
+
+- iOS and Android native apps via React Native CLI
+- Direct use of `Client` class from `muziertcclientrn` (no `@hiyve/*` UI components)
+- Custom hook (`useHiyveClient`) managing full WebRTC lifecycle
+- RTCView-based video rendering with front/back camera support
+- Android runtime permission handling
+- Platform-aware networking (localhost vs 10.0.2.2)
+
+This example demonstrates how to build a mobile video app from scratch using the core WebRTC client library.
+
+See [react-native-example/README.md](react-native-example/README.md) for details.
+
+```bash
+cd react-native-example
+npm run setup
+npm run dev
+# Then in a separate terminal:
+npm run ios    # or npm run android
+```
+
+> **Note:** The React Native example uses `npm` (not pnpm) and requires Xcode (iOS) or Android Studio (Android). See the [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment) guide.
+
 ## Architecture
 
 ### Provider Setup
@@ -393,6 +418,7 @@ pnpm run packages:prod
 - [Token Room Example README](token-room-example/README.md) - Token-based joining with invite links
 - [Next.js Example README](nextjs-example/README.md) - Next.js App Router integration
 - [Angular Example README](angular-example/README.md) - Angular 20 integration with RxJS
+- [React Native Example README](react-native-example/README.md) - Mobile app with muziertcclientrn
 - [API Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html) - Component API reference
 
 ## License

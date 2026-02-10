@@ -2,7 +2,7 @@ import {
   __async
 } from "./chunk-GEHV7EKW.js";
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/dist/vision_bundle-BpqemS7v.js
+// node_modules/@hiyve/rtc-client/dist/vision_bundle-BpqemS7v.js
 var t = "undefined" != typeof self ? self : {};
 function n(n2, i2) {
   t: {
@@ -3626,4 +3626,4 @@ export {
   da as TaskRunner,
   za as VisionTaskRunner
 };
-//# sourceMappingURL=vision_bundle-BpqemS7v-XOXG4546.js.map
+//# sourceMappingURL=vision_bundle-BpqemS7v-EI7EV57Y.js.map

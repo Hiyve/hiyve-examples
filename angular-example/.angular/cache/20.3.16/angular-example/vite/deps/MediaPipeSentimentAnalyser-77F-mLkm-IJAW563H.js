@@ -3,7 +3,7 @@ import {
   __spreadValues
 } from "./chunk-GEHV7EKW.js";
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/dist/MediaPipeSentimentAnalyser-77F-mLkm.js
+// node_modules/@hiyve/rtc-client/dist/MediaPipeSentimentAnalyser-77F-mLkm.js
 var t = class extends EventTarget {
   constructor(t2 = {}) {
     super(), this.options = __spreadValues({ detectionInterval: 100, minConfidence: 0.5, smoothing: true, smoothingFactor: 0.7, debug: false, numFaces: 1, runningMode: "VIDEO", delegate: "GPU", emotionModelUrl: "https://storage.googleapis.com/mediapipe-models/emotion/emotion_landmarks/float16/1/emotion_landmarks.tflite", emotionStrategy: "landmarks", enableModelCaching: true, adaptiveFrameRate: true, minDetectionInterval: 50, maxDetectionInterval: 500, performanceTarget: 10, noFaceGracePeriod: 2e3, emitOffFrameEvents: true, engagementWeights: { faceDetection: 0.2, eyeOpenness: 0.25, headPose: 0.35, emotionalExpression: 0.15, faceSize: 0.05 } }, t2), this.initialized = false, this.isAnalyzing = false, this.video = null, this.videoId = null, this.faceLandmarker = null, this.emotionModel = null, this.t = this.options.detectionInterval, this.i = 0, this.o = false, this.h = null, this.previousEmotions = /* @__PURE__ */ new Map(), this.previousEngagement = /* @__PURE__ */ new Map(), this.l = true, this.m = null, this.emotionLabels = ["angry", "disgusted", "fearful", "happy", "sad", "surprised", "neutral"];
@@ -12,7 +12,7 @@ var t = class extends EventTarget {
     return __async(this, null, function* () {
       if (!this.initialized) try {
         this.dispatch("loading", { status: "Initializing MediaPipe..." }), yield this.validateEnvironment();
-        const { FaceLandmarker: t2, FilesetResolver: e2 } = yield import("./vision_bundle-BpqemS7v-XOXG4546.js"), i = yield e2.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm");
+        const { FaceLandmarker: t2, FilesetResolver: e2 } = yield import("./vision_bundle-BpqemS7v-EI7EV57Y.js"), i = yield e2.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm");
         this.dispatch("loading", { status: "Loading face detection model..." }), this.faceLandmarker = yield t2.createFromOptions(i, { baseOptions: { modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task", delegate: this.options.delegate }, numFaces: this.options.numFaces, runningMode: this.options.runningMode, minDetectionConfidence: this.options.minConfidence, minTrackingConfidence: this.options.minConfidence }), yield this.loadEmotionModel(), this.initialized = true, this.dispatch("ready", { status: "MediaPipe sentiment analyzer ready" });
       } catch (t2) {
         const e2 = Error("MediaPipe initialization failed: " + t2.message);
@@ -257,4 +257,4 @@ export {
   e as MediaPipeMultiVideoSentimentManager,
   t as MediaPipeVideoSentimentAnalyzer
 };
-//# sourceMappingURL=MediaPipeSentimentAnalyser-77F-mLkm-6HZUYABI.js.map
+//# sourceMappingURL=MediaPipeSentimentAnalyser-77F-mLkm-IJAW563H.js.map

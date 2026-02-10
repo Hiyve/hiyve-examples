@@ -16,46 +16,50 @@ var require_crypto = __commonJS({
   }
 });
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/node_modules/util/support/isBufferBrowser.js
+// node_modules/util/support/isBufferBrowser.js
 var require_isBufferBrowser = __commonJS({
-  "node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/node_modules/util/support/isBufferBrowser.js"(exports, module2) {
+  "node_modules/util/support/isBufferBrowser.js"(exports, module2) {
     module2.exports = function isBuffer(arg) {
       return arg && typeof arg === "object" && typeof arg.copy === "function" && typeof arg.fill === "function" && typeof arg.readUInt8 === "function";
     };
   }
 });
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/node_modules/inherits/inherits_browser.js
+// node_modules/inherits/inherits_browser.js
 var require_inherits_browser = __commonJS({
-  "node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/node_modules/inherits/inherits_browser.js"(exports, module2) {
+  "node_modules/inherits/inherits_browser.js"(exports, module2) {
     if (typeof Object.create === "function") {
       module2.exports = function inherits(ctor, superCtor) {
-        ctor.super_ = superCtor;
-        ctor.prototype = Object.create(superCtor.prototype, {
-          constructor: {
-            value: ctor,
-            enumerable: false,
-            writable: true,
-            configurable: true
-          }
-        });
+        if (superCtor) {
+          ctor.super_ = superCtor;
+          ctor.prototype = Object.create(superCtor.prototype, {
+            constructor: {
+              value: ctor,
+              enumerable: false,
+              writable: true,
+              configurable: true
+            }
+          });
+        }
       };
     } else {
       module2.exports = function inherits(ctor, superCtor) {
-        ctor.super_ = superCtor;
-        var TempCtor = function() {
-        };
-        TempCtor.prototype = superCtor.prototype;
-        ctor.prototype = new TempCtor();
-        ctor.prototype.constructor = ctor;
+        if (superCtor) {
+          ctor.super_ = superCtor;
+          var TempCtor = function() {
+          };
+          TempCtor.prototype = superCtor.prototype;
+          ctor.prototype = new TempCtor();
+          ctor.prototype.constructor = ctor;
+        }
       };
     }
   }
 });
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/node_modules/util/util.js
+// node_modules/util/util.js
 var require_util = __commonJS({
-  "node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/node_modules/util/util.js"(exports) {
+  "node_modules/util/util.js"(exports) {
     var formatRegExp = /%[sdj%]/g;
     exports.format = function(f2) {
       if (!isString(f2)) {
@@ -513,7 +517,7 @@ var require_fs = __commonJS({
   }
 });
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/dist/index-BtzUc0cx.js
+// node_modules/@hiyve/rtc-client/dist/index-BtzUc0cx.js
 var t = (n2, r2) => (t = Object.setPrototypeOf || { __proto__: [] } instanceof Array && ((t2, n3) => {
   t2.__proto__ = n3;
 }) || ((t2, n3) => {
@@ -12909,4 +12913,4 @@ export {
   od as utils,
   Ap as validateConfig
 };
-//# sourceMappingURL=index-BtzUc0cx-GQ5PC3N4.js.map
+//# sourceMappingURL=index-BtzUc0cx-U3JSB2KN.js.map

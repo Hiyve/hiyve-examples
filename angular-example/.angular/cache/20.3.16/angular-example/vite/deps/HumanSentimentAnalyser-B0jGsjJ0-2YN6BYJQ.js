@@ -4,7 +4,7 @@ import {
   __spreadValues
 } from "./chunk-GEHV7EKW.js";
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/dist/HumanSentimentAnalyser-B0jGsjJ0.js
+// node_modules/@hiyve/rtc-client/dist/HumanSentimentAnalyser-B0jGsjJ0.js
 var e = Object.defineProperty;
 var t = (e20) => {
   throw TypeError(e20);
@@ -33633,4 +33633,4 @@ export {
   r0 as HumanMultiVideoSentimentManager,
   n0 as HumanVideoSentimentAnalyzer
 };
-//# sourceMappingURL=HumanSentimentAnalyser-B0jGsjJ0-3V542Z62.js.map
+//# sourceMappingURL=HumanSentimentAnalyser-B0jGsjJ0-2YN6BYJQ.js.map

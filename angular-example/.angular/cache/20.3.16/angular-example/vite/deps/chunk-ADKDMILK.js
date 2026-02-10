@@ -22,7 +22,7 @@ import {
   __spreadValues
 } from "./chunk-GEHV7EKW.js";
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/dist/hiyve-rtc-client.mjs
+// node_modules/@hiyve/rtc-client/dist/hiyve-rtc-client.mjs
 function t(t2) {
   return t2 && t2.h && {}.hasOwnProperty.call(t2, "default") ? t2.default : t2;
 }
@@ -2280,26 +2280,26 @@ function jt() {
 var $t;
 var Ft = {};
 function Lt() {
-  return $t || ($t = 1, Object.defineProperty(Ft, "h", { value: true }), Ft.getRtpEncodings = ({ offerMediaObject: t2 }) => {
-    const e2 = /* @__PURE__ */ new Set();
-    for (const r2 of t2.ssrcs ?? []) {
-      const t3 = r2.id;
-      t3 && e2.add(t3);
+  return $t || ($t = 1, Object.defineProperty(Ft, "h", { value: true }), Ft.getRtpEncodings = ({ offerMediaObject: t2, codecs: e2 }) => {
+    const i2 = /* @__PURE__ */ new Set();
+    for (const o2 of t2.ssrcs ?? []) {
+      const t3 = o2.id;
+      t3 && i2.add(t3);
     }
-    if (0 === e2.size) throw Error("no a=ssrc lines found");
-    const i2 = /* @__PURE__ */ new Map();
-    for (const r2 of t2.ssrcGroups ?? []) {
-      if ("FID" !== r2.semantics) continue;
-      const t3 = r2.ssrcs.split(/\s+/), s3 = +t3[0], o2 = +t3[1];
-      e2.has(s3) && (e2.delete(s3), e2.delete(o2), i2.set(s3, o2));
+    if (0 === i2.size) throw Error("no a=ssrc lines found");
+    const s2 = /* @__PURE__ */ new Map();
+    for (const o2 of t2.ssrcGroups ?? []) {
+      if ("FID" !== o2.semantics) continue;
+      const t3 = o2.ssrcs.split(/\s+/), e3 = +t3[0], r3 = +t3[1];
+      i2.has(e3) && (i2.delete(e3), i2.delete(r3), s2.set(e3, r3));
     }
-    for (const r2 of e2) i2.set(r2, void 0);
-    const s2 = [];
-    for (const [r2, o2] of i2) {
-      const t3 = { ssrc: r2 };
-      o2 && (t3.rtx = { ssrc: o2 }), s2.push(t3);
+    for (const o2 of i2) s2.set(o2, void 0);
+    const r2 = [];
+    for (const [o2, n2] of s2) {
+      const t3 = { ssrc: o2 };
+      n2 && e2.length > 1 && (t3.rtx = { ssrc: n2 }), r2.push(t3);
     }
-    return s2;
+    return r2;
   }, Ft.addLegacySimulcast = ({ offerMediaObject: t2, numStreams: e2 }) => {
     if (1 >= e2) throw new TypeError("numStreams must be greater than 1");
     const i2 = (t2.ssrcs ?? []).find((t3) => "msid" === t3.attribute);
@@ -2470,10 +2470,10 @@ function zt() {
         E3.mid = T3, g3 = t2.parse(this.Mt.localDescription.sdp);
         const R2 = g3.media[m3.idx];
         if (E3.rtcp.cname = a2.getCname({ offerMediaObject: R2 }), E3.msid = `${r3 ?? this.Nt.id} ${e3.id}`, n3) if (1 === n3.length) {
-          const t3 = c2.getRtpEncodings({ offerMediaObject: R2 });
+          const t3 = c2.getRtpEncodings({ offerMediaObject: R2, codecs: E3.codecs });
           Object.assign(t3[0], n3[0]), E3.encodings = t3;
         } else E3.encodings = n3;
-        else E3.encodings = c2.getRtpEncodings({ offerMediaObject: R2 });
+        else E3.encodings = c2.getRtpEncodings({ offerMediaObject: R2, codecs: E3.codecs });
         this.xt.send({ offerMediaObject: R2, reuseMid: m3.reuseMid, offerRtpParameters: E3, answerRtpParameters: I3, codecOptions: h3 });
         const S3 = { type: "answer", sdp: this.xt.getSdp() };
         return d2.debug("send() | calling pc.setRemoteDescription() [answer:%o]", S3), yield this.Mt.setRemoteDescription(S3), this.At.set(T3, f3), { localId: T3, rtpParameters: E3, rtpSender: f3.sender };
@@ -2856,10 +2856,10 @@ function Ht() {
         1 === n3?.length && T3.spatialLayers > 1 && "video/vp9" === b2.codecs[0].mimeType.toLowerCase() && (d2.debug("send() | enabling legacy simulcast for VP9 SVC"), I3 = true, w3 = t2.parse(f3.sdp), R2 = w3.media[p3.idx], c2.addLegacySimulcast({ offerMediaObject: R2, numStreams: T3.spatialLayers }), f3 = { type: "offer", sdp: t2.write(w3) }), d2.debug("send() | calling pc.setLocalDescription() [offer:%o]", f3), l3?.absCaptureTime && (R2 = w3.media[p3.idx], a2.addHeaderExtension({ offerMediaObject: R2, headerExtensionUri: "http://www.webrtc.org/experiments/rtp-hdrext/abs-capture-time", headerExtensionId: E3.headerExtensions.find((t3) => "http://www.webrtc.org/experiments/rtp-hdrext/abs-capture-time" === t3.uri).id }), f3 = { type: "offer", sdp: t2.write(w3) }), yield this.Mt.setLocalDescription(f3);
         const S3 = m3.mid;
         if (b2.mid = S3, w3 = t2.parse(this.Mt.localDescription.sdp), R2 = w3.media[p3.idx], b2.rtcp.cname = a2.getCname({ offerMediaObject: R2 }), b2.msid = `${r3 ?? this.Nt.id} ${i3.id}`, n3) if (1 === n3.length) {
-          let t3 = c2.getRtpEncodings({ offerMediaObject: R2 });
+          let t3 = c2.getRtpEncodings({ offerMediaObject: R2, codecs: b2.codecs });
           Object.assign(t3[0], n3[0]), I3 && (t3 = [t3[0]]), b2.encodings = t3;
         } else b2.encodings = n3;
-        else b2.encodings = c2.getRtpEncodings({ offerMediaObject: R2 });
+        else b2.encodings = c2.getRtpEncodings({ offerMediaObject: R2, codecs: b2.codecs });
         if (b2.encodings.length > 1 && ("video/vp8" === b2.codecs[0].mimeType.toLowerCase() || "video/h264" === b2.codecs[0].mimeType.toLowerCase())) for (const t3 of b2.encodings) t3.scalabilityMode = t3.scalabilityMode ? "L1T" + T3.temporalLayers : "L1T3";
         this.xt.send({ offerMediaObject: R2, reuseMid: p3.reuseMid, offerRtpParameters: b2, answerRtpParameters: E3, codecOptions: h3 });
         const k2 = { type: "answer", sdp: this.xt.getSdp() };
@@ -3249,10 +3249,10 @@ function Yt() {
         y3.mid = E3, f3 = t2.parse(this.Mt.localDescription.sdp);
         const I3 = f3.media[f3.media.length - 1];
         if (y3.rtcp.cname = a2.getCname({ offerMediaObject: I3 }), y3.msid = `${s3 ?? this.Nt.id} ${e3.id}`, n3) if (1 === n3.length) {
-          const t3 = c2.getRtpEncodings({ offerMediaObject: I3 });
+          const t3 = c2.getRtpEncodings({ offerMediaObject: I3, codecs: y3.codecs });
           Object.assign(t3[0], n3[0]), y3.encodings = t3;
         } else y3.encodings = n3;
-        else y3.encodings = c2.getRtpEncodings({ offerMediaObject: I3 });
+        else y3.encodings = c2.getRtpEncodings({ offerMediaObject: I3, codecs: y3.codecs });
         if (y3.encodings.length > 1 && ("video/vp8" === y3.codecs[0].mimeType.toLowerCase() || "video/h264" === y3.codecs[0].mimeType.toLowerCase())) for (const t3 of y3.encodings) t3.scalabilityMode = t3.scalabilityMode ? "L1T" + b2.temporalLayers : "L1T3";
         this.xt.send({ offerMediaObject: I3, offerRtpParameters: y3, answerRtpParameters: v2, codecOptions: h3 });
         const T3 = { type: "answer", sdp: this.xt.getSdp() };
@@ -3634,7 +3634,7 @@ function Zt() {
         const R2 = (0, o2.parse)((n3 ?? [{}])[0].scalabilityMode);
         n3 && n3.length > 1 && (d2.debug("send() | enabling legacy simulcast"), g3 = t2.parse(w3.sdp), T3 = g3.media[m3.idx], c2.addLegacySimulcast({ offerMediaObject: T3, numStreams: n3.length }), w3 = { type: "offer", sdp: t2.write(g3) }), l3?.absCaptureTime && (T3 = g3.media[m3.idx], a2.addHeaderExtension({ offerMediaObject: T3, headerExtensionUri: "http://www.webrtc.org/experiments/rtp-hdrext/abs-capture-time", headerExtensionId: I3.headerExtensions.find((t3) => "http://www.webrtc.org/experiments/rtp-hdrext/abs-capture-time" === t3.uri).id }), w3 = { type: "offer", sdp: t2.write(g3) }), d2.debug("send() | calling pc.setLocalDescription() [offer:%o]", w3), yield this.Mt.setLocalDescription(w3);
         const S3 = f3.mid;
-        if (E3.mid = S3, g3 = t2.parse(this.Mt.localDescription.sdp), T3 = g3.media[m3.idx], E3.rtcp.cname = a2.getCname({ offerMediaObject: T3 }), E3.msid = `${r3 ?? this.Nt.id} ${e3.id}`, E3.encodings = c2.getRtpEncodings({ offerMediaObject: T3 }), n3) for (let t3 = 0; E3.encodings.length > t3; ++t3) n3[t3] && Object.assign(E3.encodings[t3], n3[t3]);
+        if (E3.mid = S3, g3 = t2.parse(this.Mt.localDescription.sdp), T3 = g3.media[m3.idx], E3.rtcp.cname = a2.getCname({ offerMediaObject: T3 }), E3.msid = `${r3 ?? this.Nt.id} ${e3.id}`, E3.encodings = c2.getRtpEncodings({ offerMediaObject: T3, codecs: E3.codecs }), n3) for (let t3 = 0; E3.encodings.length > t3; ++t3) n3[t3] && Object.assign(E3.encodings[t3], n3[t3]);
         if (E3.encodings.length > 1 && ("video/vp8" === E3.codecs[0].mimeType.toLowerCase() || "video/h264" === E3.codecs[0].mimeType.toLowerCase())) for (const t3 of E3.encodings) t3.scalabilityMode = t3.scalabilityMode ? "L1T" + R2.temporalLayers : "L1T3";
         this.xt.send({ offerMediaObject: T3, reuseMid: m3.reuseMid, offerRtpParameters: E3, answerRtpParameters: I3, codecOptions: h3 });
         const k2 = { type: "answer", sdp: this.xt.getSdp() };
@@ -4021,10 +4021,10 @@ function se() {
         1 === n3?.length && R2.spatialLayers > 1 && "video/vp9" === E3.codecs[0].mimeType.toLowerCase() && (d2.debug("send() | enabling legacy simulcast for VP9 SVC"), T3 = true, g3 = t2.parse(w3.sdp), S3 = g3.media[m3.idx], c2.addLegacySimulcast({ offerMediaObject: S3, numStreams: R2.spatialLayers }), w3 = { type: "offer", sdp: t2.write(g3) }), l3?.absCaptureTime && (S3 = g3.media[m3.idx], a2.addHeaderExtension({ offerMediaObject: S3, headerExtensionUri: "http://www.webrtc.org/experiments/rtp-hdrext/abs-capture-time", headerExtensionId: I3.headerExtensions.find((t3) => "http://www.webrtc.org/experiments/rtp-hdrext/abs-capture-time" === t3.uri).id }), w3 = { type: "offer", sdp: t2.write(g3) }), d2.debug("send() | calling pc.setLocalDescription() [offer:%o]", w3), yield this.Mt.setLocalDescription(w3);
         let k2 = f3.mid ?? void 0;
         if (k2 || d2.warn("send() | missing transceiver.mid (bug in react-native-webrtc, using a workaround"), E3.mid = k2, g3 = t2.parse(this.Mt.localDescription.sdp), S3 = g3.media[m3.idx], E3.rtcp.cname = a2.getCname({ offerMediaObject: S3 }), E3.msid = `${r3 ?? this.Nt.id} ${e3.id}`, n3) if (1 === n3.length) {
-          let t3 = c2.getRtpEncodings({ offerMediaObject: S3 });
+          let t3 = c2.getRtpEncodings({ offerMediaObject: S3, codecs: E3.codecs });
           Object.assign(t3[0], n3[0]), T3 && (t3 = [t3[0]]), E3.encodings = t3;
         } else E3.encodings = n3;
-        else E3.encodings = c2.getRtpEncodings({ offerMediaObject: S3 });
+        else E3.encodings = c2.getRtpEncodings({ offerMediaObject: S3, codecs: E3.codecs });
         if (E3.encodings.length > 1 && ("video/vp8" === E3.codecs[0].mimeType.toLowerCase() || "video/h264" === E3.codecs[0].mimeType.toLowerCase())) for (const t3 of E3.encodings) t3.scalabilityMode = t3.scalabilityMode ? "L1T" + R2.temporalLayers : "L1T3";
         this.xt.send({ offerMediaObject: S3, reuseMid: m3.reuseMid, offerRtpParameters: E3, answerRtpParameters: I3, codecOptions: h3 });
         const C2 = { type: "answer", sdp: this.xt.getSdp() };
@@ -5013,7 +5013,7 @@ function Pe() {
 }
 function De() {
   return Ce || (Ce = 1, ((t2) => {
-    Object.defineProperty(t2, "h", { value: true }), t2.debug = t2.testFakeParameters = t2.FakeHandler = t2.enhancedEvents = t2.ortc = t2.parseScalabilityMode = t2.detectDeviceAsync = t2.detectDevice = t2.Device = t2.version = t2.types = void 0, t2.debug = d().default, t2.types = p(), t2.version = "3.18.4";
+    Object.defineProperty(t2, "h", { value: true }), t2.debug = t2.testFakeParameters = t2.FakeHandler = t2.enhancedEvents = t2.ortc = t2.parseScalabilityMode = t2.detectDeviceAsync = t2.detectDevice = t2.Device = t2.version = t2.types = void 0, t2.debug = d().default, t2.types = p(), t2.version = "3.18.6";
     var e2 = re();
     Object.defineProperty(t2, "Device", { enumerable: true, get() {
       return e2.Device;
@@ -11721,4 +11721,4 @@ export {
   JoinTokenService,
   provideHiyve
 };
-//# sourceMappingURL=chunk-X733CRZK.js.map
+//# sourceMappingURL=chunk-ADKDMILK.js.map

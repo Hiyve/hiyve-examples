@@ -5068,16 +5068,16 @@ var FullscreenOverlayContainer = class _FullscreenOverlayContainer extends Overl
 })();
 
 export {
+  ScrollDispatcher,
+  CdkScrollable,
+  ViewportRuler,
+  CdkScrollableModule,
   ComponentPortal,
   TemplatePortal,
   BasePortalOutlet,
   DomPortalOutlet,
   CdkPortalOutlet,
   PortalModule,
-  ScrollDispatcher,
-  CdkScrollable,
-  ViewportRuler,
-  CdkScrollableModule,
   createBlockScrollStrategy,
   createRepositionScrollStrategy,
   OverlayConfig,
@@ -5088,4 +5088,4 @@ export {
   createOverlayRef,
   OverlayModule
 };
-//# sourceMappingURL=chunk-3PQSBGBT.js.map
+//# sourceMappingURL=chunk-SVI36N6C.js.map

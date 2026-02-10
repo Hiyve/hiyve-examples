@@ -4,7 +4,7 @@ import {
   __spreadValues
 } from "./chunk-GEHV7EKW.js";
 
-// node_modules/@hiyve/core/node_modules/@hiyve/rtc-client/dist/VideoSentimentAnalyser-CmJej03D.js
+// node_modules/@hiyve/rtc-client/dist/VideoSentimentAnalyser-CmJej03D.js
 var t = class extends EventTarget {
   constructor(t2 = {}) {
     super(), this.options = __spreadValues({ detectionInterval: 100, modelUrl: "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights", fallbackModelUrls: ["https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights", "https://unpkg.com/face-api.js@0.22.2/weights", "./models"], minConfidence: 0.5, smoothing: true, smoothingFactor: 0.7, debug: false, maxTrackedFaces: 50, faceCleanupInterval: 5e3, historyCleanupThreshold: 100, adaptiveFrameRate: true, minDetectionInterval: 50, maxDetectionInterval: 500, performanceTarget: 16, noFaceSlowdown: 3e3, progressiveLoading: true, enableModelCaching: true, modelCacheVersion: 1, noFaceGracePeriod: 2e3, emitOffFrameEvents: true, engagementWeights: { faceDetection: 0.2, eyeOpenness: 0.25, headPose: 0.35, emotionalExpression: 0.15, faceSize: 0.05 }, engagementSensitivity: { headPoseThreshold: 0.7, eyeClosedThreshold: 0.15, emotionBoost: 2, faceConfidenceMin: 0.7 } }, t2), this.initialized = false, this.isAnalyzing = false, this.video = null, this.faceapi = null, this.t = false, this.i = null, this.o = null, this.h = null, this.trackedFaces = /* @__PURE__ */ new Map(), this.l = 0, this.previousEmotions = /* @__PURE__ */ new Map(), this.previousEngagement = /* @__PURE__ */ new Map(), this.m = this.options.detectionInterval, this.u = 0, this.p = [], this.v = Date.now(), this.M = true, this.D = this.options.noFaceGracePeriod || 2e3, this.I = null, this.F = { avgProcessingTime: 0, detectionCount: 0, faceCount: 0 }, this.$ = this.checkBrowserCompatibility();
@@ -45,7 +45,7 @@ var t = class extends EventTarget {
       if (this.faceapi) return this.faceapi;
       try {
         this.dispatch("loading", { status: "Loading face-api.js library..." });
-        const t2 = yield import("./index-BtzUc0cx-GQ5PC3N4.js");
+        const t2 = yield import("./index-BtzUc0cx-U3JSB2KN.js");
         return this.faceapi = t2.default || t2, this.faceapi;
       } catch (t2) {
         throw Error("Failed to load face-api.js: " + t2.message);
@@ -639,4 +639,4 @@ export {
   e as MultiVideoSentimentManager,
   t as VideoSentimentAnalyzer
 };
-//# sourceMappingURL=VideoSentimentAnalyser-CmJej03D-GXO5BCDW.js.map
+//# sourceMappingURL=VideoSentimentAnalyser-CmJej03D-IQWFLTJE.js.map
