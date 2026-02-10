@@ -49,3 +49,44 @@ coverage/
 *.temp
 
 server/.env
+
+# React Native (react-native-example)
+# Xcode
+react-native-example/**/xcuserdata
+react-native-example/**/*.xccheckout
+react-native-example/**/*.moved-aside
+react-native-example/**/DerivedData
+react-native-example/**/*.hmap
+react-native-example/**/*.ipa
+react-native-example/**/*.xcuserstate
+react-native-example/**/.xcode.env.local
+react-native-example/**/*.pbxuser
+!react-native-example/**/default.pbxuser
+react-native-example/**/*.mode1v3
+!react-native-example/**/default.mode1v3
+react-native-example/**/*.mode2v3
+!react-native-example/**/default.mode2v3
+react-native-example/**/*.perspectivev3
+!react-native-example/**/default.perspectivev3
+
+# Android/IntelliJ
+react-native-example/**/.gradle
+react-native-example/**/local.properties
+react-native-example/**/*.iml
+react-native-example/**/*.hprof
+react-native-example/**/.cxx/
+react-native-example/**/*.keystore
+!react-native-example/android/app/debug.keystore
+react-native-example/**/.kotlin/
+
+# React Native bundler & CocoaPods
+react-native-example/**/*.jsbundle
+react-native-example/**/Pods/
+react-native-example/vendor/bundle/
+react-native-example/.metro-health-check*
+
+# Fastlane
+react-native-example/**/fastlane/report.xml
+react-native-example/**/fastlane/Preview.html
+react-native-example/**/fastlane/screenshots
+react-native-example/**/fastlane/test_output
