@@ -60,7 +60,7 @@ npm run android
 ## Features
 
 - Create or join video rooms by name
-- Real-time video/audio with WebRTC (mediasoup SFU)
+- Real-time video/audio with WebRTC
 - Local video preview with front camera mirror
 - Remote participant video grid (auto-layout 1-column or 2-column)
 - Mute/unmute microphone
@@ -75,7 +75,7 @@ npm run android
 
 | Package | Purpose |
 |---------|---------|
-| `@hiyve/rtc-client-rn` | Core WebRTC client library (mediasoup-client + signaling) |
+| `@hiyve/rtc-client-rn` | Core WebRTC client library (+ signaling) |
 | `react-native-webrtc` | Native WebRTC implementation (peer dependency) |
 | `@react-native-async-storage/async-storage` | Persistent storage (peer dependency) |
 | `react-native-safe-area-context` | Safe area insets for notch/island devices |
