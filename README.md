@@ -206,10 +206,10 @@ pnpm run dev
 
 ### React Native Example
 
-A **mobile** video conferencing app built with React Native CLI and `muziertcclientrn`:
+A **mobile** video conferencing app built with React Native CLI and `@hiyve/rtc-client-rn`:
 
 - iOS and Android native apps via React Native CLI
-- Direct use of `Client` class from `muziertcclientrn` (no `@hiyve/*` UI components)
+- Direct use of `Client` class from `@hiyve/rtc-client-rn` (no `@hiyve/*` UI components)
 - Custom hook (`useHiyveClient`) managing full WebRTC lifecycle
 - RTCView-based video rendering with front/back camera support
 - Android runtime permission handling
@@ -418,8 +418,8 @@ pnpm run packages:prod
 - [Token Room Example README](token-room-example/README.md) - Token-based joining with invite links
 - [Next.js Example README](nextjs-example/README.md) - Next.js App Router integration
 - [Angular Example README](angular-example/README.md) - Angular 20 integration with RxJS
-- [React Native Example README](react-native-example/README.md) - Mobile app with muziertcclientrn
-- [API Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html) - Component API reference
+- [React Native Example README](react-native-example/README.md) - Mobile app with @hiyve/rtc-client-rn
+- [API Documentation](https://sdk.hiyve.dev) - Component API reference
 
 ## License
 

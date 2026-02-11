@@ -128,6 +128,6 @@ pnpm run packages:status
 
 ## Learn More
 
-- [Hiyve SDK Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html)
+- [Hiyve SDK Documentation](https://sdk.hiyve.dev)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [MUI Documentation](https://mui.com/material-ui/getting-started/)

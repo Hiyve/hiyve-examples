@@ -451,6 +451,6 @@ Once you understand this React Native example, check out:
 
 ## Learn More
 
-- [Hiyve SDK Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html)
+- [Hiyve SDK Documentation](https://sdk.hiyve.dev)
 - [React Native WebRTC](https://github.com/react-native-webrtc/react-native-webrtc)
 - [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment)

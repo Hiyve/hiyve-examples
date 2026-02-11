@@ -40,6 +40,7 @@ pnpm-debug.log*
 .turbo/
 .cache/
 .eslintcache
+.angular/cache/
 
 # Testing
 coverage/

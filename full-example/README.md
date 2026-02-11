@@ -513,4 +513,4 @@ See the JSDoc comments in source files:
 ## API Documentation
 
 Full component API documentation:
-https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html
+https://sdk.hiyve.dev

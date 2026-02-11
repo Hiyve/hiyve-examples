@@ -227,5 +227,5 @@ Once you understand this basic example, check out:
 
 ## Learn More
 
-- [Hiyve SDK Documentation](https://doawc2271w91z.cloudfront.net/docs/hiyve-sdk/latest/index.html)
+- [Hiyve SDK Documentation](https://sdk.hiyve.dev)
 - [Full Example README](../full-example/README.md)
