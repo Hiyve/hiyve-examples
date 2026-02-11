@@ -2,7 +2,7 @@
  * React Native Example - Token Server
  *
  * Minimal server that provides room token generation for the Hiyve SDK.
- * Includes serverRegion and serverRegionUrl in response for RN client.
+ * Returns roomToken and serverRegionUrl for the HiyveRNProvider.
  */
 
 import 'dotenv/config';
@@ -31,8 +31,8 @@ if (!APIKEY || !CLIENT_SECRET) {
 /**
  * Generate a room token
  *
- * Returns the room token along with region info so the RN client
- * can construct its connection parameters.
+ * Returns the room token and serverRegionUrl for HiyveRNProvider's
+ * generateRoomToken callback.
  */
 app.post('/api/generate-room-token', async (req, res) => {
   if (!APIKEY || !CLIENT_SECRET) {
@@ -63,7 +63,6 @@ app.post('/api/generate-room-token', async (req, res) => {
     const data = await response.json();
     res.json({
       ...data,
-      serverRegion: SERVER_REGION,
       serverRegionUrl: SERVER_REGION_URL,
     });
   } catch (error) {

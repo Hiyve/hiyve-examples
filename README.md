@@ -80,6 +80,9 @@ All `@hiyve/*` packages are hosted on S3 and referenced directly via URL in pack
 | `@hiyve/angular-video-tile` | Angular video tile components |
 | `@hiyve/angular-video-grid` | Angular video grid with layout modes |
 | `@hiyve/angular-control-bar` | Angular media controls component |
+| `@hiyve/react-native` | React Native provider, hooks, VideoGrid, ControlBar |
+| `@hiyve/core-rn` | Framework-agnostic state store for React Native |
+| `@hiyve/rtc-client-rn` | WebRTC client + signaling for React Native |
 
 ### Package Installation
 
@@ -206,16 +209,15 @@ pnpm run dev
 
 ### React Native Example
 
-A **mobile** video conferencing app built with React Native CLI and `@hiyve/rtc-client-rn`:
+A **mobile** video conferencing app built with React Native CLI and `@hiyve/react-native`:
 
 - iOS and Android native apps via React Native CLI
-- Direct use of `Client` class from `@hiyve/rtc-client-rn` (no `@hiyve/*` UI components)
-- Custom hook (`useHiyveClient`) managing full WebRTC lifecycle
-- RTCView-based video rendering with front/back camera support
-- Android runtime permission handling
+- Same provider + hooks pattern as the web examples (`HiyveRNProvider`, `useConnection`, `useRoom`)
+- Pre-built `VideoGrid` and `ControlBar` components from `@hiyve/react-native`
+- SDK-managed permissions via `usePermissions()` hook
 - Platform-aware networking (localhost vs 10.0.2.2)
 
-This example demonstrates how to build a mobile video app from scratch using the core WebRTC client library.
+This example demonstrates the simplest way to build a mobile video app using the Hiyve React Native SDK.
 
 See [react-native-example/README.md](react-native-example/README.md) for details.
 
@@ -418,7 +420,7 @@ pnpm run packages:prod
 - [Token Room Example README](token-room-example/README.md) - Token-based joining with invite links
 - [Next.js Example README](nextjs-example/README.md) - Next.js App Router integration
 - [Angular Example README](angular-example/README.md) - Angular 20 integration with RxJS
-- [React Native Example README](react-native-example/README.md) - Mobile app with @hiyve/rtc-client-rn
+- [React Native Example README](react-native-example/README.md) - Mobile app with @hiyve/react-native SDK
 - [API Documentation](https://sdk.hiyve.dev) - Component API reference
 
 ## License

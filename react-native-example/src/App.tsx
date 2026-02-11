@@ -1,28 +1,40 @@
 import React from 'react';
-import {ActivityIndicator, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Platform, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import {useHiyveClient} from './hooks/useHiyveClient';
+import {HiyveRNProvider, useConnection, useRoom} from '@hiyve/react-native';
+import type {HiyveStoreRNOptions} from '@hiyve/core-rn';
 import JoinScreen from './screens/JoinScreen';
 import RoomScreen from './screens/RoomScreen';
 
-function AppContent() {
-  const {
-    connectionState,
-    localStream,
-    remoteParticipants,
-    isAudioMuted,
-    isVideoMuted,
-    error,
-    roomName,
-    createRoom,
-    joinRoom,
-    toggleAudio,
-    toggleVideo,
-    flipCamera,
-    leaveRoom,
-  } = useHiyveClient();
+const TOKEN_SERVER_URL =
+  Platform.OS === 'android'
+    ? 'http://10.0.2.2:3001'
+    : 'http://localhost:3001';
 
-  if (connectionState === 'connecting') {
+const providerOptions: HiyveStoreRNOptions = {
+  generateRoomToken: async () => {
+    const response = await fetch(
+      `${TOKEN_SERVER_URL}/api/generate-room-token`,
+      {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`Token server error: ${response.status}`);
+    }
+    return response.json();
+  },
+  onError: (error: Error) => {
+    console.error('[Hiyve]', error.message);
+  },
+};
+
+function AppContent() {
+  const {isConnecting} = useConnection();
+  const {isInRoom} = useRoom();
+
+  if (isConnecting) {
     return (
       <SafeAreaView style={styles.centered}>
         <ActivityIndicator size="large" color="#533483" />
@@ -31,31 +43,17 @@ function AppContent() {
     );
   }
 
-  if (connectionState === 'connected') {
+  if (isInRoom) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
-        <RoomScreen
-          roomName={roomName}
-          localStream={localStream}
-          remoteParticipants={remoteParticipants}
-          isAudioMuted={isAudioMuted}
-          isVideoMuted={isVideoMuted}
-          onToggleAudio={toggleAudio}
-          onToggleVideo={toggleVideo}
-          onFlipCamera={flipCamera}
-          onLeave={leaveRoom}
-        />
+        <RoomScreen />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <JoinScreen
-        onCreateRoom={createRoom}
-        onJoinRoom={joinRoom}
-        error={error}
-      />
+      <JoinScreen />
     </SafeAreaView>
   );
 }
@@ -64,9 +62,11 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" backgroundColor="#0f0f23" />
-      <View style={styles.container}>
-        <AppContent />
-      </View>
+      <HiyveRNProvider options={providerOptions}>
+        <View style={styles.container}>
+          <AppContent />
+        </View>
+      </HiyveRNProvider>
     </SafeAreaProvider>
   );
 }

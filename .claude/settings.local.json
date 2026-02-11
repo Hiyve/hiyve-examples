@@ -119,7 +119,10 @@
       "Bash(git -C /Users/karl/Development/muzieRTC/hiyve-examples ls-tree:*)",
       "Bash(git -C /Users/karl/Development/muzieRTC/hiyve-examples rm --cached:*)",
       "Bash(git -C /Users/karl/Development/muzieRTC/hiyve-examples add react-native-example/)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(./generate-docs.sh:*)",
+      "Bash(npm view:*)",
+      "Bash(npx react-native start:*)"
     ]
   }
 }

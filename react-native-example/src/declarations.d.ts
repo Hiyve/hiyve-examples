@@ -1,69 +1,131 @@
-declare module '@hiyve/rtc-client-rn' {
-  export class Client {
-    constructor(params: {
-      roomToken: string;
-      serverRegionUrl: string;
-      regions?: string[];
-      options?: {
-        enableBandwidthMonitoring?: boolean;
-        audioMode?: string;
-      };
-    });
-    on(event: string, callback: (...args: any[]) => void): void;
-    removeAllListeners(): void;
-    createRoom(params: {
-      roomName: string;
-      userId: string;
-      externalUserId?: string;
-      options?: Record<string, unknown>;
-    }): Promise<any>;
-    joinRoom(params: {
-      roomName: string;
-      userId: string;
-      externalUserId?: string;
-    }): Promise<any>;
-    connectTransports(params: {
-      options?: Record<string, unknown>;
-      waitingRoomToken?: string;
-      audioOnly?: boolean;
-    }): Promise<void>;
-    muteLocalAudio(mute: boolean, overRide?: boolean): Promise<any>;
-    muteLocalVideo(mute: boolean, overRide?: boolean): Promise<any>;
-    switchCamera(): Promise<void>;
-    closeConnection(): Promise<void>;
-    isLocalAudioPaused(): boolean;
-    isLocalVideoPaused(): boolean;
-  }
+// ---------------------------------------------------------------------------
+// @hiyve/react-native — Provider, hooks, and pre-built RN components
+// ---------------------------------------------------------------------------
+declare module '@hiyve/react-native' {
+  import type {ReactNode} from 'react';
+  import type {MediaStream} from 'react-native-webrtc';
+  import type {HiyveStoreRNOptions} from '@hiyve/core-rn';
 
-  export const ClientEvents: {
-    READY: string;
-    CONNECTED: string;
-    DISCONNECTED: string;
-    USER_DISCONNECTED: string;
-    USER_JOINED_ROOM: string;
-    ROOM_JOINED: string;
-    ROOM_CLOSED: string;
-    ERROR: string;
-    MEDIA_TRACK_ADDED: string;
-    MEDIA_TRACK_REMOVED: string;
-    NEW_PRODUCER: string;
-    AUDIO_MUTED: string;
-    VIDEO_MUTED: string;
-    OUTPUT_MUTED: string;
-    REMOTE_AUDIO_MUTED: string;
-    REMOTE_VIDEO_MUTED: string;
-    REMOTE_OUTPUT_MUTED: string;
-    DATA_MESSAGE: string;
-    RECORDING_STARTED: string;
-    RECORDING_STOPPED: string;
-    STREAMING_STARTED: string;
-    STREAMING_STOPPED: string;
-    RECEIVE_CHAT_MESSAGE: string;
-    TRANSCRIPTION_RECEIVED: string;
-    LOCAL_STREAM_READY: string;
+  // --- Provider ---
+  interface HiyveRNProviderProps {
+    options: HiyveStoreRNOptions;
+    children: ReactNode;
+  }
+  export function HiyveRNProvider(props: HiyveRNProviderProps): JSX.Element;
+
+  // --- Hooks ---
+  export function useConnection(): {
+    isConnected: boolean;
+    isConnecting: boolean;
+    error: string | null;
+    createRoom: (roomName: string, userId: string, options?: {requireWaitingRoom?: boolean}) => Promise<void>;
+    joinRoom: (roomName: string, userId: string) => Promise<void>;
+    leaveRoom: () => Promise<void>;
   };
 
-  export const SignalingEventNames: Record<string, string>;
-  export function cleanRoomName(name: string): string;
-  export function cleanUserId(id: string): string;
+  interface RoomInfo {
+    id: string;
+    name: string;
+    owner: string;
+    created?: string;
+    recordingId?: string | number | null;
+    streamingId?: string | number | null;
+    transcribingId?: string | number | null;
+  }
+  export function useRoom(): {
+    room: RoomInfo | null;
+    isOwner: boolean;
+    isInRoom: boolean;
+  };
+
+  interface Participant {
+    userId: string;
+    externalUserId?: string;
+    userName?: string;
+    videoStream: MediaStream | null;
+    audioStream: MediaStream | null;
+    audioOnly: boolean;
+    isAudioMuted: boolean;
+    isVideoMuted: boolean;
+    isOutputMuted?: boolean;
+  }
+  export function useParticipants(): {
+    participants: Participant[];
+    participantsMap: Map<string, Participant>;
+    localUserId: string | null;
+    participantCount: number;
+  };
+
+  export function useParticipant(userId: string): Participant | undefined;
+
+  export function useLocalMedia(): {
+    isAudioMuted: boolean;
+    isVideoMuted: boolean;
+    isOutputMuted: boolean;
+    isScreenSharing: boolean;
+    localStream: MediaStream | null;
+    toggleAudio: () => Promise<void>;
+    toggleVideo: () => Promise<void>;
+    switchCamera: () => Promise<void>;
+  };
+
+  export function usePermissions(): {
+    granted: boolean;
+    denied: boolean;
+    requesting: boolean;
+    requestPermissions: () => Promise<boolean>;
+  };
+
+  // --- Components ---
+  interface VideoGridProps {
+    localStream: MediaStream | null;
+    localUserId: string | null;
+    localDisplayName?: string;
+    isLocalAudioMuted?: boolean;
+    isLocalVideoMuted?: boolean;
+    participants: Participant[];
+    gap?: number;
+    maxColumns?: number;
+  }
+  export function VideoGrid(props: VideoGridProps): JSX.Element;
+
+  interface ControlBarProps {
+    isAudioMuted: boolean;
+    isVideoMuted: boolean;
+    onToggleAudio: () => void;
+    onToggleVideo: () => void;
+    onFlipCamera: () => void;
+    onLeave: () => void;
+    safeArea?: boolean;
+  }
+  export function ControlBar(props: ControlBarProps): JSX.Element;
+}
+
+// ---------------------------------------------------------------------------
+// @hiyve/core-rn — Framework-agnostic state store for React Native
+// ---------------------------------------------------------------------------
+declare module '@hiyve/core-rn' {
+  export interface HiyveStoreRNOptions {
+    generateRoomToken: () => Promise<{
+      roomToken: string;
+      serverRegionUrl: string;
+      serverRegion?: string;
+      regions?: string[];
+    }>;
+    storageAdapter?: unknown;
+    onError?: (error: Error) => void;
+  }
+
+  export class HiyveStoreRN {
+    constructor(options: HiyveStoreRNOptions);
+    destroy(): void;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// @hiyve/utilities — Shared helpers (peer dep of @hiyve/react-native)
+// ---------------------------------------------------------------------------
+declare module '@hiyve/utilities' {
+  export function getInitials(name: string): string;
+  export function getUserColor(name: string): string;
 }

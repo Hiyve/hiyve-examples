@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,22 +6,47 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {useConnection, usePermissions} from '@hiyve/react-native';
 
-interface JoinScreenProps {
-  onCreateRoom: (roomName: string, userId: string) => void;
-  onJoinRoom: (roomName: string, userId: string) => void;
-  error: string | null;
-}
-
-export default function JoinScreen({
-  onCreateRoom,
-  onJoinRoom,
-  error,
-}: JoinScreenProps) {
+export default function JoinScreen() {
   const [roomName, setRoomName] = useState('');
   const [userId, setUserId] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const {createRoom, joinRoom, error: connectionError} = useConnection();
+  const {requestPermissions} = usePermissions();
 
   const isValid = roomName.trim().length > 0 && userId.trim().length > 0;
+
+  const handleAction = useCallback(
+    async (action: 'create' | 'join') => {
+      if (!isValid) {
+        return;
+      }
+      setError(null);
+
+      const granted = await requestPermissions();
+      if (!granted) {
+        setError('Camera and microphone permissions are required');
+        return;
+      }
+
+      try {
+        if (action === 'create') {
+          await createRoom(roomName.trim(), userId.trim());
+        } else {
+          await joinRoom(roomName.trim(), userId.trim());
+        }
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : `Failed to ${action} room`;
+        setError(message);
+      }
+    },
+    [isValid, roomName, userId, createRoom, joinRoom, requestPermissions],
+  );
+
+  const displayError = error || connectionError;
 
   return (
     <View style={styles.container}>
@@ -49,18 +74,18 @@ export default function JoinScreen({
           autoCorrect={false}
         />
 
-        {error && <Text style={styles.error}>{error}</Text>}
+        {displayError && <Text style={styles.error}>{displayError}</Text>}
 
         <TouchableOpacity
           style={[styles.button, styles.createButton, !isValid && styles.buttonDisabled]}
-          onPress={() => onCreateRoom(roomName.trim(), userId.trim())}
+          onPress={() => handleAction('create')}
           disabled={!isValid}>
           <Text style={styles.buttonText}>Create Room</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.button, styles.joinButton, !isValid && styles.buttonDisabled]}
-          onPress={() => onJoinRoom(roomName.trim(), userId.trim())}
+          onPress={() => handleAction('join')}
           disabled={!isValid}>
           <Text style={styles.buttonText}>Join Room</Text>
         </TouchableOpacity>
