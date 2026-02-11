@@ -44,7 +44,6 @@ npm run ios    # or npm run android
 |---------|---------|
 | `@hiyve/react-native` | Provider, hooks, VideoGrid, ControlBar |
 | `@hiyve/core-rn` | Framework-agnostic state store (peer dep) |
-| `@hiyve/utilities` | Shared helpers (peer dep) |
 | `@hiyve/rtc-client-rn` | WebRTC client + signaling (peer dep) |
 | `react-native-webrtc` | Native WebRTC implementation (peer dep) |
 | `react-native-safe-area-context` | Safe area insets for notch/island devices |

@@ -17,9 +17,8 @@
   },
   "dependencies": {
     "@hiyve/core-rn": "1.0.1",
-    "@hiyve/react-native": "1.0.1",
+    "@hiyve/react-native": "1.0.2",
     "@hiyve/rtc-client-rn": "1.0.9",
-    "@hiyve/utilities": "1.31.3",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "react": "19.2.0",
     "react-native": "0.83.1",

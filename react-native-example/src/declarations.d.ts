@@ -121,11 +121,3 @@ declare module '@hiyve/core-rn' {
     destroy(): void;
   }
 }
-
-// ---------------------------------------------------------------------------
-// @hiyve/utilities — Shared helpers (peer dep of @hiyve/react-native)
-// ---------------------------------------------------------------------------
-declare module '@hiyve/utilities' {
-  export function getInitials(name: string): string;
-  export function getUserColor(name: string): string;
-}
