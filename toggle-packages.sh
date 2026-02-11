@@ -19,6 +19,7 @@ FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
 ANGULAR_EXAMPLE_DIR="$SCRIPT_DIR/angular-example"
+RN_EXAMPLE_DIR="$SCRIPT_DIR/react-native-example"
 COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-sdk"
 
 # Colors
@@ -80,6 +81,10 @@ do_status() {
     echo -e "${CYAN}=== angular-example ===${NC}"
     cd "$ANGULAR_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== react-native-example ===${NC}"
+    cd "$RN_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
 }
 
 toggle_example() {
@@ -110,6 +115,22 @@ toggle_example() {
     fi
 }
 
+toggle_rn_example() {
+    local example_dir="$1"
+    local example_name="$2"
+    local mode="$3"
+
+    print_status "[$example_name] Updating package.json..."
+    cd "$example_dir"
+    node scripts/toggle-packages.js "$mode"
+
+    print_status "[$example_name] Cleaning node_modules and package-lock.json..."
+    rm -rf node_modules package-lock.json
+
+    print_status "[$example_name] Installing dependencies (npm)..."
+    npm install
+}
+
 do_dev() {
     echo ""
     print_status "Switching to DEV mode (local packages)"
@@ -133,6 +154,7 @@ do_dev() {
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "dev"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "dev"
     toggle_example "$ANGULAR_EXAMPLE_DIR" "angular-example" "dev"
+    toggle_rn_example "$RN_EXAMPLE_DIR" "react-native-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
@@ -144,6 +166,7 @@ do_dev() {
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd angular-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd react-native-example && npm run dev${NC}"
     echo ""
     echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-sdk for watch mode"
     echo ""
@@ -163,6 +186,7 @@ do_prod() {
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "prod"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "prod"
     toggle_example "$ANGULAR_EXAMPLE_DIR" "angular-example" "prod"
+    toggle_rn_example "$RN_EXAMPLE_DIR" "react-native-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"
@@ -174,6 +198,7 @@ do_prod() {
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd angular-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd react-native-example && npm run dev${NC}"
     echo ""
 }
 

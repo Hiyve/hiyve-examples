@@ -1,6 +1,6 @@
 # React Native Example
 
-A mobile video conferencing app built with React Native CLI and the `muziertcclientrn` SDK. This example demonstrates the core WebRTC client lifecycle on iOS and Android without any `@hiyve/*` UI component packages - you build the UI yourself with standard React Native components.
+A mobile video conferencing app built with React Native CLI and the `@hiyve/rtc-client-rn` SDK. This example demonstrates the core WebRTC client lifecycle on iOS and Android without any `@hiyve/*` UI component packages (React web) - you build the UI yourself with standard React Native components.
 
 ## Quick Start
 
@@ -75,12 +75,12 @@ npm run android
 
 | Package | Purpose |
 |---------|---------|
-| `muziertcclientrn` | Core WebRTC client library (mediasoup-client + signaling) |
+| `@hiyve/rtc-client-rn` | Core WebRTC client library (mediasoup-client + signaling) |
 | `react-native-webrtc` | Native WebRTC implementation (peer dependency) |
 | `@react-native-async-storage/async-storage` | Persistent storage (peer dependency) |
 | `react-native-safe-area-context` | Safe area insets for notch/island devices |
 
-> **Note:** This example uses `muziertcclientrn` directly instead of `@hiyve/*` component packages. The `@hiyve/*` packages provide pre-built React (web) UI components. For React Native, you build the UI yourself using `RTCView` from `react-native-webrtc` and the `Client` class from `muziertcclientrn`.
+> **Note:** This example uses `@hiyve/rtc-client-rn` instead of `@hiyve/*` UI component packages. The `@hiyve/*` UI packages provide pre-built React (web) components. For React Native, you build the UI yourself using `RTCView` from `react-native-webrtc` and the `Client` class from `@hiyve/rtc-client-rn`.
 
 ## Architecture
 
@@ -90,7 +90,7 @@ react-native-example/
 ├── src/
 │   ├── App.tsx                 # Root: state-based routing (idle → connecting → connected)
 │   ├── types.ts                # RemoteParticipant, ConnectionState types
-│   ├── declarations.d.ts       # TypeScript declarations for muziertcclientrn
+│   ├── declarations.d.ts       # TypeScript declarations for @hiyve/rtc-client-rn
 │   ├── hooks/
 │   │   └── useHiyveClient.ts   # Client lifecycle, events, state management
 │   ├── screens/
@@ -136,7 +136,7 @@ SafeAreaProvider (App.tsx)
 The core of the example. This custom hook encapsulates the entire `Client` lifecycle:
 
 ```tsx
-import { Client, ClientEvents } from 'muziertcclientrn';
+import { Client, ClientEvents } from '@hiyve/rtc-client-rn';
 
 // State managed by the hook:
 // - connectionState: 'idle' | 'connecting' | 'connected' | 'error'
@@ -278,7 +278,7 @@ The map is keyed by `userId`. When a `MEDIA_TRACK_ADDED` event fires, the stream
 
 ## Client API Reference
 
-Methods available on the `Client` instance (from `muziertcclientrn`):
+Methods available on the `Client` instance (from `@hiyve/rtc-client-rn`):
 
 | Method | Signature | Description |
 |--------|-----------|-------------|
@@ -337,43 +337,49 @@ npm run lint           # Run ESLint
 npm test               # Run Jest tests
 ```
 
-### Developing with Local Library
+### Developing with Local SDK
 
-To develop against a local copy of `muzieRTCClientRN`:
+Use the toggle-packages script to switch between registry and local packages:
 
-#### 1. Update metro.config.js
+```bash
+# Switch to local packages (links to hiyve-sdk)
+npm run packages:dev
 
-Uncomment the `watchFolders` and `resolver` sections:
+# Switch back to registry packages
+npm run packages:prod
+
+# Check current mode
+npm run packages:status
+```
+
+Or use the root script to toggle all examples at once:
+
+```bash
+./toggle-packages.sh dev    # All examples → local
+./toggle-packages.sh prod   # All examples → registry
+```
+
+For Metro to resolve the local packages, uncomment the `watchFolders` and `resolver` sections in `metro.config.js`:
 
 ```javascript
 const config = {
-  watchFolders: [path.resolve(__dirname, '../../muzieRTCClientRN')],
+  watchFolders: [path.resolve(__dirname, '../../hiyve-sdk/packages/rtc-client-rn')],
   resolver: {
     nodeModulesPaths: [path.resolve(__dirname, 'node_modules')],
   },
 };
 ```
 
-#### 2. Update package.json
-
-Change the dependency to a file reference:
-
-```json
-"muziertcclientrn": "file:../../muzieRTCClientRN"
-```
-
-#### 3. Reinstall
+After switching, reinstall and rebuild:
 
 ```bash
 npm install
 cd ios && bundle exec pod install
 ```
 
-Metro will now watch the local library for changes and hot-reload them in the app.
-
 ### Key Differences from Web Examples
 
-| Aspect | Web Examples (`@hiyve/*`) | React Native (`muziertcclientrn`) |
+| Aspect | Web Examples (`@hiyve/*`) | React Native (`@hiyve/rtc-client-rn`) |
 |--------|--------------------------|-----------------------------------|
 | UI Components | Pre-built (`VideoGrid`, `ControlBar`, etc.) | Build your own with `RTCView` + RN components |
 | State Management | `ClientProvider` context + hooks (`useConnection`, `useRoom`) | Custom `useHiyveClient` hook wrapping `Client` class |
@@ -386,9 +392,9 @@ Metro will now watch the local library for changes and hot-reload them in the ap
 
 ## TypeScript Support
 
-This example includes TypeScript type declarations for `muziertcclientrn` in `src/declarations.d.ts`. These cover the `Client` class, `ClientEvents` constants, and utility functions.
+This example includes TypeScript type declarations for `@hiyve/rtc-client-rn` in `src/declarations.d.ts`. These cover the `Client` class, `ClientEvents` constants, and utility functions.
 
-The library itself is plain JavaScript (no `.d.ts` files shipped), so these declarations provide type safety for the hook and components in this example.
+The `@hiyve/rtc-client-rn` package ships its own `.d.ts` files, but the declarations in this example can serve as a reference or override if needed.
 
 ## Troubleshooting
 
@@ -420,9 +426,9 @@ The iOS Simulator has limited camera support. Use a physical iOS device for full
 
 The token server must be accessible from the device's network. Update `TOKEN_SERVER_URL` in `src/hooks/useHiyveClient.ts` to your machine's LAN IP address (not `localhost`).
 
-### Metro bundler can't resolve `muziertcclientrn`
+### Metro bundler can't resolve `@hiyve/rtc-client-rn`
 
-Run `npm install` to ensure the package is downloaded from the S3 registry. If using a local copy, verify the `metro.config.js` watchFolders path is correct.
+Run `npm install` to ensure the package is installed. If using local packages (`npm run packages:dev`), verify the `metro.config.js` watchFolders path is correct.
 
 ### "Cannot connect to Metro" on Android
 

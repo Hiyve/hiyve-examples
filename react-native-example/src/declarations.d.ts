@@ -1,4 +1,4 @@
-declare module 'muziertcclientrn' {
+declare module '@hiyve/rtc-client-rn' {
   export class Client {
     constructor(params: {
       roomToken: string;

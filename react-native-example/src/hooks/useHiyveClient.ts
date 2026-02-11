@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {MediaStream} from 'react-native-webrtc';
-import {Client, ClientEvents} from 'muziertcclientrn';
+import {Client, ClientEvents} from '@hiyve/rtc-client-rn';
 import type {ConnectionState, RemoteParticipant} from '../types';
 
 const TOKEN_SERVER_URL =
@@ -195,15 +195,9 @@ export function useHiyveClient() {
 
         const tokenData = await fetchRoomToken();
 
-        // SERVER_REGION_URL is '.rtc.muziemedia.com', client needs '.mediaserver.muziemedia.com'
-        const mediaServerUrl = tokenData.serverRegionUrl.replace(
-          '.rtc.',
-          '.mediaserver.',
-        );
-
         const client = new Client({
           roomToken: tokenData.roomToken,
-          serverRegionUrl: mediaServerUrl,
+          serverRegionUrl: tokenData.serverRegionUrl,
           regions: [tokenData.serverRegion],
         });
 
