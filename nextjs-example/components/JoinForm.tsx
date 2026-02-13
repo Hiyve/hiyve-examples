@@ -13,8 +13,8 @@
  *
  * ## Component Dependencies
  *
- * - `@hiyve/client-provider` - useConnection hook for room actions
- * - `@hiyve/device-selector` - DevicePreview component
+ * - `@hiyve/react` - useConnection hook for room actions
+ * - `@hiyve/react-ui` - DevicePreview component
  *
  * @see {@link VideoRoom} - Component shown after joining
  */
@@ -29,8 +29,8 @@ import {
   Alert,
   Stack,
 } from '@mui/material';
-import { useConnection } from '@hiyve/client-provider';
-import { DevicePreview } from '@hiyve/device-selector';
+import { useConnection } from '@hiyve/react';
+import { DevicePreview } from '@hiyve/react-ui';
 
 /**
  * Props for the JoinForm component.

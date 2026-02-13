@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useConnection, usePermissions} from '@hiyve/react-native';
+import {useConnection, usePermissions} from '@hiyve/rn-react';
 
 export default function JoinScreen() {
   const [roomName, setRoomName] = useState('');

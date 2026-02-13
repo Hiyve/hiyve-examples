@@ -11,9 +11,9 @@ import {
   ConnectionService,
   RoomService,
   ParticipantsService,
-} from '@hiyve/angular-provider';
-import { VideoGridComponent } from '@hiyve/angular-video-grid';
-import { ControlBarComponent } from '@hiyve/angular-control-bar';
+  VideoGridComponent,
+  ControlBarComponent,
+} from '@hiyve/angular';
 
 @Component({
   selector: 'app-video-room',

@@ -96,20 +96,16 @@ nextjs-example/
 
 ## SDK Components Used
 
-- `@hiyve/client-provider` - React context for WebRTC state
-- `@hiyve/device-selector` - Camera/microphone preview and selection
-- `@hiyve/video-grid` - Participant video layout
-- `@hiyve/control-bar` - Media controls and leave button
+- `@hiyve/react` - React context, hooks, and ClientProvider for WebRTC state
+- `@hiyve/react-ui` - UI components (VideoGrid, ControlBar, DevicePreview, DeviceSelector)
 
 ## TypeScript Support
 
 This example includes TypeScript type declarations for all `@hiyve/*` packages in `types/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
 
 The declarations cover:
-- `@hiyve/client-provider` - hooks and ClientProvider component
-- `@hiyve/control-bar` - ControlBar component and LayoutMode type
-- `@hiyve/device-selector` - DevicePreview component
-- `@hiyve/video-grid` - VideoGrid component
+- `@hiyve/react` - hooks and ClientProvider component
+- `@hiyve/react-ui` - ControlBar, VideoGrid, DevicePreview, DeviceSelector components and ControlBarLayoutMode type
 
 ## Development Mode
 

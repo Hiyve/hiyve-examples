@@ -3,7 +3,7 @@
 /**
  * Toggle between local development packages and registry production packages
  *
- * Angular packages (@hiyve/angular-*) always use registry versions because
+ * The @hiyve/angular package always uses registry versions because
  * link: protocol causes duplicate module instances that break Angular DI.
  * Non-Angular packages (core, rtc-client, utilities) can use link: for dev.
  *
@@ -63,9 +63,9 @@ function getVersionFromMetadata(pkg, tag = 'latest') {
   return tag;
 }
 
-// Angular packages always use registry (link: breaks Angular DI singletons)
+// The @hiyve/angular package always uses registry (link: breaks Angular DI singletons)
 function isAngularPackage(name) {
-  return name.startsWith('angular-');
+  return name === 'angular';
 }
 
 /**

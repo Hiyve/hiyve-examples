@@ -2,7 +2,7 @@
  * Type declarations for @hiyve packages
  */
 
-declare module '@hiyve/client-provider' {
+declare module '@hiyve/react' {
   export function useConnection(): {
     isConnecting: boolean;
     createRoom: (roomName: string, userName: string) => Promise<void>;
@@ -25,7 +25,7 @@ declare module '@hiyve/client-provider' {
     setSelectedAudioInput: (id: string) => void;
     setSelectedVideoInput: (id: string) => void;
   };
-  export const ClientProvider: React.ComponentType<{
+  export const HiyveProvider: React.ComponentType<{
     children: React.ReactNode;
     generateRoomToken: () => Promise<string>;
     localVideoElementId?: string;
@@ -34,19 +34,28 @@ declare module '@hiyve/client-provider' {
   }>;
 }
 
-declare module '@hiyve/control-bar' {
-  export type LayoutMode = 'grid' | 'speaker' | 'sidebar';
+declare module '@hiyve/react-ui' {
+  import type { SxProps, Theme } from '@mui/material';
+  export type ControlBarLayoutMode = 'grid' | 'speaker' | 'sidebar';
   export const ControlBar: React.ComponentType<{
     onLeave?: () => void;
     showLeaveConfirmation?: boolean;
     showScreenShare?: boolean;
     showLayoutSelector?: boolean;
-    layout?: LayoutMode;
-    onLayoutChange?: (layout: LayoutMode) => void;
+    layout?: ControlBarLayoutMode;
+    onLayoutChange?: (layout: ControlBarLayoutMode) => void;
   }>;
-}
-
-declare module '@hiyve/join-token' {
+  export const VideoGrid: React.ComponentType<{
+    localVideoElementId?: string;
+    localUserName?: string;
+    layout?: ControlBarLayoutMode;
+    showLocalFlip?: boolean;
+    showNames?: boolean;
+    labelPosition?: string;
+    statusPosition?: string;
+    controlPosition?: string;
+    sx?: SxProps<Theme>;
+  }>;
   export function createJoinToken(options: {
     roomId: string;
     roomToken: string;
@@ -63,22 +72,6 @@ declare module '@hiyve/join-token' {
     open: boolean;
     onClose: () => void;
     onCopySuccess?: () => void;
-  }>;
-}
-
-declare module '@hiyve/video-grid' {
-  import type { LayoutMode } from '@hiyve/control-bar';
-  import type { SxProps, Theme } from '@mui/material';
-  export const VideoGrid: React.ComponentType<{
-    localVideoElementId?: string;
-    localUserName?: string;
-    layout?: LayoutMode;
-    showLocalFlip?: boolean;
-    showNames?: boolean;
-    labelPosition?: string;
-    statusPosition?: string;
-    controlPosition?: string;
-    sx?: SxProps<Theme>;
   }>;
 }
 

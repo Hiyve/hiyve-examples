@@ -13,9 +13,9 @@ import {
   Typography,
   Snackbar,
 } from '@mui/material';
-import { useRoom, useConnection } from '@hiyve/client-provider';
-import { ControlBar, type LayoutMode } from '@hiyve/control-bar';
-import { VideoGrid } from '@hiyve/video-grid';
+import { useRoom, useConnection } from '@hiyve/react';
+import { ControlBar, type ControlBarLayoutMode } from '@hiyve/react-ui';
+import { VideoGrid } from '@hiyve/react-ui';
 import { LiveClock, useContainerBreakpoint } from '@hiyve/utilities';
 import { InviteLinkDisplay } from './InviteLinkDisplay';
 
@@ -24,7 +24,7 @@ interface VideoRoomProps {
 }
 
 export function VideoRoom({ userName }: VideoRoomProps) {
-  const [layout, setLayout] = useState<LayoutMode>('grid');
+  const [layout, setLayout] = useState<ControlBarLayoutMode>('grid');
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
 
   const { room, isOwner } = useRoom();
@@ -89,6 +89,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
           showLeaveConfirmation
           showScreenShare
           showLayoutSelector={!isCompact}
+          autoHideTimeout={3000}
           layout={layout}
           onLayoutChange={setLayout}
         />

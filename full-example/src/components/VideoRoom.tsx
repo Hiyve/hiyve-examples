@@ -27,33 +27,31 @@ import {
   useWaitingRoom,
   useLayout,
   useHandRaise,
-} from '@hiyve/client-provider';
+} from '@hiyve/react';
 import {
   ControlBar,
   defaultIntelligenceConfig,
   DEFAULT_LAYOUTS,
-  type LayoutMode,
+  type ControlBarLayoutMode,
   type IntelligenceConfig,
   type LayoutDefinition,
-} from '@hiyve/control-bar';
-import {
   VideoGrid,
   presentationLayoutHandler,
   type VideoTileOverlayElement,
   type LocalVideoTileOverlayElement,
-} from '@hiyve/video-grid';
-import { WaitingRoomAdmittance } from '@hiyve/waiting-room';
+  WaitingRoomAdmittance,
+} from '@hiyve/react-ui';
 import {
   RecordingIndicator,
   type RecordingIndicatorColors,
   type RecordingIndicatorStyles,
-} from '@hiyve/recording';
+} from '@hiyve/react-capture';
 import {
   StreamingIndicator,
   StreamingUrlDisplay,
   defaultStreamingConfig,
   type StreamingConfig,
-} from '@hiyve/streaming';
+} from '@hiyve/react-capture';
 import { Sidebar } from './Sidebar';
 import { STORAGE_KEYS } from '../constants';
 
@@ -86,7 +84,7 @@ interface VideoRoomProps {
 
 export function VideoRoom({ userName }: VideoRoomProps) {
   // UI state
-  const [layout, setLayout] = useState<LayoutMode>('grid');
+  const [layout, setLayout] = useState<ControlBarLayoutMode>('grid');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [waitingRoomAnchorEl, setWaitingRoomAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -323,6 +321,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
             showRecordingMenu
             showStreamingOption
             showHandRaise
+            autoHideTimeout={3000}
             intelligenceConfig={intelligenceConfig}
             onIntelligenceConfigChange={setIntelligenceConfig}
             streamingConfig={streamingConfig}

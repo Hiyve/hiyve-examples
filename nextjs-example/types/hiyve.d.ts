@@ -7,7 +7,7 @@
  * types, this file can be removed.
  */
 
-declare module '@hiyve/client-provider' {
+declare module '@hiyve/react' {
   export function useConnection(): {
     isConnecting: boolean;
     createRoom: (roomName: string, userName: string) => Promise<void>;
@@ -29,7 +29,7 @@ declare module '@hiyve/client-provider' {
     setSelectedAudioInput: (id: string) => void;
     setSelectedVideoInput: (id: string) => void;
   };
-  export const ClientProvider: React.ComponentType<{
+  export const HiyveProvider: React.ComponentType<{
     children: React.ReactNode;
     generateRoomToken: () => Promise<string>;
     localVideoElementId?: string;
@@ -38,19 +38,17 @@ declare module '@hiyve/client-provider' {
   }>;
 }
 
-declare module '@hiyve/control-bar' {
-  export type LayoutMode = 'grid' | 'speaker' | 'sidebar';
+declare module '@hiyve/react-ui' {
+  import type { SxProps, Theme } from '@mui/material';
+  export type ControlBarLayoutMode = 'grid' | 'speaker' | 'sidebar';
   export const ControlBar: React.ComponentType<{
     onLeave?: () => void;
     showLeaveConfirmation?: boolean;
     showScreenShare?: boolean;
     showLayoutSelector?: boolean;
-    layout?: LayoutMode;
-    onLayoutChange?: (layout: LayoutMode) => void;
+    layout?: ControlBarLayoutMode;
+    onLayoutChange?: (layout: ControlBarLayoutMode) => void;
   }>;
-}
-
-declare module '@hiyve/device-selector' {
   export const DevicePreview: React.ComponentType<{
     videoElementId?: string;
     localVideoElementId?: string;
@@ -59,15 +57,10 @@ declare module '@hiyve/device-selector' {
     aspectRatio?: string;
   }>;
   export const DeviceSelector: React.ComponentType<Record<string, never>>;
-}
-
-declare module '@hiyve/video-grid' {
-  import type { LayoutMode } from '@hiyve/control-bar';
-  import type { SxProps, Theme } from '@mui/material';
   export const VideoGrid: React.ComponentType<{
     localVideoElementId?: string;
     localUserName?: string;
-    layout?: LayoutMode;
+    layout?: ControlBarLayoutMode;
     showLocalFlip?: boolean;
     showNames?: boolean;
     labelPosition?: string;
@@ -77,6 +70,6 @@ declare module '@hiyve/video-grid' {
   }>;
 }
 
-declare module '@hiyve/video-tile';
+declare module '@hiyve/core';
 declare module '@hiyve/utilities';
 declare module '@hiyve/rtc-client';

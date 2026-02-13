@@ -31,7 +31,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
-import { ClientProvider } from '@hiyve/client-provider';
+import { HiyveProvider } from '@hiyve/react';
 import App from './App';
 
 /**
@@ -96,18 +96,18 @@ function Root() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <ClientProvider
+      <HiyveProvider
         generateRoomToken={generateRoomToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err: unknown) => {
-          console.error('[ClientProvider Error]', err);
+          console.error('[HiyveProvider Error]', err);
           const message = err instanceof Error ? err.message : String(err);
           setError(message);
         }}
       >
         <App />
-      </ClientProvider>
+      </HiyveProvider>
 
       <Snackbar
         open={!!error}

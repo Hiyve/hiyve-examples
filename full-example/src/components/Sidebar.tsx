@@ -22,18 +22,18 @@ import {
   useAudioProcessing,
   useRecording,
   useStreaming,
-} from '@hiyve/client-provider';
-import { StreamingSettingsForm, type StreamingConfig } from '@hiyve/streaming';
-import { Sidebar as HiyveSidebar, type SidebarTab } from '@hiyve/sidebar';
-import { ParticipantList } from '@hiyve/participant-list';
-import { ChatPanel } from '@hiyve/chat';
-import { GainControl, type GainControlLabels } from '@hiyve/audio-monitor';
-import { FileManager, type CustomViewerMap } from '@hiyve/file-manager';
-import { IntelligenceSettings, type IntelligenceConfig } from '@hiyve/control-bar';
-import { WhiteboardSession } from '@hiyve/whiteboard';
-import { QASession, QASessionViewer, useQASessionState, type QASessionFile } from '@hiyve/qa';
-import { PollsSession, PollsSessionViewer, usePollListener, type PollsSessionFile } from '@hiyve/polls';
-import { NotesSession } from '@hiyve/notes';
+} from '@hiyve/react';
+import { StreamingSettingsForm, type StreamingConfig } from '@hiyve/react-capture';
+import { Sidebar as HiyveSidebar, type SidebarTab } from '@hiyve/react-ui';
+import { ParticipantList } from '@hiyve/react-ui';
+import { ChatPanel } from '@hiyve/react-collaboration';
+import { GainControl, type GainControlLabels } from '@hiyve/react-ui';
+import { FileManager, type CustomViewerMap } from '@hiyve/react-collaboration';
+import { IntelligenceSettings, type IntelligenceConfig } from '@hiyve/react-ui';
+import { WhiteboardSession } from '@hiyve/react-whiteboard';
+import { QASession, QASessionViewer, useQASessionState, type QASessionFile } from '@hiyve/react-collaboration';
+import { PollsSession, PollsSessionViewer, usePollListener, type PollsSessionFile } from '@hiyve/react-collaboration';
+import { NotesSession } from '@hiyve/react-notes';
 import { AIPanel } from './AIPanel';
 
 

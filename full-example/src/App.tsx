@@ -9,8 +9,8 @@
  */
 
 import { useState } from 'react';
-import { useConnection, useRoom, useWaitingRoom, useWaitForHost } from '@hiyve/client-provider';
-import { WaitForHostScreen } from '@hiyve/waiting-room';
+import { useConnection, useRoom, useWaitingRoom, useWaitForHost } from '@hiyve/react';
+import { WaitForHostScreen } from '@hiyve/react-ui';
 import {
   JoinForm,
   VideoRoom,

@@ -1,14 +1,14 @@
 /**
  * JoinRoom - Guest entry point for joining via invite link.
  *
- * Uses `JoinWithTokenForm` from @hiyve/join-token SDK which handles:
+ * Uses `JoinWithTokenForm` from @hiyve/react-ui SDK which handles:
  * - Token validation
  * - Password prompts when required
  * - User-friendly error messages
  * - Loading states
  */
 
-import { JoinWithTokenForm } from '@hiyve/join-token';
+import { JoinWithTokenForm } from '@hiyve/react-ui';
 
 interface JoinRoomProps {
   joinToken: string;

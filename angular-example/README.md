@@ -21,13 +21,10 @@ This example uses the following Hiyve packages:
 |---------|-------------|
 | `@hiyve/core` | Framework-agnostic store (`HiyveStore`) for state management |
 | `@hiyve/rtc-client` | WebRTC client library |
-| `@hiyve/angular-provider` | Angular service wrapping `HiyveStore` with RxJS Observables |
-| `@hiyve/angular-video-tile` | Angular video tile components |
-| `@hiyve/angular-video-grid` | Angular video grid with layout modes |
-| `@hiyve/angular-control-bar` | Angular media controls component |
+| `@hiyve/angular` | Angular services, video grid, video tile, and control bar components |
 | `@hiyve/utilities` | Shared types and layout algorithms (via `@hiyve/utilities/video` subpath) |
 
-The `HiyveService` (from `@hiyve/angular-provider`) wraps `HiyveStore` and converts its callback-based subscriptions into RxJS Observables, enabling Angular's `async` pipe and `OnPush` change detection.
+The `HiyveService` (from `@hiyve/angular`) wraps `HiyveStore` and converts its callback-based subscriptions into RxJS Observables, enabling Angular's `async` pipe and `OnPush` change detection.
 
 ```
 HiyveStore (callback-based)

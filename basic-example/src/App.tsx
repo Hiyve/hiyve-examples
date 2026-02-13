@@ -30,7 +30,7 @@
  */
 
 import { useState } from 'react';
-import { useConnection, useRoom } from '@hiyve/client-provider';
+import { useConnection, useRoom } from '@hiyve/react';
 import { JoinForm } from './components/JoinForm';
 import { VideoRoom } from './components/VideoRoom';
 import { Box, CircularProgress, Typography } from '@mui/material';

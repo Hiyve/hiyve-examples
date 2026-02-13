@@ -9,7 +9,7 @@
  */
 
 import { useState } from 'react';
-import { ClientProvider, useConnection, useRoom } from '@hiyve/client-provider';
+import { HiyveProvider, useConnection, useRoom } from '@hiyve/react';
 import { Box, CircularProgress, Typography, Snackbar, Alert } from '@mui/material';
 import JoinForm from '@/components/JoinForm';
 import VideoRoom from '@/components/VideoRoom';
@@ -86,18 +86,18 @@ export default function Home() {
 
   return (
     <>
-      <ClientProvider
+      <HiyveProvider
         generateRoomToken={generateRoomToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err: unknown) => {
-          console.error('[ClientProvider Error]', err);
+          console.error('[HiyveProvider Error]', err);
           const message = err instanceof Error ? err.message : String(err);
           setError(message);
         }}
       >
         <AppContent />
-      </ClientProvider>
+      </HiyveProvider>
 
       <Snackbar
         open={!!error}

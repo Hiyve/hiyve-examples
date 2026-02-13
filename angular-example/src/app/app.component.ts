@@ -9,7 +9,7 @@ import { AsyncPipe } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription, filter } from 'rxjs';
-import { ConnectionService, RoomService } from '@hiyve/angular-provider';
+import { ConnectionService, RoomService } from '@hiyve/angular';
 import { JoinFormComponent } from './components/join-form/join-form.component';
 import { VideoRoomComponent } from './components/video-room/video-room.component';
 

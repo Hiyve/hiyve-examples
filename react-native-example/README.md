@@ -1,6 +1,13 @@
 # React Native Example
 
-A mobile video conferencing app built with React Native CLI and the `@hiyve/react-native` SDK. Uses the same provider + hooks pattern as the web examples, with pre-built `VideoGrid` and `ControlBar` components designed for React Native.
+A mobile video conferencing app built with React Native CLI and the `@hiyve/rn-react` SDK. Uses the same provider + hooks pattern as the web examples, with pre-built `VideoGrid` and `ControlBar` components designed for React Native.
+
+## Prerequisites
+
+- Node.js >= 20
+- [pnpm](https://pnpm.io/) (all examples use pnpm)
+- Xcode 26+ (iOS) or Android Studio (Android)
+- Ruby + Bundler (for CocoaPods on iOS)
 
 ## Quick Start
 
@@ -16,16 +23,20 @@ From the `hiyve-examples` root directory:
 
 ```bash
 # 1. Install dependencies
-npm run setup
+pnpm install
 
-# 2. Configure server credentials
+# 2. Install CocoaPods (iOS)
+cd ios && bundle install && bundle exec pod install && cd ..
+
+# 3. Configure server credentials
 cp server/.env.example server/.env
 # Edit server/.env with your Hiyve API key and secret
 
-# 3. Start the app
-npm run dev
-# In a separate terminal:
-npm run ios    # or npm run android
+# 4. Start Metro + token server
+pnpm run dev
+
+# 5. In a separate terminal, build and run
+pnpm run ios    # or pnpm run android
 ```
 
 ## Features
@@ -33,7 +44,8 @@ npm run ios    # or npm run android
 - Create or join video rooms by name
 - Real-time video/audio with WebRTC
 - SDK-managed video grid with adaptive layout
-- Built-in control bar (mute, camera, flip, leave)
+- Built-in control bar (mute, camera, flip, layout, hand raise, record, stream, leave)
+- Material Design icons via `@react-native-vector-icons/material-design-icons`
 - Automatic permission handling (camera + microphone)
 - Platform-aware token server URL (localhost vs 10.0.2.2)
 - Dark theme UI
@@ -42,12 +54,13 @@ npm run ios    # or npm run android
 
 | Package | Purpose |
 |---------|---------|
-| `@hiyve/react-native` | Provider, hooks, VideoGrid, ControlBar |
-| `@hiyve/core-rn` | Framework-agnostic state store (peer dep) |
+| `@hiyve/rn-react` | Provider, hooks, VideoGrid, ControlBar |
+| `@hiyve/rn-core` | Framework-agnostic state store (peer dep) |
 | `@hiyve/rtc-client-rn` | WebRTC client + signaling (peer dep) |
 | `react-native-webrtc` | Native WebRTC implementation (peer dep) |
 | `react-native-safe-area-context` | Safe area insets for notch/island devices |
 | `@react-native-async-storage/async-storage` | Persistent storage (peer dep) |
+| `@react-native-vector-icons/material-design-icons` | ControlBar icons (peer dep of rn-react) |
 
 ## Architecture
 
@@ -59,9 +72,12 @@ react-native-example/
 │   └── screens/
 │       ├── JoinScreen.tsx   # Room name + user name form
 │       └── RoomScreen.tsx   # VideoGrid + ControlBar + header
+├── scripts/
+│   └── toggle-packages.js   # Switch between local SDK and registry packages
 ├── server/
 │   ├── server.js            # Express token server
 │   └── .env.example         # Server config template
+├── metro.config.js          # Metro bundler config (auto-detects dev/prod mode)
 ├── ios/                     # Xcode project
 └── android/                 # Android project
 ```
@@ -87,7 +103,7 @@ SafeAreaProvider
 Sets up the `HiyveRNProvider` with a `generateRoomToken` callback that fetches tokens from the local server. Routes between screens using `useConnection()` and `useRoom()`:
 
 ```tsx
-import { HiyveRNProvider, useConnection, useRoom } from '@hiyve/react-native';
+import { HiyveRNProvider, useConnection, useRoom } from '@hiyve/rn-react';
 
 const { isConnecting } = useConnection();
 const { isInRoom } = useRoom();
@@ -128,13 +144,72 @@ const { participants, localUserId, participantCount } = useParticipants();
 | `useParticipants()` | `participants`, `localUserId`, `participantCount` | Remote participants |
 | `usePermissions()` | `granted`, `denied`, `requesting`, `requestPermissions` | Camera/mic permissions |
 
+## Development
+
+### Available Scripts
+
+```bash
+pnpm start                 # Start Metro bundler
+pnpm run ios               # Build and run on iOS Simulator
+pnpm run android           # Build and run on Android Emulator
+pnpm run dev:server        # Start token server only (port 3001)
+pnpm run dev               # Start token server + Metro concurrently
+pnpm run packages:dev      # Switch to local SDK packages
+pnpm run packages:prod     # Switch to registry packages
+pnpm run packages:status   # Check current mode
+```
+
+### Developing with Local SDK
+
+The toggle script switches `@hiyve/*` dependencies between local SDK source (`link:` paths) and published registry versions. Metro auto-detects the mode from `package.json`:
+
+- **Dev mode** (`link:` paths): Metro resolves `@hiyve/*` from local SDK via `extraNodeModules` and watches for live reload
+- **Prod mode** (version numbers): Metro uses default resolution from `node_modules`
+
+```bash
+# Switch to local SDK
+pnpm run packages:dev
+pnpm install
+cd ios && bundle exec pod install && cd ..
+pnpm start --reset-cache
+
+# In another terminal
+pnpm run ios
+```
+
+To switch back to published packages:
+
+```bash
+pnpm run packages:prod
+pnpm install
+cd ios && bundle exec pod install && cd ..
+pnpm start --reset-cache
+```
+
+### After Changing SDK Dependencies
+
+When you add or remove a native dependency in the SDK (e.g. swapping `react-native-svg` for `@react-native-vector-icons/material-design-icons`):
+
+1. Update `package.json` in both the SDK package and this example
+2. Run `pnpm install` in this example
+3. Clean and reinstall pods:
+   ```bash
+   rm -rf ios/Pods ios/Podfile.lock
+   cd ios && bundle exec pod install && cd ..
+   ```
+4. Clean Xcode DerivedData if you hit C++ build errors:
+   ```bash
+   rm -rf ~/Library/Developer/Xcode/DerivedData/HiyveExample-*
+   ```
+5. Rebuild: `pnpm run ios`
+
 ## Platform Notes
 
 ### iOS
 
 - Camera and microphone usage descriptions are declared in `ios/HiyveExample/Info.plist`
 - Simulator has limited camera support — use a physical device for full testing
-- Run `cd ios && bundle exec pod install` after `npm install`
+- Run `cd ios && bundle exec pod install` after `pnpm install`
 
 ### Android
 
@@ -152,42 +227,6 @@ The token server must be reachable over the local network:
    const TOKEN_SERVER_URL = 'http://192.168.1.100:3001';
    ```
 3. Ensure your firewall allows connections on port 3001
-
-## Development
-
-### Available Scripts
-
-```bash
-npm start              # Start Metro bundler
-npm run ios            # Build and run on iOS Simulator
-npm run android        # Build and run on Android Emulator
-npm run dev:server     # Start token server only (port 3001)
-npm run dev            # Start token server + Metro concurrently
-npm run setup          # Install all deps + CocoaPods
-```
-
-### Developing with Local SDK
-
-```bash
-npm run packages:dev      # Switch to local packages
-npm run packages:prod     # Switch back to registry packages
-npm run packages:status   # Check current mode
-```
-
-Metro auto-detects local SDK packages when `../../hiyve-sdk/packages` exists and adds it to `watchFolders` automatically.
-
-After switching, reinstall and rebuild:
-
-```bash
-npm install
-cd ios && bundle exec pod install
-```
-
-If Metro has stale caches after switching:
-
-```bash
-npm start -- --reset-cache
-```
 
 ## Troubleshooting
 
@@ -219,9 +258,33 @@ Use a physical iOS device for full WebRTC testing.
 
 Update `TOKEN_SERVER_URL` in `src/App.tsx` to your machine's LAN IP address.
 
-### Metro bundler can't resolve @hiyve/* packages
+### Metro can't resolve @hiyve/* packages
 
-Run `npm install`. If using local packages, verify `../../hiyve-sdk/packages` exists and restart Metro with `--reset-cache`.
+1. Check your mode: `pnpm run packages:status`
+2. Reinstall: `pnpm install`
+3. If in dev mode, verify `../../hiyve-sdk/packages` exists
+4. Clear Metro cache: `pnpm start --reset-cache`
+
+### Xcode build fails with "redefinition of TraceEvent"
+
+This is a known Xcode 26 + React Native compatibility issue. Clean DerivedData and pods:
+
+```bash
+rm -rf ~/Library/Developer/Xcode/DerivedData/HiyveExample-*
+rm -rf ios/Pods ios/Podfile.lock
+cd ios && bundle exec pod install && cd ..
+pnpm run ios
+```
+
+### Icons show as squares or "Un" text
+
+The `MaterialDesignIcons.ttf` font isn't loaded. Ensure `@react-native-vector-icons/material-design-icons` is installed and pods are up to date:
+
+```bash
+pnpm install
+cd ios && bundle exec pod install && cd ..
+pnpm run ios
+```
 
 ## Learn More
 

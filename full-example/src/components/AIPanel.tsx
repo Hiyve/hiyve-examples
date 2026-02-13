@@ -21,11 +21,11 @@ import {
   AIAssistant,
   useIntelligenceReadiness,
   IntelligenceReadinessStatus,
-} from '@hiyve/ai-assistant';
-import { useLiveContext, useMoodCloudSync } from '@hiyve/cloud-provider';
-import { useTranscription, useRecording } from '@hiyve/client-provider';
-import { useMoodAnalysisSafe } from '@hiyve/mood-analysis';
-import { TranscriptViewer } from '@hiyve/transcription';
+} from '@hiyve/react-intelligence';
+import { useLiveContext, useMoodCloudSync } from '@hiyve/react-intelligence';
+import { useTranscription, useRecording } from '@hiyve/react';
+import { useMoodAnalysisSafe } from '@hiyve/react-intelligence';
+import { TranscriptViewer } from '@hiyve/react-capture';
 
 interface AIPanelProps {
   /** User ID (cleaned email) for API validation */

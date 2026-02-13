@@ -14,10 +14,10 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
-import { ClientProvider } from '@hiyve/client-provider';
-import { CloudProvider } from '@hiyve/cloud-provider';
-import { MoodAnalysisProvider } from '@hiyve/mood-analysis';
-import { FileCacheProvider } from '@hiyve/file-manager';
+import { HiyveProvider } from '@hiyve/react';
+import { CloudProvider } from '@hiyve/react-intelligence';
+import { MoodAnalysisProvider } from '@hiyve/react-intelligence';
+import { FileCacheProvider } from '@hiyve/react-collaboration';
 import App from './App';
 
 // Cloud API configuration
@@ -71,12 +71,12 @@ function Root() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <ClientProvider
+      <HiyveProvider
         generateRoomToken={generateRoomToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err) => {
-          console.error('[ClientProvider Error]', err);
+          console.error('[HiyveProvider Error]', err);
           setError(err.message || String(err));
         }}
       >
@@ -87,7 +87,7 @@ function Root() {
             </MoodAnalysisProvider>
           </FileCacheProvider>
         </CloudProvider>
-      </ClientProvider>
+      </HiyveProvider>
 
       <Snackbar
         open={!!error}

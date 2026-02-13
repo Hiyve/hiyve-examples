@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AsyncPipe } from '@angular/common';
-import { ConnectionService } from '@hiyve/angular-provider';
+import { ConnectionService } from '@hiyve/angular';
 
 @Component({
   selector: 'app-join-form',

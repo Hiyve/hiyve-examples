@@ -1,12 +1,12 @@
 /**
  * InviteLinkDisplay - Share button that opens the invite link dialog.
  *
- * Uses `InviteLinkDialog` from @hiyve/join-token SDK.
+ * Uses `InviteLinkDialog` from @hiyve/react-ui SDK.
  */
 
 import { useState } from 'react';
 import { Share as ShareIcon } from '@mui/icons-material';
-import { InviteLinkDialog } from '@hiyve/join-token';
+import { InviteLinkDialog } from '@hiyve/react-ui';
 import { TooltipIconButton } from '@hiyve/utilities';
 
 interface InviteLinkDisplayProps {

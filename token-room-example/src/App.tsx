@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useConnection, useRoom } from '@hiyve/client-provider';
+import { useConnection, useRoom } from '@hiyve/react';
 import { CreateRoom } from './components/CreateRoom';
 import { JoinRoom } from './components/JoinRoom';
 import { VideoRoom } from './components/VideoRoom';

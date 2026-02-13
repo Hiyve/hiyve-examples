@@ -65,8 +65,8 @@ export default defineConfig({
       '@mui/material',
       '@mui/system',
       '@mui/icons-material',
-      '@hiyve/client-provider',
-      '@hiyve/cloud-provider',
+      '@hiyve/react',
+      '@hiyve/react-intelligence',
     ],
   },
   build: {

@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHiyve } from '@hiyve/angular-provider';
+import { provideHiyve } from '@hiyve/angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [

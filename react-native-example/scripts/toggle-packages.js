@@ -6,8 +6,7 @@
  * This script dynamically finds all @hiyve/* packages in package.json and
  * toggles them between local file paths and registry versions.
  *
- * Note: This example uses npm (not pnpm), so dev mode uses `file:` protocol
- * instead of `link:` (npm treats `file:` as a symlink).
+ * Uses pnpm with `link:` protocol for dev mode (symlinks to local SDK).
  *
  * Usage:
  *   node scripts/toggle-packages.js dev    # Update to local packages
@@ -79,8 +78,8 @@ function getHiyvePackages(pkg) {
 }
 
 function getLocalPath(pkg) {
-  // npm uses file: protocol for local packages (creates symlink)
-  return 'file:' + COMPONENTS_PATH + '/' + pkg;
+  // pnpm uses link: protocol for local packages (creates symlink)
+  return 'link:' + COMPONENTS_PATH + '/' + pkg;
 }
 
 function getProdPath(pkg) {

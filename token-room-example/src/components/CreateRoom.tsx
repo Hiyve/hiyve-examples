@@ -19,7 +19,7 @@ import {
   Container,
 } from '@mui/material';
 import { VideoCall as VideoCallIcon } from '@mui/icons-material';
-import { useConnection } from '@hiyve/client-provider';
+import { useConnection } from '@hiyve/react';
 
 interface CreateRoomProps {
   onUserNameChange?: (name: string) => void;

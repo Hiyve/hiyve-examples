@@ -26,12 +26,10 @@ function getHiyvePackageNames() {
 const nextConfig = {
   // Transpile all Hiyve SDK packages
   transpilePackages: [
-    '@hiyve/client-provider',
-    '@hiyve/control-bar',
-    '@hiyve/device-selector',
+    '@hiyve/react',
+    '@hiyve/react-ui',
+    '@hiyve/core',
     '@hiyve/rtc-client',
-    '@hiyve/video-grid',
-    '@hiyve/video-tile',
     '@hiyve/utilities',
     ...(isDevMode ? getHiyvePackageNames() : []),
   ],

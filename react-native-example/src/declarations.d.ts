@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------
-// @hiyve/react-native — Provider, hooks, and pre-built RN components
+// @hiyve/rn-react — Provider, hooks, and pre-built RN components
 // ---------------------------------------------------------------------------
-declare module '@hiyve/react-native' {
+declare module '@hiyve/rn-react' {
   import type {ReactNode} from 'react';
   import type {MediaStream} from 'react-native-webrtc';
-  import type {HiyveStoreRNOptions} from '@hiyve/core-rn';
+  import type {HiyveStoreRNOptions} from '@hiyve/rn-core';
 
   // --- Provider ---
   interface HiyveRNProviderProps {
@@ -102,9 +102,9 @@ declare module '@hiyve/react-native' {
 }
 
 // ---------------------------------------------------------------------------
-// @hiyve/core-rn — Framework-agnostic state store for React Native
+// @hiyve/rn-core — Framework-agnostic state store for React Native
 // ---------------------------------------------------------------------------
-declare module '@hiyve/core-rn' {
+declare module '@hiyve/rn-core' {
   export interface HiyveStoreRNOptions {
     generateRoomToken: () => Promise<{
       roomToken: string;

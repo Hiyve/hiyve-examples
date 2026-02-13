@@ -3,8 +3,8 @@
  */
 
 import { Container } from '@mui/material';
-import { useConnection, useRoom, useWaitingRoom } from '@hiyve/client-provider';
-import { WaitingRoomGuest } from '@hiyve/waiting-room';
+import { useConnection, useRoom, useWaitingRoom } from '@hiyve/react';
+import { WaitingRoomGuest } from '@hiyve/react-ui';
 
 export function WaitingScreen() {
   const { leaveRoom } = useConnection();

@@ -13,18 +13,17 @@
  *
  * ## Component Dependencies
  *
- * - `@hiyve/client-provider` - useRoom, useConnection hooks
- * - `@hiyve/video-grid` - VideoGrid component
- * - `@hiyve/control-bar` - ControlBar component
+ * - `@hiyve/react` - useRoom, useConnection hooks
+ * - `@hiyve/react-ui` - VideoGrid, ControlBar components
  *
  * @see {@link JoinForm} - Component shown before joining
  */
 
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, Typography } from '@mui/material';
-import { useRoom, useConnection } from '@hiyve/client-provider';
-import { ControlBar, type LayoutMode } from '@hiyve/control-bar';
-import { VideoGrid } from '@hiyve/video-grid';
+import { useRoom, useConnection } from '@hiyve/react';
+import { ControlBar, type ControlBarLayoutMode } from '@hiyve/react-ui';
+import { VideoGrid } from '@hiyve/react-ui';
 
 /**
  * Props for the VideoRoom component.
@@ -47,7 +46,7 @@ interface VideoRoomProps {
  * @param props.userName - Local user's display name
  */
 export default function VideoRoom({ userName }: VideoRoomProps) {
-  const [layout, setLayout] = useState<LayoutMode>('grid');
+  const [layout, setLayout] = useState<ControlBarLayoutMode>('grid');
   const { room, isOwner } = useRoom();
   const { leaveRoom } = useConnection();
 
@@ -86,6 +85,7 @@ export default function VideoRoom({ userName }: VideoRoomProps) {
         showLeaveConfirmation
         showScreenShare
         showLayoutSelector
+        autoHideTimeout={3000}
         layout={layout}
         onLayoutChange={setLayout}
       />

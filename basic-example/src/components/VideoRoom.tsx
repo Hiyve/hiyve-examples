@@ -11,9 +11,8 @@
  *
  * ## Component Dependencies
  *
- * - `@hiyve/client-provider` - useRoom, useConnection hooks
- * - `@hiyve/video-grid` - VideoGrid component
- * - `@hiyve/control-bar` - ControlBar component
+ * - `@hiyve/react` - useRoom, useConnection hooks
+ * - `@hiyve/react-ui` - VideoGrid, ControlBar components
  *
  * ## Layout Modes
  *
@@ -27,9 +26,8 @@
 
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, Typography } from '@mui/material';
-import { useRoom, useConnection } from '@hiyve/client-provider';
-import { ControlBar, type LayoutMode } from '@hiyve/control-bar';
-import { VideoGrid } from '@hiyve/video-grid';
+import { useRoom, useConnection } from '@hiyve/react';
+import { ControlBar, type ControlBarLayoutMode, VideoGrid } from '@hiyve/react-ui';
 
 /**
  * Props for the VideoRoom component.
@@ -87,7 +85,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
    * Current layout mode for the video grid.
    * Controlled by the ControlBar's layout selector.
    */
-  const [layout, setLayout] = useState<LayoutMode>('grid');
+  const [layout, setLayout] = useState<ControlBarLayoutMode>('grid');
 
   /**
    * useRoom provides room state:
@@ -121,7 +119,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
       </AppBar>
 
       {/*
-        VideoGrid from @hiyve/video-grid
+        VideoGrid from @hiyve/react-ui
         - Automatically shows all participants from ClientProvider context
         - Handles layout switching (grid, speaker, sidebar)
         - Shows local video with the same ID used in DevicePreview
@@ -139,7 +137,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
       />
 
       {/*
-        ControlBar from @hiyve/control-bar
+        ControlBar from @hiyve/react-ui
         - Audio/video mute buttons (automatic from context)
         - Screen share button
         - Layout selector dropdown
@@ -150,6 +148,7 @@ export function VideoRoom({ userName }: VideoRoomProps) {
         showLeaveConfirmation
         showScreenShare
         showLayoutSelector
+        autoHideTimeout={3000}
         layout={layout}
         onLayoutChange={setLayout}
       />

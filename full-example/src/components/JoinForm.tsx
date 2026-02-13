@@ -23,9 +23,9 @@ import {
   Settings as SettingsIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
-import { useConnection } from '@hiyve/client-provider';
-import { DevicePreview, type SelectedDevices } from '@hiyve/device-selector';
-import { WaitingRoomSetup } from '@hiyve/waiting-room';
+import { useConnection } from '@hiyve/react';
+import { DevicePreview, type SelectedDevices } from '@hiyve/react-ui';
+import { WaitingRoomSetup } from '@hiyve/react-ui';
 import { STORAGE_KEYS } from '../constants';
 
 type UserRole = 'owner' | 'guest';
