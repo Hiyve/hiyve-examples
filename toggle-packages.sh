@@ -19,7 +19,9 @@ FULL_EXAMPLE_DIR="$SCRIPT_DIR/full-example"
 TOKEN_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
 ANGULAR_EXAMPLE_DIR="$SCRIPT_DIR/angular-example"
+AI_EXAMPLE_DIR="$SCRIPT_DIR/ai-video-room-example"
 RN_EXAMPLE_DIR="$SCRIPT_DIR/react-native-example"
+REACT_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/react-room-example"
 COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-sdk"
 
 # Colors
@@ -82,8 +84,16 @@ do_status() {
     cd "$ANGULAR_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
 
+    echo -e "${CYAN}=== ai-video-room-example ===${NC}"
+    cd "$AI_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+
     echo -e "${CYAN}=== react-native-example ===${NC}"
     cd "$RN_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== react-room-example ===${NC}"
+    cd "$REACT_ROOM_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
 }
 
@@ -124,11 +134,15 @@ toggle_rn_example() {
     cd "$example_dir"
     node scripts/toggle-packages.js "$mode"
 
-    print_status "[$example_name] Cleaning node_modules and package-lock.json..."
-    rm -rf node_modules package-lock.json
+    if [ "$mode" = "prod" ]; then
+        pnpm store prune 2>/dev/null || true
+    fi
 
-    print_status "[$example_name] Installing dependencies (npm)..."
-    npm install
+    print_status "[$example_name] Cleaning node_modules and pnpm-lock.yaml..."
+    rm -rf node_modules pnpm-lock.yaml
+
+    print_status "[$example_name] Installing dependencies..."
+    pnpm install
 }
 
 do_dev() {
@@ -154,7 +168,9 @@ do_dev() {
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "dev"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "dev"
     toggle_example "$ANGULAR_EXAMPLE_DIR" "angular-example" "dev"
+    toggle_example "$AI_EXAMPLE_DIR" "ai-video-room-example" "dev"
     toggle_rn_example "$RN_EXAMPLE_DIR" "react-native-example" "dev"
+    toggle_example "$REACT_ROOM_EXAMPLE_DIR" "react-room-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
@@ -166,7 +182,9 @@ do_dev() {
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd angular-example && pnpm run dev${NC}"
-    echo -e "    ${CYAN}cd react-native-example && npm run dev${NC}"
+    echo -e "    ${CYAN}cd ai-video-room-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd react-native-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd react-room-example && pnpm run dev${NC}"
     echo ""
     echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-sdk for watch mode"
     echo ""
@@ -186,7 +204,9 @@ do_prod() {
     toggle_example "$TOKEN_ROOM_EXAMPLE_DIR" "token-room-example" "prod"
     toggle_example "$NEXTJS_EXAMPLE_DIR" "nextjs-example" "prod"
     toggle_example "$ANGULAR_EXAMPLE_DIR" "angular-example" "prod"
+    toggle_example "$AI_EXAMPLE_DIR" "ai-video-room-example" "prod"
     toggle_rn_example "$RN_EXAMPLE_DIR" "react-native-example" "prod"
+    toggle_example "$REACT_ROOM_EXAMPLE_DIR" "react-room-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"
@@ -198,7 +218,9 @@ do_prod() {
     echo -e "    ${CYAN}cd token-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd nextjs-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd angular-example && pnpm run dev${NC}"
-    echo -e "    ${CYAN}cd react-native-example && npm run dev${NC}"
+    echo -e "    ${CYAN}cd ai-video-room-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd react-native-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd react-room-example && pnpm run dev${NC}"
     echo ""
 }
 

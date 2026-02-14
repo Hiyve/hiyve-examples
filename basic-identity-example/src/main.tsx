@@ -28,7 +28,7 @@
 
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Box, Typography, Link } from '@mui/material';
-import { IdentityProvider } from '@hiyve/identity-react';
+import { IdentityProvider } from '@hiyve/react-identity';
 import App from './App';
 
 /**

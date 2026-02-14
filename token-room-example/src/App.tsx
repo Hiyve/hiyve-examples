@@ -1,12 +1,31 @@
 /**
- * Token Room Example - Main Application
+ * @fileoverview Token Room Example - Main Application Router
+ * @module token-room-example/App
  *
- * Routes between views based on connection state and URL parameters.
+ * Acts as a simple client-side router, choosing which view to render
+ * based on the SDK connection state and URL query parameters. There
+ * is no React Router -- routing is handled by inspecting
+ * `window.location.search` on mount.
  *
- * ## Flow
- * - "/" without token → CreateRoom (owner flow)
- * - "/join?joinToken=...&region=..." → JoinRoom (guest flow)
- * - Connected → VideoRoom
+ * ```
+ * App (state machine)
+ *   ├── isConnecting   → Loading spinner
+ *   ├── isInRoom       → VideoRoom
+ *   ├── has joinToken  → JoinRoom  (guest flow via invite link)
+ *   └── default        → CreateRoom (owner flow)
+ * ```
+ *
+ * ## URL Parameters
+ * Invite links use query parameters rather than path segments:
+ * - `?joinToken=<JWT>` -- the join token granting access to a specific room
+ * - `&region=<string>` -- the media server region (e.g. "us-east-1")
+ *
+ * ## User Name Tracking
+ * The `userName` state is kept in sync via two mechanisms:
+ * 1. **Same-tab**: The `onUserNameChange` callback prop on CreateRoom/JoinRoom
+ * 2. **Cross-tab**: A `storage` event listener catches changes made in other tabs
+ *
+ * Both read from the same localStorage key (`hiyve-token-example-userName`).
  */
 
 import { useState, useEffect } from 'react';

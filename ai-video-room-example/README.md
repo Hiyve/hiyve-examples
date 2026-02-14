@@ -1,0 +1,361 @@
+# AI Video Room Example
+
+An AI-powered video conferencing application demonstrating Hiyve's meeting intelligence features. This example builds on top of the basic video room to add real-time transcription, AI assistant queries, mood analysis, sentiment detection, and recording -- without the collaboration features (whiteboard, notes, Q&A, polls) found in the full-example.
+
+## Quick Start
+
+You can either run the root setup script (recommended) or set up manually:
+
+### Option A: Root Setup Script (Recommended)
+
+From the `hiyve-examples` root directory:
+
+```bash
+./setup.sh ai-video-room-example
+```
+
+This handles authentication, dependencies, and environment setup automatically.
+
+### Option B: Manual Setup
+
+#### 1. Authenticate with Hiyve
+
+The `@hiyve/*` packages require authentication:
+
+```bash
+npx hiyve-cli login
+```
+
+Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
+
+#### 2. Install Dependencies
+
+```bash
+pnpm run setup
+```
+
+This installs both client and server dependencies.
+
+#### 3. Configure Server Credentials
+
+```bash
+cp server/.env.example server/.env
+```
+
+Edit `server/.env` with your Hiyve credentials:
+
+```env
+APIKEY=your-hiyve-api-key
+CLIENT_SECRET=your-hiyve-secret
+SERVER_REGION=us-west-2
+```
+
+#### 4. Start the App
+
+```bash
+pnpm run dev
+```
+
+Open http://localhost:5173
+
+## Features
+
+This example focuses specifically on AI and intelligence capabilities:
+
+- **Video Conferencing** -- create or join rooms with WebRTC audio/video
+- **AI Assistant** -- ask the AI questions about the meeting in real-time (powered by live transcription context)
+- **Live Captions** -- real-time transcription with timestamps and per-utterance sentiment
+- **Intelligence Mode** -- recording with transcription that feeds AI context
+- **Mood Analysis** -- facial sentiment detection on video tiles, synced to the cloud AI context
+- **Engagement Indicators** -- visual engagement overlays on each participant tile
+- **Recording** -- start/stop recording with a visual indicator and elapsed timer
+- **Conversation Manager** -- manage and review AI conversation threads
+- **Alerts Concept** -- placeholder tab showing future SDK enhancement ideas
+
+## Packages Used
+
+| Package | Purpose |
+|---------|---------|
+| `@hiyve/react` | Core WebRTC provider and hooks (`useRoom`, `useConnection`, `useRecording`, `useParticipants`, `useTranscription`) |
+| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `Sidebar`, `DevicePreview`, `WaitForHostScreen` |
+| `@hiyve/react-capture` | `RecordingIndicator`, `TranscriptViewer` |
+| `@hiyve/react-intelligence` | `CloudProvider`, `MoodAnalysisProvider`, `IntelligenceHub`, `useIntelligenceReadiness`, `useLiveContext`, `useMoodCloudSync`, `useMoodAnalysisSafe` |
+| `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
+| `@hiyve/utilities` | `LiveClock`, `TooltipIconButton` |
+
+## Architecture
+
+### File Tree
+
+```
+ai-video-room-example/
+  src/
+    main.tsx                  # Entry point with provider hierarchy
+    App.tsx                   # State-based routing between views
+    constants.ts              # localStorage key constants
+    components/
+      index.ts                # Barrel exports
+      JoinForm.tsx            # Room creation/join form with device preview
+      ConnectingScreen.tsx    # Loading indicator during connection
+      VideoRoom.tsx           # Video grid + control bar + AI sidebar
+      AISidebar.tsx           # Intelligence hub (AI, captions, alerts, sentiment)
+  server/
+    server.js                 # Express server for room + cloud token generation
+    .env.example              # Credential template
+```
+
+### Component Flow
+
+```
+ThemeProvider (MUI dark theme)
+  HiyveProvider (WebRTC connection via generateRoomToken)
+    CloudProvider (AI cloud features via generateCloudToken)
+      MoodAnalysisProvider (facial sentiment detection)
+        App
+          +-- JoinForm              # When not connected
+          |     +-- DevicePreview   # Camera/mic test dialog
+          +-- ConnectingScreen      # While connecting
+          +-- WaitForHostScreen     # Guest waiting for owner
+          +-- VideoRoom             # When in room
+                +-- VideoGrid       # Participant tiles with mood/engagement overlays
+                +-- ControlBar      # Media controls + intelligence settings
+                +-- AISidebar       # Intelligence hub sidebar
+                      +-- IntelligenceHub
+                      |     +-- AI Assistant tab
+                      |     +-- Captions tab (TranscriptViewer)
+                      |     +-- Alerts tab
+                      |     +-- Sentiment tab
+                      +-- useMoodCloudSync  # Syncs mood data to AI context
+                      +-- useLiveContext    # Sends AI queries with response context
+```
+
+### Dual Token Architecture
+
+This example uses two separate tokens, each generated by the backend server:
+
+1. **Room Token** (`/api/generate-room-token`) -- authenticates with the Hiyve signaling server for WebRTC connections. Uses both `APIKEY` and `CLIENT_SECRET`.
+2. **Cloud Token** (`/api/generate-cloud-token`) -- authenticates with the Hiyve Cloud API for AI features (transcription intelligence, live context queries, mood sync). Uses `APIKEY` only.
+
+The room token is consumed by `HiyveProvider` and the cloud token is consumed by `CloudProvider`. Both tokens are generated server-side so that credentials are never exposed to the browser.
+
+## Code Overview
+
+### Provider Setup (main.tsx)
+
+Four nested providers configure the full AI video room:
+
+```tsx
+import { HiyveProvider } from '@hiyve/react';
+import { CloudProvider, MoodAnalysisProvider } from '@hiyve/react-intelligence';
+
+<HiyveProvider
+  generateRoomToken={generateRoomToken}
+  localVideoElementId="local-video"
+  persistDeviceChanges
+  onError={(err) => setError(err.message)}
+>
+  <CloudProvider generateCloudToken={generateCloudToken} environment="development">
+    <MoodAnalysisProvider analyzerType="human">
+      <App />
+    </MoodAnalysisProvider>
+  </CloudProvider>
+</HiyveProvider>
+```
+
+- `HiyveProvider` handles WebRTC connections, room state, and media devices
+- `CloudProvider` authenticates with the Hiyve Cloud API for AI features
+- `MoodAnalysisProvider` enables facial sentiment detection on video streams
+
+### Join Form (JoinForm.tsx)
+
+```tsx
+import { useConnection } from '@hiyve/react';
+import { DevicePreview } from '@hiyve/react-ui';
+
+const { createRoom, joinRoom } = useConnection();
+
+// Owner creates, guest joins
+<Button onClick={() => createRoom(roomName, userName)}>Create Room</Button>
+<Button onClick={() => joinRoom(roomName, userName)}>Join Room</Button>
+
+// Device preview dialog for camera/mic testing
+<DevicePreview persistSelection showAudioOutput showRefreshButton />
+```
+
+### Video Room with AI Overlays (VideoRoom.tsx)
+
+```tsx
+import { VideoGrid, ControlBar } from '@hiyve/react-ui';
+import { RecordingIndicator } from '@hiyve/react-capture';
+import { defaultIntelligenceConfig } from '@hiyve/react-intelligence';
+
+// Tile overlay order controls what appears on each video tile
+const TILE_OVERLAY_ORDER = ['engagement', 'mood', 'name', 'status', 'controls'];
+
+<VideoGrid
+  layout="grid"
+  showEngagement         // Engagement indicator overlays
+  moodPosition="top-left"
+  engagementPosition="top-left"
+  tileOverlayOrder={TILE_OVERLAY_ORDER}
+/>
+
+<ControlBar
+  showRecordingMenu              // Recording start/stop
+  intelligenceConfig={config}    // Intelligence mode settings
+  onIntelligenceConfigChange={setConfig}
+/>
+```
+
+### AI Sidebar (AISidebar.tsx)
+
+```tsx
+import { IntelligenceHub, useLiveContext, useMoodCloudSync } from '@hiyve/react-intelligence';
+import { TranscriptViewer } from '@hiyve/react-capture';
+
+// Live context provides AI query capability tied to recording session
+const { askWithResponseId } = useLiveContext(roomName, userId);
+
+// Mood cloud sync pushes local sentiment data to the AI context
+useMoodCloudSync({ roomName, userId, responseId, moodStates, ... });
+
+// AI query handler sends user questions to the cloud with the recording context
+const handleAIQuery = async (message) => {
+  const result = await askWithResponseId(responseId, message);
+  return result.content;
+};
+
+<IntelligenceHub
+  onSend={handleAIQuery}
+  showAssistant          // AI chat tab
+  showCaptions           // Live transcription tab
+  showAlerts             // Future alerts tab
+  showSentiment          // Sentiment analysis tab
+  showConversationManager
+  renderCaptionsContent={() => (
+    <TranscriptViewer showTimestamps showSentiment autoScroll />
+  )}
+/>
+```
+
+## Hooks Reference
+
+### Used in This Example
+
+```tsx
+// Connection -- create/join/leave rooms
+const { createRoom, joinRoom, leaveRoom, isConnecting } = useConnection();
+
+// Room state -- room info, ownership, presence
+const { room, isOwner, isInRoom } = useRoom();
+
+// Wait for host -- guest waiting room state
+const { isWaiting } = useWaitForHost();
+
+// Participants -- participant list and local user ID
+const { localUserId } = useParticipants();
+
+// Recording -- recording state and duration
+const { isRecording, recordingDuration, responseId, isRecordingStarting } = useRecording();
+
+// Transcription -- live transcription data
+const { transcriptions, isTranscribing, enrichTranscription } = useTranscription();
+
+// Intelligence readiness -- derived state for UI readiness indicators
+const readiness = useIntelligenceReadiness({ responseId, isRecordingStarting, ... });
+
+// Live context -- AI query interface tied to a recording session
+const { askWithResponseId } = useLiveContext(roomName, userId);
+
+// Mood analysis -- local sentiment detection state
+const moodAnalysis = useMoodAnalysisSafe();
+
+// Mood cloud sync -- pushes mood data to AI context
+useMoodCloudSync({ roomName, userId, responseId, moodStates, ... });
+```
+
+### Advanced (Not Used Here)
+
+These hooks are available for more complex implementations:
+
+```tsx
+// Media controls -- programmatic mute (ControlBar handles this)
+const { isAudioMuted, isVideoMuted, toggleAudio, toggleVideo } = useLocalMedia();
+
+// Screen sharing -- programmatic screen share control
+const { isScreenSharing, startScreenShare, stopScreenShare } = useScreenShare();
+```
+
+## Development
+
+```bash
+# Start both frontend and backend
+pnpm run dev
+
+# Frontend only (port 5173)
+pnpm run dev:client
+
+# Server only (port 3001)
+pnpm run dev:server
+
+# Build for production
+pnpm run build
+
+# Preview production build
+pnpm run preview
+```
+
+### Toggle Between Local and Registry Packages
+
+For development with local `hiyve-sdk`:
+
+```bash
+# From the hiyve-examples root directory:
+./toggle-packages.sh dev    # Use local linked packages
+./toggle-packages.sh prod   # Use registry packages
+./toggle-packages.sh status # Check current mode
+
+# Or from this example directory:
+pnpm run packages:dev
+pnpm run packages:prod
+pnpm run packages:status
+```
+
+## Troubleshooting
+
+### "Server not configured" error
+Create `server/.env` with valid Hiyve API credentials. Both `APIKEY` and `CLIENT_SECRET` are required for room tokens. `APIKEY` alone is sufficient for cloud tokens.
+
+### Cloud features not working (AI assistant returns errors)
+Verify that your `APIKEY` has cloud access enabled. Check the server console for cloud token generation errors. The cloud token endpoint (`/api/generate-cloud-token`) must return successfully before AI features will work.
+
+### Mood analysis not appearing on tiles
+Mood analysis requires camera access and may take a few seconds to initialize. Ensure `MoodAnalysisProvider` wraps your app with `analyzerType="human"`. The mood overlay position is controlled by `moodPosition` on `VideoGrid`.
+
+### Intelligence mode not activating
+Intelligence mode requires an active recording session. Use the recording menu in the `ControlBar` to start recording. The `responseId` from the recording session is needed for AI queries to have context.
+
+### Camera/microphone not working
+Grant camera and microphone permissions in your browser settings. Use the device preview dialog (gear icon) on the join form to test devices before joining.
+
+### Module errors or stale state
+Clear the Vite cache and restart:
+```bash
+rm -rf node_modules/.vite
+pnpm run dev
+```
+
+## Next Steps
+
+Once you understand this AI-focused example, check out:
+
+- **basic-example** -- Minimal video room without AI features (start here if new to the SDK)
+- **full-example** -- All features: chat, recording, transcription, file sharing, Q&A, whiteboard, notes, polls
+- **token-room-example** -- Invite links with token-based joining
+- **basic-identity-example** -- User identity and authentication integration
+
+## Learn More
+
+- [Hiyve SDK Documentation](https://sdk.hiyve.dev)
+- [Hiyve Console](https://console.hiyve.dev) -- manage API keys and view usage
+- [Full Example README](../full-example/README.md)

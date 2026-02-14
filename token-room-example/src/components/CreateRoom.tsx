@@ -1,13 +1,31 @@
 /**
- * CreateRoom Component
+ * @fileoverview Token Room Example - Create Room Component
+ * @module token-room-example/components/CreateRoom
  *
- * Owner flow: Create a room and get an invite link to share.
+ * Handles room creation with token-based authentication.
+ * After creating a room, the SDK connects to the signaling server
+ * and the user is placed directly into the VideoRoom view. The
+ * owner can then share an invite link so guests can join.
  *
- * ## Flow
- * 1. Enter room name and display name
- * 2. Click "Create Room"
- * 3. Room is created, owner joins automatically
- * 4. InviteLinkDisplay shows the shareable link
+ * ```
+ * CreateRoom
+ *   ├── "Your Name" text field (persisted to localStorage)
+ *   ├── "Room Name" text field (persisted to localStorage)
+ *   └── "Create Room" button
+ *         └── calls useConnection().createRoom(roomName, userName)
+ * ```
+ *
+ * ## Key Concepts
+ * - **Room tokens vs join tokens**: The room token (generated in main.tsx)
+ *   authenticates the SDK with the signaling server. The join token is a
+ *   separate, per-room credential embedded in invite links so guests can
+ *   join without needing API credentials.
+ * - **localStorage persistence**: Both the user name and room name are
+ *   saved to localStorage so the form is pre-filled on return visits.
+ *   This uses dedicated storage keys (prefixed `hiyve-token-example-`)
+ *   to avoid collisions with other examples.
+ * - **Owner auto-join**: `createRoom()` both creates the room on the
+ *   server and joins the user into it in a single call.
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -21,10 +39,19 @@ import {
 import { VideoCall as VideoCallIcon } from '@mui/icons-material';
 import { useConnection } from '@hiyve/react';
 
+/**
+ * Props for the {@link CreateRoom} component.
+ */
 interface CreateRoomProps {
+  /** Callback fired whenever the user name field changes; used by App to track the display name for VideoRoom. */
   onUserNameChange?: (name: string) => void;
 }
 
+/**
+ * localStorage keys for persisting form values across sessions.
+ * Prefixed with `hiyve-token-example-` to avoid collisions with
+ * other Hiyve examples that may run on the same origin.
+ */
 const STORAGE_KEYS = {
   userName: 'hiyve-token-example-userName',
   roomName: 'hiyve-token-example-roomName',

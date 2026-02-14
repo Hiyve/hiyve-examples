@@ -24,7 +24,7 @@
  * 3. User clicks logout → `isAuthenticated` becomes false → show AuthFlow
  */
 
-import { useUser, AuthFlow } from '@hiyve/identity-react';
+import { useUser, AuthFlow } from '@hiyve/react-identity';
 import { Box, CircularProgress } from '@mui/material';
 import { Dashboard } from './components/Dashboard';
 

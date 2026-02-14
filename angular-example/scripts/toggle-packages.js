@@ -3,13 +3,15 @@
 /**
  * Toggle between local development packages and registry production packages
  *
- * The @hiyve/angular package always uses registry versions because
- * link: protocol causes duplicate module instances that break Angular DI.
- * Non-Angular packages (core, rtc-client, utilities) can use link: for dev.
+ * The @hiyve/angular package uses file: (copy) instead of link: (symlink)
+ * in dev mode because link: causes duplicate @angular/* module instances
+ * that break Angular's dependency injection. With file:, pnpm copies the
+ * package into the virtual store where peer deps resolve from the app's
+ * node_modules — ensuring singleton Angular instances.
  *
  * Usage:
- *   node scripts/toggle-packages.js dev    # Use local for non-Angular packages
- *   node scripts/toggle-packages.js prod   # Use registry for all packages
+ *   node scripts/toggle-packages.js dev    # Use local packages
+ *   node scripts/toggle-packages.js prod   # Use registry packages
  *   node scripts/toggle-packages.js status # Show current mode
  */
 
@@ -63,7 +65,8 @@ function getVersionFromMetadata(pkg, tag = 'latest') {
   return tag;
 }
 
-// The @hiyve/angular package always uses registry (link: breaks Angular DI singletons)
+// Angular packages need file: (copy) instead of link: (symlink) in dev mode
+// because link: creates duplicate @angular/* instances that break DI
 function isAngularPackage(name) {
   return name === 'angular';
 }
@@ -81,15 +84,11 @@ function getHiyvePackages(pkg) {
   return packages.sort();
 }
 
-/**
- * Get only toggleable (non-Angular) packages
- */
-function getToggleablePackages(pkg) {
-  return getHiyvePackages(pkg).filter(name => !isAngularPackage(name));
-}
-
 function getLocalPath(pkg) {
-  return `link:${COMPONENTS_PATH}/${pkg}`;
+  // Angular uses file: (copy) to avoid duplicate module instances
+  // All others use link: (symlink) for live development
+  const protocol = isAngularPackage(pkg) ? 'file' : 'link';
+  return `${protocol}:${COMPONENTS_PATH}/${pkg}`;
 }
 
 function getProdPath(pkg) {
@@ -114,17 +113,17 @@ function isDevVersion(version) {
 }
 
 /**
- * Get current mode by checking toggleable (non-Angular) packages only.
+ * Get current mode by checking all @hiyve/* packages.
  * Returns 'dev' if all are local, 'prod' if all are registry, 'mixed' if some of each.
  */
 function getCurrentMode(pkg) {
-  const toggleable = getToggleablePackages(pkg);
-  if (toggleable.length === 0) return 'unknown';
+  const packages = getHiyvePackages(pkg);
+  if (packages.length === 0) return 'unknown';
 
   let devCount = 0;
   let prodCount = 0;
 
-  for (const name of toggleable) {
+  for (const name of packages) {
     const version = pkg.dependencies[`@hiyve/${name}`];
     if (isDevVersion(version)) {
       devCount++;
@@ -133,31 +132,18 @@ function getCurrentMode(pkg) {
     }
   }
 
-  if (devCount === toggleable.length) return 'dev';
-  if (prodCount === toggleable.length) return 'prod';
+  if (devCount === packages.length) return 'dev';
+  if (prodCount === packages.length) return 'prod';
   return 'mixed';
 }
 
 function setMode(mode) {
   const pkg = readPackageJson();
   const allPackages = getHiyvePackages(pkg);
-  const toggleable = getToggleablePackages(pkg);
 
   let updated = 0;
 
-  // Angular packages always use registry
   for (const name of allPackages) {
-    if (!isAngularPackage(name)) continue;
-    const key = `@hiyve/${name}`;
-    const targetVersion = getProdPath(name);
-    if (pkg.dependencies[key] !== targetVersion) {
-      pkg.dependencies[key] = targetVersion;
-      updated++;
-    }
-  }
-
-  // Non-Angular packages toggle between dev/prod
-  for (const name of toggleable) {
     const key = `@hiyve/${name}`;
     const targetVersion = mode === 'dev' ? getLocalPath(name) : getProdPath(name);
     if (pkg.dependencies[key] !== targetVersion) {
@@ -167,42 +153,36 @@ function setMode(mode) {
   }
 
   if (updated === 0) {
-    console.log(`Already in ${mode} mode (all ${toggleable.length} toggleable packages up to date)`);
+    console.log(`Already in ${mode} mode (all ${allPackages.length} packages up to date)`);
     return;
   }
 
   writePackageJson(pkg);
   console.log(`Updated package.json to ${mode.toUpperCase()} mode`);
   console.log(`  Toggled ${updated} package(s)`);
-  console.log(`  Angular packages always use registry (${allPackages.filter(isAngularPackage).length} packages)`);
+
+  const angular = allPackages.filter(isAngularPackage);
+  if (angular.length > 0 && mode === 'dev') {
+    console.log(`  Note: @hiyve/angular uses file: (copy) — run pnpm install after SDK rebuilds`);
+  }
 }
 
 function showStatus() {
   const pkg = readPackageJson();
   const mode = getCurrentMode(pkg);
   const allPackages = getHiyvePackages(pkg);
-  const angular = allPackages.filter(isAngularPackage);
-  const toggleable = allPackages.filter(n => !isAngularPackage(n));
 
   const modeLabel = mode === 'mixed' ? 'MIXED (run dev or prod to fix)' : mode.toUpperCase();
   console.log(`\nCurrent mode: ${modeLabel}\n`);
 
-  if (angular.length > 0) {
-    console.log(`Angular packages (always registry):`);
-    for (const name of angular) {
-      const value = pkg.dependencies[`@hiyve/${name}`];
-      console.log(`  @hiyve/${name}: REGISTRY (v${value})`);
-    }
-    console.log('');
-  }
-
-  console.log(`Toggleable packages (${toggleable.length}):\n`);
-  for (const name of toggleable) {
+  console.log(`Packages (${allPackages.length}):\n`);
+  for (const name of allPackages) {
     const key = `@hiyve/${name}`;
     const value = pkg.dependencies[key];
     const isDev = isDevVersion(value);
     const source = isDev ? 'LOCAL' : 'REGISTRY';
-    const versionInfo = isDev ? '' : ` (v${value})`;
+    const protocol = isAngularPackage(name) && isDev ? ' (file: copy)' : '';
+    const versionInfo = isDev ? protocol : ` (v${value})`;
     console.log(`  ${key}: ${source}${versionInfo}`);
   }
   console.log('');

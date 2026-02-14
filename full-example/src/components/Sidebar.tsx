@@ -29,7 +29,7 @@ import { ParticipantList } from '@hiyve/react-ui';
 import { ChatPanel } from '@hiyve/react-collaboration';
 import { GainControl, type GainControlLabels } from '@hiyve/react-ui';
 import { FileManager, type CustomViewerMap } from '@hiyve/react-collaboration';
-import { IntelligenceSettings, type IntelligenceConfig } from '@hiyve/react-ui';
+import type { IntelligenceConfig } from '@hiyve/react-intelligence';
 import { WhiteboardSession } from '@hiyve/react-whiteboard';
 import { QASession, QASessionViewer, useQASessionState, type QASessionFile } from '@hiyve/react-collaboration';
 import { PollsSession, PollsSessionViewer, usePollListener, type PollsSessionFile } from '@hiyve/react-collaboration';
@@ -249,16 +249,6 @@ export function Sidebar({
                 Use the settings button in the control bar to change devices.
               </Typography>
 
-              {/* Intelligence Settings - owner only */}
-              {isOwner && (
-                <IntelligenceSettings
-                  config={intelligenceConfig}
-                  onChange={onIntelligenceConfigChange}
-                  disabled={isRecording}
-                  sx={{ mt: 2 }}
-                />
-              )}
-
               {/* Streaming Settings - owner only */}
               {isOwner && (
                 <>
@@ -330,14 +320,13 @@ export function Sidebar({
           return <NotesSession sx={{ height: '100%' }} />;
 
         case 'ai':
-          // userId must be an email registered with the Hiyve API key
-          // localUserId should be the user's email from the connection
           return room?.name && localUserId ? (
             <AIPanel
               userId={localUserId}
               roomName={room.name}
               isOwner={isOwner}
-              onNoteSaved={() => {}}
+              intelligenceConfig={intelligenceConfig}
+              onIntelligenceConfigChange={onIntelligenceConfigChange}
             />
           ) : (
             <Box sx={{ p: 2 }}>

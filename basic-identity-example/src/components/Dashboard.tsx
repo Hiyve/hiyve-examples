@@ -7,7 +7,7 @@
  * includes a logout button by default.
  */
 
-import { useUser, UserProfile } from '@hiyve/identity-react';
+import { useUser, UserProfile } from '@hiyve/react-identity';
 import { Box, Typography, Paper, Chip } from '@mui/material';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 

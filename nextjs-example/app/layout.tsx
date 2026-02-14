@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Next.js Example - Root Layout
+ * @module nextjs-example/app/layout
+ *
+ * Next.js App Router root layout. Wraps all pages with
+ * Material-UI theme provider and AppRouterCacheProvider
+ * for SSR-compatible emotion styling.
+ *
+ * This is a server component (no 'use client' directive) so
+ * metadata exports work correctly for SEO.
+ */
+
 import type { Metadata } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { ThemeProvider } from '@mui/material/styles';

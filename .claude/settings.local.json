@@ -165,7 +165,12 @@
       "Bash(sudo ln:*)",
       "Bash(~/.zshrc << 'EOF'\n\n# Android SDK\nexport ANDROID_HOME=$HOME/Library/Android/sdk\nexport PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH\nEOF)",
       "Bash(./gradlew clean:*)",
-      "Bash(pnpm ls:*)"
+      "Bash(pnpm ls:*)",
+      "Bash(pnpm remove:*)",
+      "WebFetch(domain:angular.dev)",
+      "WebFetch(domain:danielbarta.com)",
+      "Bash(timeout 12 pnpm ng serve:*)",
+      "Bash(npx ng build)"
     ]
   }
 }

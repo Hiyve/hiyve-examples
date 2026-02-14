@@ -1,16 +1,19 @@
-import { NextResponse } from 'next/server';
-
 /**
- * Generate Room Token API Route
+ * @fileoverview Next.js Example - Generate Room Token API Route
+ * @module nextjs-example/app/api/generate-room-token/route
  *
- * Generates a JWT room token by calling the Hiyve signaling server.
- * The token is used by the client to authenticate WebRTC connections.
+ * Server-side API route that generates a JWT room token by calling
+ * the Hiyve signaling server. The token is used by the client to
+ * authenticate WebRTC connections.
  *
  * Environment variables required:
  * - APIKEY: Your Hiyve API key
  * - CLIENT_SECRET: Your Hiyve client secret
  * - SERVER_REGION: Optional, defaults to 'us-west-2'
  */
+
+import { NextResponse } from 'next/server';
+
 export async function POST() {
   const APIKEY = process.env.APIKEY;
   const CLIENT_SECRET = process.env.CLIENT_SECRET;

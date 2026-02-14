@@ -19,7 +19,8 @@
   "include": [
     "basic-example/src/**/*",
     "full-example/src/**/*",
-    "token-room-example/src/**/*"
+    "token-room-example/src/**/*",
+    "ai-video-room-example/src/**/*"
   ],
   "exclude": [
     "node_modules",

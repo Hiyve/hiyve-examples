@@ -1,30 +1,23 @@
 /**
- * AIPanel Component - AI-powered meeting intelligence using Hiyve Cloud.
+ * AIPanel Component - AI-powered meeting intelligence using IntelligenceHub.
  *
- * Provides an AI Assistant view and a Captions view with live transcription.
+ * Provides a tabbed dashboard with AI Assistant, Captions, Alerts, and Sentiment
+ * features via the IntelligenceHub component.
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
-  Box,
-  Typography,
-  Alert,
-  ToggleButtonGroup,
-  ToggleButton,
-} from '@mui/material';
+  useTranscription,
+  useRecording,
+} from '@hiyve/react';
 import {
-  SmartToy as AIIcon,
-  Chat as ChatIcon,
-  ClosedCaption as CaptionsIcon,
-} from '@mui/icons-material';
-import {
-  AIAssistant,
+  IntelligenceHub,
   useIntelligenceReadiness,
-  IntelligenceReadinessStatus,
+  useLiveContext,
+  useMoodCloudSync,
+  useMoodAnalysisSafe,
+  type IntelligenceConfig,
 } from '@hiyve/react-intelligence';
-import { useLiveContext, useMoodCloudSync } from '@hiyve/react-intelligence';
-import { useTranscription, useRecording } from '@hiyve/react';
-import { useMoodAnalysisSafe } from '@hiyve/react-intelligence';
 import { TranscriptViewer } from '@hiyve/react-capture';
 
 interface AIPanelProps {
@@ -32,30 +25,23 @@ interface AIPanelProps {
   userId: string;
   /** Room name for live context */
   roomName: string;
-  /** Callback when the AI chat note is saved with the file ID */
-  onNoteSaved?: (fileId: string) => void;
-  /** Whether the current user is the room owner (controls captions visibility) */
+  /** Whether the current user is the room owner */
   isOwner?: boolean;
+  /** Intelligence configuration */
+  intelligenceConfig: IntelligenceConfig;
+  /** Callback when intelligence configuration changes */
+  onIntelligenceConfigChange: (config: IntelligenceConfig) => void;
 }
 
-type ViewMode = 'assistant' | 'captions';
-
-export function AIPanel({ userId, roomName, onNoteSaved, isOwner = false }: AIPanelProps) {
-  // View mode toggle
-  const [viewMode, setViewMode] = useState<ViewMode>('assistant');
-
-  // Track chat note file ID so we update the same file across saves
-  // Using state (not ref) so component re-renders and AIAssistant sees updated fileId
-  const [chatNoteFileId, setChatNoteFileId] = useState<string | undefined>(undefined);
-  const handleNoteSaved = useCallback((fileId: string) => {
-    setChatNoteFileId(fileId);
-    onNoteSaved?.(fileId);
-  }, [onNoteSaved]);
-
-  // Get transcriptions from client provider for display
+export function AIPanel({
+  userId,
+  roomName,
+  isOwner = false,
+  intelligenceConfig,
+  onIntelligenceConfigChange,
+}: AIPanelProps) {
+  // Get state from providers
   const { transcriptions, isTranscribing, enrichTranscription } = useTranscription();
-
-  // Get recording state for responseId (bot-created AI context)
   const { responseId, isRecording, isRecordingStarting } = useRecording();
 
   // Derive intelligence readiness state
@@ -67,18 +53,11 @@ export function AIPanel({ userId, roomName, onNoteSaved, isOwner = false }: AIPa
     hasTranscriptions: hasTranscripts,
   });
 
-  // Live context hook - bot manages context, we just query against it
-  const {
-    error: liveError,
-    askWithResponseId,
-    clearError: clearLiveError,
-  } = useLiveContext(roomName, userId);
+  // Live context hook
+  const { askWithResponseId } = useLiveContext(roomName, userId);
 
-  // Mood analysis hook - client runs mood analysis on video streams
+  // Mood analysis
   const moodAnalysis = useMoodAnalysisSafe();
-
-  // AI context is ready when we have a responseId from the bot
-  const isAIContextReady = !!responseId;
 
   // Sync mood analysis data to cloud AI context
   useMoodCloudSync({
@@ -91,8 +70,7 @@ export function AIPanel({ userId, roomName, onNoteSaved, isOwner = false }: AIPa
     enrichTranscription,
   });
 
-  // Create onSend handler for AIAssistant
-  // Uses askWithResponseId to query against the bot's accumulated transcript context
+  // AI query handler
   const handleAIQuery = useCallback(async (message: string): Promise<string> => {
     if (!responseId) {
       throw new Error('No AI context available. Waiting for Intelligence Mode to initialize.');
@@ -105,116 +83,31 @@ export function AIPanel({ userId, roomName, onNoteSaved, isOwner = false }: AIPa
   }, [responseId, askWithResponseId]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Header */}
-      <Box sx={{ p: 2, pb: 1 }}>
-        <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <AIIcon color="primary" />
-          AI Intelligence
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          AI-powered meeting intelligence using Hiyve Cloud
-        </Typography>
-
-        {/* View Mode Toggle - only shown to owners (guests see assistant only) */}
-        {isOwner && (
-          <ToggleButtonGroup
-            value={viewMode}
-            exclusive
-            onChange={(_, newMode) => newMode && setViewMode(newMode)}
-            size="small"
-            fullWidth
-          >
-            <ToggleButton value="assistant">
-              <ChatIcon sx={{ mr: 1 }} fontSize="small" />
-              Assistant
-            </ToggleButton>
-            <ToggleButton value="captions">
-              <CaptionsIcon sx={{ mr: 1 }} fontSize="small" />
-              Captions
-            </ToggleButton>
-          </ToggleButtonGroup>
-        )}
-      </Box>
-
-      {liveError && (
-        <Alert
-          severity="error"
-          onClose={clearLiveError}
-          sx={{ mx: 2, mb: 1 }}
-        >
-          {liveError.message}
-        </Alert>
+    <IntelligenceHub
+      roomId={roomName}
+      userId={userId}
+      onSend={handleAIQuery}
+      intelligenceConfig={intelligenceConfig}
+      onIntelligenceConfigChange={onIntelligenceConfigChange}
+      isOwner={isOwner}
+      liveContextActive={!!responseId}
+      hasTranscriptions={hasTranscripts}
+      readiness={readiness}
+      showConversationManager
+      showAssistant
+      showCaptions
+      showAlerts
+      showSentiment
+      renderCaptionsContent={() => (
+        <TranscriptViewer
+          showTimestamps
+          showSentiment
+          autoScroll
+          groupingWindowMs={3000}
+          sx={{ height: '100%' }}
+        />
       )}
-
-      {/* Assistant View - AIAssistant always mounted to preserve note file ID */}
-      {viewMode === 'assistant' && (
-        <Box sx={{ flex: 1, minHeight: 0, position: 'relative' }}>
-          <AIAssistant
-            roomId={roomName}
-            userId={userId}
-            liveContextActive={isAIContextReady}
-            hasTranscriptions={hasTranscripts}
-            onSend={handleAIQuery}
-            showHeader={false}
-            showQuickActions
-            quickActionsPosition="above-input"
-            quickActions={[
-              { id: 'summary', label: '📝 Summarize', query: 'Summarize what has been discussed so far', description: 'Get a summary of the meeting' },
-              { id: 'actions', label: '✅ Action Items', query: 'What action items have been mentioned?', description: 'Extract action items' },
-              { id: 'decisions', label: '🎯 Decisions', query: 'What decisions have been made?', description: 'List key decisions' },
-            ]}
-            suggestions={[
-              'What topics have been discussed?',
-              'Who has been most active?',
-              'Are there any follow-up items?',
-            ]}
-            systemPrompt="You are a helpful meeting assistant. Use the meeting context to provide accurate and relevant responses."
-            saveAsNote={{
-              fileId: chatNoteFileId,
-              onNoteSaved: handleNoteSaved,
-            }}
-            colors={{
-              background: 'transparent',
-            }}
-            sx={{ height: '100%' }}
-          />
-          {/* Overlay readiness status when not ready */}
-          {!readiness.isReady && (
-            <Box sx={{
-              position: 'absolute',
-              inset: 0,
-              bgcolor: 'background.paper',
-              zIndex: 1,
-            }}>
-              <IntelligenceReadinessStatus
-                readiness={readiness}
-                icon={<AIIcon sx={{ fontSize: 48, color: 'text.disabled' }} />}
-              />
-            </Box>
-          )}
-        </Box>
-      )}
-
-      {/* Captions View - Live transcription viewer */}
-      {viewMode === 'captions' && (
-        <Box sx={{ flex: 1, minHeight: 0 }}>
-          {hasTranscripts ? (
-            <TranscriptViewer
-              showTimestamps
-              showSentiment
-              autoScroll
-              groupingWindowMs={3000}
-              sx={{ height: '100%' }}
-            />
-          ) : (
-            <IntelligenceReadinessStatus
-              readiness={readiness}
-              icon={<CaptionsIcon sx={{ fontSize: 48, color: 'text.disabled' }} />}
-            />
-          )}
-        </Box>
-      )}
-    </Box>
+      sx={{ height: '100%' }}
+    />
   );
 }

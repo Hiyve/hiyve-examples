@@ -174,10 +174,7 @@ export function JoinForm({ onUserNameChange }: JoinFormProps) {
         */}
         <Box sx={{ mb: 3 }}>
           <DevicePreview
-            videoElementId="local-video"
-            showDeviceSelectors
-            showMuteButtons
-            aspectRatio="16/9"
+            showControls
           />
         </Box>
 

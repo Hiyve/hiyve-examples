@@ -30,10 +30,8 @@ import {
 } from '@hiyve/react';
 import {
   ControlBar,
-  defaultIntelligenceConfig,
   DEFAULT_LAYOUTS,
   type ControlBarLayoutMode,
-  type IntelligenceConfig,
   type LayoutDefinition,
   VideoGrid,
   presentationLayoutHandler,
@@ -41,6 +39,10 @@ import {
   type LocalVideoTileOverlayElement,
   WaitingRoomAdmittance,
 } from '@hiyve/react-ui';
+import {
+  defaultIntelligenceConfig,
+  type IntelligenceConfig,
+} from '@hiyve/react-intelligence';
 import {
   RecordingIndicator,
   type RecordingIndicatorColors,
