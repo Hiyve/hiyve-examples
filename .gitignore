@@ -49,6 +49,9 @@ coverage/
 *.tmp
 *.temp
 
+# Local utility scripts (not part of the examples)
+create-test-tenant.sh
+
 server/.env
 
 # React Native (react-native-example)
