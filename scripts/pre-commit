@@ -2,7 +2,7 @@
 # Pre-commit hook: block commits containing local @hiyve/* paths
 # Committed state must always use registry (prod) versions.
 
-EXAMPLES="basic-example basic-identity-example full-example token-room-example nextjs-example angular-example ai-video-room-example"
+EXAMPLES="basic-example basic-identity-example full-example token-room-example nextjs-example angular-example ai-video-room-example sales-example interview-example telehealth-example"
 FOUND=0
 
 for example in $EXAMPLES; do

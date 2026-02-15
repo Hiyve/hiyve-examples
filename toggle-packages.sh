@@ -22,6 +22,9 @@ ANGULAR_EXAMPLE_DIR="$SCRIPT_DIR/angular-example"
 AI_EXAMPLE_DIR="$SCRIPT_DIR/ai-video-room-example"
 RN_EXAMPLE_DIR="$SCRIPT_DIR/react-native-example"
 REACT_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/react-room-example"
+SALES_EXAMPLE_DIR="$SCRIPT_DIR/sales-example"
+INTERVIEW_EXAMPLE_DIR="$SCRIPT_DIR/interview-example"
+TELEHEALTH_EXAMPLE_DIR="$SCRIPT_DIR/telehealth-example"
 COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-sdk"
 
 # Colors
@@ -94,6 +97,18 @@ do_status() {
 
     echo -e "${CYAN}=== react-room-example ===${NC}"
     cd "$REACT_ROOM_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== sales-example ===${NC}"
+    cd "$SALES_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== interview-example ===${NC}"
+    cd "$INTERVIEW_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== telehealth-example ===${NC}"
+    cd "$TELEHEALTH_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
 }
 
@@ -171,6 +186,9 @@ do_dev() {
     toggle_example "$AI_EXAMPLE_DIR" "ai-video-room-example" "dev"
     toggle_rn_example "$RN_EXAMPLE_DIR" "react-native-example" "dev"
     toggle_example "$REACT_ROOM_EXAMPLE_DIR" "react-room-example" "dev"
+    toggle_example "$SALES_EXAMPLE_DIR" "sales-example" "dev"
+    toggle_example "$INTERVIEW_EXAMPLE_DIR" "interview-example" "dev"
+    toggle_example "$TELEHEALTH_EXAMPLE_DIR" "telehealth-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
@@ -185,6 +203,9 @@ do_dev() {
     echo -e "    ${CYAN}cd ai-video-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd react-native-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd react-room-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd sales-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd interview-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd telehealth-example && pnpm run dev${NC}"
     echo ""
     echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-sdk for watch mode"
     echo ""
@@ -207,6 +228,9 @@ do_prod() {
     toggle_example "$AI_EXAMPLE_DIR" "ai-video-room-example" "prod"
     toggle_rn_example "$RN_EXAMPLE_DIR" "react-native-example" "prod"
     toggle_example "$REACT_ROOM_EXAMPLE_DIR" "react-room-example" "prod"
+    toggle_example "$SALES_EXAMPLE_DIR" "sales-example" "prod"
+    toggle_example "$INTERVIEW_EXAMPLE_DIR" "interview-example" "prod"
+    toggle_example "$TELEHEALTH_EXAMPLE_DIR" "telehealth-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"
@@ -221,6 +245,9 @@ do_prod() {
     echo -e "    ${CYAN}cd ai-video-room-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd react-native-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd react-room-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd sales-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd interview-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd telehealth-example && pnpm run dev${NC}"
     echo ""
 }
 

@@ -4,15 +4,27 @@ Example applications demonstrating how to build video conferencing apps with `@h
 
 # Examples
 
+### React Video Room Examples
 - **react-room-example** - 5 line example of how to get a full featured Video Conferencing application going 
 - **basic-example** - Bare bones example using the core components in a react app
 - **full-example** - Full featured example using most components including Video, Chat, File Manager, Notes, Whiteboard and more
 - **token-room-example** - Token-based joining with invite links example
+
+### AI Example
+- **ai-video-room-example** - A Video Room with AI, shows transcriptions, meeting analysis, inline live query and meeting alerts.
+
+### Alternate Framework Examples
+- **react-native-example** - IOS and Android mobile example of a Video Conferencing application
 - **nextjs-example** - Similar to basic-example using Next.js
 - **angular-example** - Similar to basic-example using Angular
-- **ai-video-room-example** - A Video Room with AI, shows transcriptions, meeting analysis, inline live query and meeting alerts.
-- **react-native-example** - IOS and Android mobile example of a Video Conferencing application
-- **basic-identity-example** - A simple yet secure example of how to use the Hiyve Identity Authentication system  
+
+### Identity (Auth) Examples
+- **basic-identity-example** - A simple yet secure example of how to use the Hiyve Identity Authentication system
+
+### Vertical Application Examples
+- **sales-example** - Sales Coach Dashboard with call analysis, scorecard, and semantic search across past calls
+- **interview-example** - Interview Platform with candidate assessment, hiring recommendations, and transcript search
+- **telehealth-example** - Telehealth Visit Notes with clinical documentation, medications, follow-ups, and visit search
 
 
 ## Quick Start
@@ -244,6 +256,66 @@ npm run ios    # or npm run android
 
 > **Note:** The React Native example uses `npm` (not pnpm) and requires Xcode (iOS) or Android Studio (Android). See the [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment) guide.
 
+### Sales Example
+
+An AI-powered **Sales Coach Dashboard** that analyzes sales call transcripts and provides detailed scorecards:
+
+- Start a video sales call with WebRTC
+- Analyze transcripts with `analyzeSalesCall` for discovery, qualification, objection handling, closing, and next steps scoring
+- View results via `ScorecardPanel` with overall score gauge and dimension breakdowns
+- Semantic search across past sales call transcripts
+- Demo transcript included for quick testing
+
+Uses `@hiyve/cloud` for AI analysis and `@hiyve/react-intelligence` for pre-built UI components.
+
+See [sales-example/README.md](sales-example/README.md) for details.
+
+```bash
+cd sales-example
+pnpm run setup
+pnpm run dev
+```
+
+### Interview Example
+
+An AI-powered **Interview Platform** for structured candidate assessment:
+
+- Conduct video interviews with WebRTC
+- Analyze transcripts with `analyzeInterview` for technical competency, communication, problem solving, culture fit, and enthusiasm
+- Hiring recommendation (Strong Yes through Strong No) with strengths and concerns lists
+- Semantic search across past interview transcripts
+- Demo transcript included for quick testing
+
+Uses `@hiyve/cloud` for AI analysis and `@hiyve/react-intelligence` for pre-built UI components.
+
+See [interview-example/README.md](interview-example/README.md) for details.
+
+```bash
+cd interview-example
+pnpm run setup
+pnpm run dev
+```
+
+### Telehealth Example
+
+An AI-powered **Telehealth Visit Notes** application for clinical documentation:
+
+- Conduct telehealth video visits with WebRTC
+- Analyze visit transcripts with `analyzePatientVisit` to generate structured clinical notes
+- View chief complaints, diagnoses, medications (with action badges), follow-ups, and vital signs
+- Semantic search across past patient visit transcripts
+- Demo transcript included for quick testing
+
+Uses `@hiyve/cloud` for AI analysis with a custom MUI dashboard layout.
+
+See [telehealth-example/README.md](telehealth-example/README.md) for details.
+
+```bash
+cd telehealth-example
+pnpm run setup
+pnpm run dev
+```
+
 ## Architecture
 
 ### Provider Setup
@@ -433,6 +505,9 @@ pnpm run packages:prod
 - [Token Room Example README](token-room-example/README.md) - Token-based joining with invite links
 - [Next.js Example README](nextjs-example/README.md) - Next.js App Router integration
 - [Angular Example README](angular-example/README.md) - Angular 20 integration with RxJS
+- [Sales Example README](sales-example/README.md) - Sales coach dashboard with call analysis
+- [Interview Example README](interview-example/README.md) - Interview platform with candidate assessment
+- [Telehealth Example README](telehealth-example/README.md) - Telehealth visit notes with clinical documentation
 - [React Native Example README](react-native-example/README.md) - Mobile app with @hiyve/react-native SDK
 - [API Documentation](https://sdk.hiyve.dev) - Component API reference
 

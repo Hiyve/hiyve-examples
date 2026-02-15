@@ -172,7 +172,10 @@
       "Bash(timeout 12 pnpm ng serve:*)",
       "Bash(npx ng build)",
       "Bash(git check-ignore:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(pnpm --filter @hiyve/cloud exec tsc:*)",
+      "Bash(pnpm --filter @hiyve/cloud run build:*)",
+      "Bash(mongosh:*)"
     ]
   }
 }
