@@ -2,6 +2,19 @@
 
 Example applications demonstrating how to build video conferencing apps with `@hiyve/*` components.
 
+# Examples
+
+- **react-room-example** - 5 line example of how to get a full featured Video Conferencing application going 
+- **basic-example** - Bare bones example using the core components in a react app
+- **full-example** - Full featured example using most components including Video, Chat, File Manager, Notes, Whiteboard and more
+- **token-room-example** - Token-based joining with invite links example
+- **nextjs-example** - Similar to basic-example using Next.js
+- **angular-example** - Similar to basic-example using Angular
+- **ai-video-room-example** - A Video Room with AI, shows transcriptions, meeting analysis, inline live query and meeting alerts.
+- **react-native-example** - IOS and Android mobile example of a Video Conferencing application
+- **basic-identity-example** - A simple yet secure example of how to use the Hiyve Identity Authentication system  
+
+
 ## Quick Start
 
 ```bash
