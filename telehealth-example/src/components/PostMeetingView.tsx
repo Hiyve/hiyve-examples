@@ -1,14 +1,36 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Container, Box, Button, Typography, Paper, TextField, IconButton,
-  CircularProgress, Divider,
+  CircularProgress, Divider, Alert,
 } from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
   Send as SendIcon,
+  CheckCircle as SavedIcon,
 } from '@mui/icons-material';
-import { MeetingSummary, useLiveContext } from '@hiyve/react-intelligence';
-import { VisitSummaryDashboard } from './VisitSummaryDashboard';
+import { useLiveContext } from '@hiyve/react-intelligence';
+
+const CLINICAL_NOTE_PROMPT = `Based on this patient visit conversation, generate a structured clinical note. Include the following sections where applicable:
+
+## Chief Complaint
+The primary reason for the visit.
+
+## History of Present Illness
+Relevant history discussed during the visit.
+
+## Assessment
+Clinical assessment and diagnoses discussed.
+
+## Plan
+Treatment plan, including:
+- Medications prescribed, adjusted, or discontinued
+- Follow-up appointments and referrals
+- Patient education and instructions
+
+## Vital Signs
+Any vital signs mentioned during the visit.
+
+Format the response as a clear, organized clinical document using markdown.`;
 
 interface Message {
   role: 'user' | 'ai';
@@ -16,29 +38,69 @@ interface Message {
 }
 
 interface PostMeetingViewProps {
-  data: unknown;
-  transcript: string;
   responseId: string | null;
   roomName: string;
   userName: string;
-  loading: boolean;
   onBack: () => void;
 }
 
 export function PostMeetingView({
-  data,
-  transcript,
   responseId,
   roomName,
   userName,
-  loading,
   onBack,
 }: PostMeetingViewProps) {
+  const [notes, setNotes] = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [querying, setQuerying] = useState(false);
 
   const { askWithResponseId } = useLiveContext(roomName, userName);
+
+  // Generate clinical notes on mount
+  useEffect(() => {
+    if (!responseId) return;
+
+    let cancelled = false;
+    setGenerating(true);
+    setError(null);
+
+    fetch('/api/generate-note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        responseId,
+        prompt: CLINICAL_NOTE_PROMPT,
+        roomName,
+        userId: userName,
+        userName,
+        title: 'Clinical Notes',
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (cancelled) return;
+        if (result.success) {
+          setNotes(result.content);
+          setSaved(!!result.fileId);
+        } else {
+          setError(result.message || 'Failed to generate clinical notes.');
+        }
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error('Note generation failed:', err);
+        setError('Failed to generate clinical notes. Please try again.');
+      })
+      .finally(() => {
+        if (!cancelled) setGenerating(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [responseId, roomName, userName]);
 
   const handleSendQuery = useCallback(async () => {
     if (!query.trim() || !responseId) return;
@@ -63,34 +125,48 @@ export function PostMeetingView({
         Back to Home
       </Button>
 
-      <Typography variant="h4" gutterBottom>Visit Analysis</Typography>
+      <Typography variant="h4" gutterBottom>Clinical Notes</Typography>
 
-      {/* Meeting Summary */}
-      {transcript && (
-        <Box sx={{ mb: 3 }}>
-          <MeetingSummary
-            transcript={transcript}
-            autoGenerate
-            showSummary
-            showKeyPoints
-            showActionItems
-            showDecisions
-            showParticipants
-          />
-        </Box>
+      {/* Loading state */}
+      {generating && (
+        <Paper sx={{ p: 3, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <CircularProgress size={24} />
+          <Typography>Generating clinical notes...</Typography>
+        </Paper>
       )}
 
-      {/* Clinical Visit Summary Dashboard */}
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-          <CircularProgress />
-          <Typography sx={{ ml: 2 }}>Analyzing patient visit...</Typography>
-        </Box>
-      ) : data ? (
-        <Box sx={{ mb: 3 }}>
-          <VisitSummaryDashboard data={data} embedded />
-        </Box>
-      ) : null}
+      {/* Error state */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>
+      )}
+
+      {/* Generated clinical notes */}
+      {notes && (
+        <Paper sx={{ p: 3, mb: 3 }}>
+          {saved && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+              <SavedIcon color="success" fontSize="small" />
+              <Typography variant="body2" color="success.main">
+                Saved to Notes
+              </Typography>
+            </Box>
+          )}
+          <Typography
+            variant="body1"
+            sx={{ whiteSpace: 'pre-wrap', '& h2, & h3': { mt: 2, mb: 1 } }}
+            component="div"
+          >
+            {notes}
+          </Typography>
+        </Paper>
+      )}
+
+      {/* No responseId */}
+      {!responseId && !generating && !notes && (
+        <Alert severity="info" sx={{ mb: 3 }}>
+          No clinical notes were generated. You can use the assistant below to ask questions about the visit.
+        </Alert>
+      )}
 
       {/* AI Assistant */}
       {responseId && (

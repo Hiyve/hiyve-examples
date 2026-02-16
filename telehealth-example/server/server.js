@@ -123,6 +123,71 @@ app.post('/api/generate-cloud-token', async (req, res) => {
 });
 
 /**
+ * Generate a note from AI context (server-side)
+ *
+ * Proxies to hiyve-cloud /ai/generate-note which:
+ * 1. Generates note content using OpenAI Responses API (responseId context)
+ * 2. Uploads the note file to S3 via muzieRTC upload endpoints
+ * 3. Returns the content + fileId
+ *
+ * Body: { responseId, prompt, roomName, userId, userName, title }
+ */
+app.post('/api/generate-note', async (req, res) => {
+  if (!APIKEY) {
+    return res.status(500).json({
+      error: 'Server not configured',
+      message: 'APIKEY must be set in environment variables',
+    });
+  }
+
+  try {
+    // Get a cloud token
+    const tokenRes = await fetch(`${HIYVE_CLOUD_URL}/cloud-token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hiyve-Api-Key': APIKEY,
+      },
+      body: JSON.stringify({ expiresIn: '5m' }),
+    });
+
+    if (!tokenRes.ok) {
+      const errText = await tokenRes.text();
+      console.error('Cloud token for note generation failed:', tokenRes.status, errText);
+      return res.status(tokenRes.status).json({ message: 'Failed to get cloud token' });
+    }
+
+    const { cloudToken } = await tokenRes.json();
+
+    // Forward to hiyve-cloud
+    const noteRes = await fetch(`${HIYVE_CLOUD_URL}/ai/generate-note`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${cloudToken}`,
+      },
+      body: JSON.stringify({
+        ...req.body,
+        roomRegion: SERVER_REGION,
+      }),
+    });
+
+    if (!noteRes.ok) {
+      const errText = await noteRes.text();
+      console.error('Note generation failed:', noteRes.status, errText);
+      let parsed;
+      try { parsed = JSON.parse(errText); } catch { parsed = { message: errText }; }
+      return res.status(noteRes.status).json(parsed);
+    }
+    const result = await noteRes.json();
+    res.json(result);
+  } catch (error) {
+    console.error('Error generating note:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+/**
  * Health check endpoint
  */
 app.get('/api/health', (req, res) => {

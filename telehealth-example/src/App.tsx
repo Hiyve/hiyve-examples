@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useConnection, useRoom, useWaitForHost } from '@hiyve/react';
 import { WaitForHostScreen } from '@hiyve/react-ui';
-import { useAnalysis } from '@hiyve/react-intelligence';
-import { useCloudClient } from './cloudClient';
 import { LandingPage } from './components/LandingPage';
 import { JoinForm } from './components/JoinForm';
 import { VideoRoom } from './components/VideoRoom';
@@ -28,7 +26,6 @@ function ConnectingScreen() {
 
 function App() {
   const [mode, setMode] = useState<AppMode>('landing');
-  const [lastTranscript, setLastTranscript] = useState('');
   const [lastResponseId, setLastResponseId] = useState<string | null>(null);
   const [lastRoomName, setLastRoomName] = useState('');
 
@@ -36,30 +33,17 @@ function App() {
   const { isInRoom, room } = useRoom();
   const { isWaiting: isWaitingForHost } = useWaitForHost();
 
-  const cloud = useCloudClient();
-  const { result, loading, analyzePatientVisit, clearResult } = useAnalysis({ cloud });
-
-  const handleLeaveWithAnalysis = useCallback(async (transcript: string, responseId: string | null) => {
-    setLastTranscript(transcript);
+  const handleLeaveWithResponseId = useCallback((responseId: string | null) => {
     setLastResponseId(responseId);
     setLastRoomName(room?.name || localStorage.getItem(STORAGE_KEYS.roomName) || '');
     setMode('postMeeting');
-    if (transcript) {
-      try {
-        await analyzePatientVisit({ transcript });
-      } catch (err) {
-        console.error('Visit analysis failed:', err);
-      }
-    }
-  }, [analyzePatientVisit, room]);
+  }, [room]);
 
   const handleBack = useCallback(() => {
-    clearResult();
-    setLastTranscript('');
     setLastResponseId(null);
     setLastRoomName('');
     setMode('landing');
-  }, [clearResult]);
+  }, []);
 
   // Video call flow
   if (mode === 'call') {
@@ -68,7 +52,7 @@ function App() {
     if (isInRoom) {
       return (
         <VideoRoom
-          onLeaveWithAnalysis={handleLeaveWithAnalysis}
+          onLeaveWithResponseId={handleLeaveWithResponseId}
           onLeave={() => setMode('landing')}
         />
       );
@@ -76,16 +60,13 @@ function App() {
     return <JoinForm onBack={() => setMode('landing')} />;
   }
 
-  // Post-meeting analysis
+  // Post-meeting view
   if (mode === 'postMeeting') {
     return (
       <PostMeetingView
-        data={result}
-        transcript={lastTranscript}
         responseId={lastResponseId}
         roomName={lastRoomName}
         userName={localStorage.getItem(STORAGE_KEYS.userName) || ''}
-        loading={loading}
         onBack={handleBack}
       />
     );

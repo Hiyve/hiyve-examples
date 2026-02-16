@@ -175,7 +175,8 @@
       "Bash(wc:*)",
       "Bash(pnpm --filter @hiyve/cloud exec tsc:*)",
       "Bash(pnpm --filter @hiyve/cloud run build:*)",
-      "Bash(mongosh:*)"
+      "Bash(mongosh:*)",
+      "Bash(pnpm exec tsc:*)"
     ]
   }
 }

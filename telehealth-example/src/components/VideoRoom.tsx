@@ -9,7 +9,6 @@ import {
   useRoom,
   useConnection,
   useRecording,
-  useTranscription,
 } from '@hiyve/react';
 import {
   ControlBar,
@@ -48,11 +47,11 @@ const LOCAL_TILE_OVERLAY_ORDER: LocalVideoTileOverlayElement[] = [
 ];
 
 interface VideoRoomProps {
-  onLeaveWithAnalysis: (transcript: string, responseId: string | null) => void;
+  onLeaveWithResponseId: (responseId: string | null) => void;
   onLeave: () => void;
 }
 
-export function VideoRoom({ onLeaveWithAnalysis, onLeave }: VideoRoomProps) {
+export function VideoRoom({ onLeaveWithResponseId, onLeave }: VideoRoomProps) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [intelligenceConfig, setIntelligenceConfig] = useState<IntelligenceConfig>(
@@ -62,7 +61,6 @@ export function VideoRoom({ onLeaveWithAnalysis, onLeave }: VideoRoomProps) {
   const { room, isOwner } = useRoom();
   const { leaveRoom } = useConnection();
   const { isRecording, recordingDuration, responseId } = useRecording();
-  const { transcriptions } = useTranscription();
 
   const userName = localStorage.getItem('hiyve-telehealth-example-userName') || '';
 
@@ -72,15 +70,12 @@ export function VideoRoom({ onLeaveWithAnalysis, onLeave }: VideoRoomProps) {
     }
   }, [room]);
 
-  const handleLeaveAndAnalyze = useCallback(() => {
-    const transcript = transcriptions
-      ?.map((t) => `${t.userId}: ${t.text}`)
-      .join('\n') || '';
+  const handleLeaveAndGenerateNotes = useCallback(() => {
     const currentResponseId = responseId || null;
     leaveRoom();
     setShowLeaveDialog(false);
-    onLeaveWithAnalysis(transcript, currentResponseId);
-  }, [transcriptions, responseId, leaveRoom, onLeaveWithAnalysis]);
+    onLeaveWithResponseId(currentResponseId);
+  }, [responseId, leaveRoom, onLeaveWithResponseId]);
 
   const handleLeaveOnly = useCallback(() => {
     leaveRoom();
@@ -183,7 +178,13 @@ export function VideoRoom({ onLeaveWithAnalysis, onLeave }: VideoRoomProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleLeaveOnly}>Just Leave</Button>
-          <Button variant="contained" onClick={handleLeaveAndAnalyze}>Leave & Generate Notes</Button>
+          <Button
+            variant="contained"
+            onClick={handleLeaveAndGenerateNotes}
+            disabled={!responseId}
+          >
+            Generate Notes & Leave
+          </Button>
         </DialogActions>
       </Dialog>
 

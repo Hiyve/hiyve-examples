@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Container, Box, Button, Typography, Paper, TextField, IconButton,
   CircularProgress, Divider, List, ListItem, ListItemIcon, ListItemText, Chip,
@@ -8,8 +8,34 @@ import {
   Send as SendIcon,
   ThumbUp as StrengthIcon,
   Warning as ConcernIcon,
+  CheckCircle as SavedIcon,
 } from '@mui/icons-material';
 import { ScorecardPanel, MeetingSummary, useLiveContext } from '@hiyve/react-intelligence';
+
+const INTERVIEW_NOTE_PROMPT = `Based on this interview conversation, generate a structured interview assessment. Include the following sections where applicable:
+
+## Candidate Overview
+Brief background and the role being interviewed for.
+
+## Technical Competency
+Assessment of technical skills and knowledge demonstrated.
+
+## Communication & Problem-Solving
+How effectively the candidate communicated and approached problems.
+
+## Cultural Fit
+Observations about alignment with team values and work style.
+
+## Strengths
+- Key strengths demonstrated during the interview
+
+## Areas of Concern
+- Potential concerns or gaps identified
+
+## Hiring Recommendation
+Overall recommendation with supporting rationale.
+
+Format the response as a clear, organized assessment document using markdown.`;
 
 interface Message {
   role: 'user' | 'ai';
@@ -54,8 +80,47 @@ export function PostMeetingView({
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [querying, setQuerying] = useState(false);
+  const [noteSaved, setNoteSaved] = useState(false);
+  const [noteGenerating, setNoteGenerating] = useState(false);
 
   const { askWithResponseId } = useLiveContext(roomName, userName);
+
+  // Generate and save note via server endpoint
+  useEffect(() => {
+    if (!responseId) return;
+
+    let cancelled = false;
+    setNoteGenerating(true);
+
+    fetch('/api/generate-note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        responseId,
+        prompt: INTERVIEW_NOTE_PROMPT,
+        roomName,
+        userId: userName,
+        userName,
+        title: 'Interview Assessment',
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (cancelled) return;
+        if (result.success && result.fileId) {
+          setNoteSaved(true);
+        }
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error('Interview note generation failed:', err);
+      })
+      .finally(() => {
+        if (!cancelled) setNoteGenerating(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [responseId, roomName, userName]);
 
   const handleSendQuery = useCallback(async () => {
     if (!query.trim() || !responseId) return;
@@ -87,6 +152,24 @@ export function PostMeetingView({
       </Button>
 
       <Typography variant="h4" gutterBottom>Interview Analysis</Typography>
+
+      {/* Note save status */}
+      {noteSaved && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <SavedIcon color="success" fontSize="small" />
+          <Typography variant="body2" color="success.main">
+            Interview assessment saved to Notes
+          </Typography>
+        </Box>
+      )}
+      {noteGenerating && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <CircularProgress size={16} />
+          <Typography variant="body2" color="text.secondary">
+            Saving interview assessment...
+          </Typography>
+        </Box>
+      )}
 
       {/* Meeting Summary */}
       {transcript && (

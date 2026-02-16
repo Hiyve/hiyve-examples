@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Container, Box, Button, Typography, Paper, TextField, IconButton,
   CircularProgress, Divider, List, ListItem, ListItemIcon, ListItemText,
@@ -7,8 +7,33 @@ import {
   ArrowBack as ArrowBackIcon,
   Send as SendIcon,
   TrendingUp as StrengthIcon,
+  CheckCircle as SavedIcon,
 } from '@mui/icons-material';
 import { ScorecardPanel, MeetingSummary, useLiveContext } from '@hiyve/react-intelligence';
+
+const SALES_NOTE_PROMPT = `Based on this sales call conversation, generate a structured sales call summary. Include the following sections where applicable:
+
+## Call Objectives
+What the sales representative aimed to achieve.
+
+## Customer Profile
+Key details about the prospect/customer discussed.
+
+## Discussion Summary
+Key topics covered during the call.
+
+## Objections & Responses
+Any objections raised and how they were handled.
+
+## Next Steps
+- Agreed follow-up actions
+- Commitments made by either party
+- Timeline for next contact
+
+## Deal Assessment
+Current deal stage, probability, and key risks.
+
+Format the response as a clear, organized sales document using markdown.`;
 
 interface Message {
   role: 'user' | 'ai';
@@ -37,8 +62,47 @@ export function PostMeetingView({
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [querying, setQuerying] = useState(false);
+  const [noteSaved, setNoteSaved] = useState(false);
+  const [noteGenerating, setNoteGenerating] = useState(false);
 
   const { askWithResponseId } = useLiveContext(roomName, userName);
+
+  // Generate and save note via server endpoint
+  useEffect(() => {
+    if (!responseId) return;
+
+    let cancelled = false;
+    setNoteGenerating(true);
+
+    fetch('/api/generate-note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        responseId,
+        prompt: SALES_NOTE_PROMPT,
+        roomName,
+        userId: userName,
+        userName,
+        title: 'Sales Call Summary',
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (cancelled) return;
+        if (result.success && result.fileId) {
+          setNoteSaved(true);
+        }
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error('Sales note generation failed:', err);
+      })
+      .finally(() => {
+        if (!cancelled) setNoteGenerating(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [responseId, roomName, userName]);
 
   const handleSendQuery = useCallback(async () => {
     if (!query.trim() || !responseId) return;
@@ -66,6 +130,24 @@ export function PostMeetingView({
       </Button>
 
       <Typography variant="h4" gutterBottom>Sales Call Analysis</Typography>
+
+      {/* Note save status */}
+      {noteSaved && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <SavedIcon color="success" fontSize="small" />
+          <Typography variant="body2" color="success.main">
+            Call summary saved to Notes
+          </Typography>
+        </Box>
+      )}
+      {noteGenerating && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <CircularProgress size={16} />
+          <Typography variant="body2" color="text.secondary">
+            Saving call summary...
+          </Typography>
+        </Box>
+      )}
 
       {/* Meeting Summary */}
       {transcript && (
