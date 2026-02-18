@@ -1,5 +1,9 @@
 /**
- * Sidebar Component - Tabbed panel for participants, chat, settings, files, and more.
+ * @fileoverview Full Example - Sidebar Component
+ * @module full-example/components/Sidebar
+ *
+ * Tabbed sidebar panel integrating participants, chat, settings, files, whiteboard,
+ * Q&A, polls, notes, and AI intelligence features.
  */
 
 import { useState, useCallback, useMemo } from 'react';

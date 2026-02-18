@@ -19,10 +19,8 @@ import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
 import { HiyveProvider } from '@hiyve/react';
 import { CloudProvider, MoodAnalysisProvider } from '@hiyve/react-intelligence';
+import { formatHiyveError } from '@hiyve/utilities';
 import App from './App';
-
-// Cloud API configuration
-const CLOUD_ENVIRONMENT = (import.meta.env.VITE_HIYVE_ENVIRONMENT || 'development') as 'production' | 'development';
 
 const darkTheme = createTheme({
   palette: {
@@ -44,7 +42,7 @@ async function generateRoomToken(): Promise<string> {
 }
 
 /** Generate a cloud token from your backend server for AI features. */
-async function generateCloudToken(): Promise<string> {
+async function generateCloudToken() {
   const response = await fetch('/api/generate-cloud-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -53,19 +51,11 @@ async function generateCloudToken(): Promise<string> {
   if (!response.ok) {
     throw new Error(data.message || 'Failed to generate cloud token');
   }
-  return data.cloudToken;
+  return { cloudToken: data.cloudToken, environment: data.environment };
 }
 
 function Root() {
   const [error, setError] = useState<string | null>(null);
-
-  const getErrorMessage = (err: string) => {
-    const errLower = err.toLowerCase();
-    if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
-      return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
-    }
-    return err;
-  };
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -79,7 +69,7 @@ function Root() {
           setError(err.message || String(err));
         }}
       >
-        <CloudProvider generateCloudToken={generateCloudToken} environment={CLOUD_ENVIRONMENT}>
+        <CloudProvider generateCloudToken={generateCloudToken}>
           <MoodAnalysisProvider analyzerType="human">
             <App />
           </MoodAnalysisProvider>
@@ -93,7 +83,7 @@ function Root() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setError(null)} severity="warning" sx={{ width: '100%' }}>
-          {error && getErrorMessage(error)}
+          {error && formatHiyveError(error)}
         </Alert>
       </Snackbar>
     </ThemeProvider>

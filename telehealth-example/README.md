@@ -2,30 +2,6 @@
 
 An AI-powered telehealth application with live meeting intelligence, real-time transcription, structured clinical note generation, and semantic search. Built with `@hiyve/react`, `@hiyve/react-intelligence`, `@hiyve/react-capture`, and `@hiyve/react-collaboration`.
 
-## Quick Start
-
-### Option A: Root Setup Script
-
-```bash
-cd hiyve-examples
-./setup.sh
-cd telehealth-example
-pnpm run dev
-```
-
-### Option B: Manual Setup
-
-```bash
-cd telehealth-example
-pnpm install
-cd server && pnpm install && cd ..
-cp server/.env.example server/.env
-# Edit server/.env with your Hiyve API credentials
-pnpm run dev
-```
-
-Open http://localhost:5173
-
 ## Features
 
 ### During the Visit (Host)
@@ -45,10 +21,8 @@ Open http://localhost:5173
 
 ### After the Visit
 
-- **Meeting Summary** - Auto-generated summary with key points, action items, and decisions via `MeetingSummary`
-- **Clinical Documentation** - Structured output with chief complaints, diagnoses, medications, follow-ups, and vital signs via `VisitSummaryDashboard`
-- **Medication Tracking** - Color-coded action badges: prescribed (green), adjusted (blue), discontinued (red), discussed (grey)
-- **Follow-Up Planning** - Table of follow-up actions with timeframe and provider
+- **Clinical Notes** - AI-generated structured clinical notes (chief complaint, HPI, assessment, plan) via server-side `/api/generate-note` endpoint
+- **Auto-Save** - Generated notes are automatically saved to room files
 - **AI Follow-Up** - Ask questions about the visit using the AI assistant with full transcription context
 
 ### Anytime
@@ -56,13 +30,38 @@ Open http://localhost:5173
 - **Semantic Search** - Search across past patient visit transcripts using natural language via `SearchPanel`
 - **Device Preview** - Test camera and microphone before joining
 
+## Quick Start
+
+### Option A: Root Setup Script (Recommended)
+
+From the `hiyve-examples` root directory:
+
+```bash
+./setup.sh telehealth-example
+```
+
+This handles authentication, dependencies, and environment setup automatically.
+
+### Option B: Manual Setup
+
+```bash
+cd telehealth-example
+pnpm install
+cd server && pnpm install && cd ..
+cp server/.env.example server/.env
+# Edit server/.env with your Hiyve API credentials
+pnpm run dev
+```
+
+Open http://localhost:5173
+
 ## Packages Used
 
 | Package | Description |
 |---------|-------------|
 | `@hiyve/react` | Core provider, hooks (`useConnection`, `useRoom`, `useRecording`, `useTranscription`, `useParticipants`) |
 | `@hiyve/react-ui` | UI components (`VideoGrid`, `ControlBar`, `Sidebar`, `DevicePreview`, `WaitForHostScreen`) |
-| `@hiyve/react-intelligence` | AI components and hooks (`CloudProvider`, `MoodAnalysisProvider`, `IntelligenceHub`, `MeetingSummary`, `SearchPanel`, `useAnalysis`, `useLiveContext`, `useMoodCloudSync`) |
+| `@hiyve/react-intelligence` | AI components and hooks (`CloudProvider`, `MoodAnalysisProvider`, `IntelligenceHub`, `SearchPanel`, `useIntelligenceReadiness`, `useLiveContext`, `useMoodAnalysisSafe`, `useMoodCloudSync`) |
 | `@hiyve/react-capture` | Recording and transcription components (`RecordingIndicator`, `TranscriptViewer`) |
 | `@hiyve/react-collaboration` | File management (`FileCacheProvider`, `FileManager`) |
 | `@hiyve/cloud` | Cloud AI client (`CloudClient`) |
@@ -83,8 +82,7 @@ telehealth-example/
 │       ├── JoinForm.tsx             # Room name + user name + Create/Join + DevicePreview
 │       ├── VideoRoom.tsx            # VideoGrid + ControlBar + intelligence + host-only sidebar
 │       ├── TelehealthSidebar.tsx    # AI tab (IntelligenceHub) + Files tab (FileManager)
-│       ├── PostMeetingView.tsx      # MeetingSummary + VisitSummaryDashboard + AI assistant
-│       ├── VisitSummaryDashboard.tsx # Custom MUI layout for clinical notes
+│       ├── PostMeetingView.tsx      # AI-generated clinical notes + follow-up AI assistant
 │       └── SearchView.tsx           # SearchPanel wrapper with telehealth-themed labels
 ├── server/
 │   ├── server.js             # Express: room token + cloud token endpoints
@@ -137,8 +135,8 @@ LandingPage
 2. Transcriptions stream in real-time to the sidebar's AI tab (IntelligenceHub + TranscriptViewer)
 3. Mood analysis runs on video frames and syncs to cloud via `useMoodCloudSync`
 4. Host can query the AI assistant during the visit using `askWithResponseId`
-5. On leaving, transcriptions are collected and sent to `analyzePatientVisit` for clinical note generation
-6. PostMeetingView shows MeetingSummary + VisitSummaryDashboard + AI follow-up
+5. On leaving, the app transitions to PostMeetingView which generates clinical notes via the server-side '/api/generate-note' endpoint
+6. PostMeetingView shows AI-generated clinical notes + AI follow-up chat
 
 ### Host vs Guest Experience
 
@@ -150,40 +148,6 @@ LandingPage
 | AI Sidebar (IntelligenceHub + Files) | Yes | No |
 | Post-meeting analysis | Yes (on leave) | No |
 
-### Why No ScorecardPanel?
-
-Unlike the sales and interview examples, the telehealth dashboard uses a **custom MUI layout** (`VisitSummaryDashboard`) instead of `ScorecardPanel`. This is because `PatientSummary` has no numeric scores or dimensions -- it produces structured clinical data (complaints, diagnoses, medications, follow-ups) that requires a purpose-built layout.
-
-### PatientSummary Response
-
-```typescript
-{
-  chiefComplaints: string[];
-  diagnosesDiscussed: string[];
-  medications: {
-    name: string;
-    action: 'prescribed' | 'adjusted' | 'discontinued' | 'discussed';
-    notes: string;
-  }[];
-  followUps: {
-    action: string;
-    timeframe: string;
-    provider: string;
-  }[];
-  vitalSigns?: { name: string; value: string }[];
-  summary: string;
-}
-```
-
-### Medication Action Colors
-
-| Action | Color | Badge |
-|--------|-------|-------|
-| prescribed | Green | `success` |
-| adjusted | Blue | `info` |
-| discontinued | Red | `error` |
-| discussed | Grey | `default` |
-
 ## Hooks Reference
 
 | Hook | Package | Purpose |
@@ -194,7 +158,6 @@ Unlike the sales and interview examples, the telehealth dashboard uses a **custo
 | `useRecording` | `@hiyve/react` | `isRecording`, `recordingDuration`, `responseId` |
 | `useTranscription` | `@hiyve/react` | `transcriptions`, `isTranscribing`, `enrichTranscription` |
 | `useParticipants` | `@hiyve/react` | `localUserId` |
-| `useAnalysis` | `@hiyve/react-intelligence` | `analyzePatientVisit`, `result`, `loading` |
 | `useLiveContext` | `@hiyve/react-intelligence` | `askWithResponseId` (AI queries with transcription context) |
 | `useIntelligenceReadiness` | `@hiyve/react-intelligence` | UI readiness state for intelligence features |
 | `useMoodAnalysisSafe` | `@hiyve/react-intelligence` | `moodStates`, `enabled`, `ready` |

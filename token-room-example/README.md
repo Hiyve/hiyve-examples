@@ -61,9 +61,10 @@ pnpm run dev
 
    Edit `server/.env` with your Hiyve API credentials:
 
-   ```
+   ```env
    APIKEY=your-api-key
    CLIENT_SECRET=your-client-secret
+   SERVER_REGION=us-west-2
    ```
 
 4. **Start the application**
@@ -129,9 +130,8 @@ When generating invite links, owners can configure:
 ```
 token-room-example/
 ├── src/
-│   ├── main.tsx              # App entry with ClientProvider
+│   ├── main.tsx              # App entry with HiyveProvider
 │   ├── App.tsx               # Routing based on URL and state
-│   ├── hiyve.d.ts            # Type declarations for @hiyve packages
 │   └── components/
 │       ├── CreateRoom.tsx    # Owner: create room form
 │       ├── JoinRoom.tsx      # Guest: join via token (uses SDK)
@@ -145,57 +145,14 @@ token-room-example/
 └── README.md
 ```
 
-## SDK Components
+## Packages Used
 
-This example uses reusable components from the Hiyve SDK:
-
-### @hiyve/join-token
-
-- **`InviteLinkDialog`** - Dialog for creating and sharing invite links
-- **`JoinWithTokenForm`** - Form for joining rooms via invite tokens
-
-These components handle all the complexity of token generation, validation, and error handling.
-
-### @hiyve/client-provider
-
-- Standard hooks: `useConnection`, `useRoom`, `useDevices`
-- Error code constants: `TOKEN_NOT_FOUND`, `TOKEN_EXPIRED`, `INVALID_PASSWORD`, etc.
-
-### @hiyve/utilities
-
-- **`LiveClock`** - Auto-updating time display in the room header
-- **`TooltipIconButton`** - Combines Tooltip and IconButton for cleaner code
-- **`useContainerBreakpoint`** - Responsive container queries for adaptive layouts
-
-```tsx
-import { LiveClock, TooltipIconButton, useContainerBreakpoint } from '@hiyve/utilities';
-
-// LiveClock in the header
-<LiveClock variant="body2" sx={{ ml: 2, opacity: 0.7 }} />
-
-// TooltipIconButton for the share button
-<TooltipIconButton tooltip="Get invite link" onClick={openDialog} color="primary">
-  <ShareIcon />
-</TooltipIconButton>
-
-// Responsive layout - hide layout selector on small screens
-const { isBelowBreakpoint: isCompact, containerRef } = useContainerBreakpoint(600);
-<ControlBar showLayoutSelector={!isCompact} />
-```
-
-## Dependencies
-
-### Frontend
-- `@hiyve/client-provider` - State management and hooks
-- `@hiyve/join-token` - Invite link components
-- `@hiyve/video-grid` - Video layout
-- `@hiyve/control-bar` - Media controls
-- `@hiyve/utilities` - Shared utilities (LiveClock, TooltipIconButton, useContainerBreakpoint)
-- React 18, MUI 5
-
-### Backend
-- Express.js
-- dotenv
+| Package | Purpose |
+|---------|---------|
+| `@hiyve/react` | Core WebRTC provider and hooks (`useConnection`, `useRoom`, `useDevices`) |
+| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `InviteLinkDialog`, `JoinWithTokenForm` |
+| `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
+| `@hiyve/utilities` | `LiveClock`, `TooltipIconButton`, `useContainerBreakpoint` |
 
 ## API Endpoints
 
@@ -232,17 +189,6 @@ Health check endpoint.
 | File Sharing | No | Yes |
 
 This example demonstrates the token-based joining flow with minimal complexity.
-
-## TypeScript Support
-
-This example includes TypeScript type declarations for all `@hiyve/*` packages in `src/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
-
-The declarations cover:
-- `@hiyve/client-provider` - hooks and ClientProvider component
-- `@hiyve/control-bar` - ControlBar component and LayoutMode type
-- `@hiyve/join-token` - JoinWithTokenForm and InviteLinkDialog components
-- `@hiyve/video-grid` - VideoGrid component
-- `@hiyve/utilities` - LiveClock, TooltipIconButton, useContainerBreakpoint
 
 ## Troubleshooting
 

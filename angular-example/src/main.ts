@@ -4,7 +4,7 @@
  *
  * Bootstraps the Angular standalone application without NgModules.
  *
- * Angular 19 uses standalone components by default, so the app is
+ * Angular 20 uses standalone components by default, so the app is
  * bootstrapped directly with a root component and an application
  * config rather than an NgModule. The `appConfig` provides all
  * necessary Angular and Hiyve SDK providers at the application root.

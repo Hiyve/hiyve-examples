@@ -2,6 +2,17 @@
 
 The simplest possible authentication application using the Hiyve Identity SDK. This example demonstrates user registration, login, and a protected page with no server-side setup required.
 
+## Features
+
+This is a minimal authentication example:
+
+- User registration with email and password
+- Login with email and password
+- Two-factor authentication (if enabled on the account)
+- Password reset flow
+- Protected dashboard page
+- User profile display with logout
+
 ## Quick Start
 
 ### Option A: Root Setup Script (Recommended)
@@ -53,22 +64,11 @@ pnpm run dev
 
 Open http://localhost:5173
 
-## Features
-
-This is a minimal authentication example:
-
-- User registration with email and password
-- Login with email and password
-- Two-factor authentication (if enabled on the account)
-- Password reset flow
-- Protected dashboard page
-- User profile display with logout
-
 ## Packages Used
 
 | Package | Purpose |
 |---------|---------|
-| `@hiyve/identity-react` | Authentication UI components and hooks |
+| `@hiyve/react-identity` | Authentication UI components and hooks |
 | `@hiyve/utilities` | Shared utilities |
 | `@hiyve/identity-client` | Underlying authentication client library |
 
@@ -78,7 +78,6 @@ This is a minimal authentication example:
 src/
 ├── main.tsx              # IdentityProvider setup with API key
 ├── App.tsx               # Routes between AuthFlow and Dashboard
-├── hiyve.d.ts            # Type declarations for @hiyve packages
 └── components/
     └── Dashboard.tsx     # Protected page with UserProfile
 ```
@@ -106,7 +105,7 @@ Unlike the other examples that require an Express server for room token generati
 ### Provider Setup (main.tsx)
 
 ```tsx
-import { IdentityProvider } from '@hiyve/identity-react';
+import { IdentityProvider } from '@hiyve/react-identity';
 
 <IdentityProvider
   apiKey={import.meta.env.VITE_HIYVE_API_KEY}
@@ -119,7 +118,7 @@ import { IdentityProvider } from '@hiyve/identity-react';
 ### Auth Flow (App.tsx)
 
 ```tsx
-import { useUser, AuthFlow } from '@hiyve/identity-react';
+import { useUser, AuthFlow } from '@hiyve/react-identity';
 
 const { isAuthenticated, isLoading } = useUser();
 
@@ -129,7 +128,7 @@ const { isAuthenticated, isLoading } = useUser();
 ### Protected Page (Dashboard.tsx)
 
 ```tsx
-import { useUser, UserProfile } from '@hiyve/identity-react';
+import { useUser, UserProfile } from '@hiyve/react-identity';
 
 const { user } = useUser();
 
@@ -174,15 +173,6 @@ For development with local `hiyve-sdk`:
 ./toggle-packages.sh prod   # Use registry packages
 ./toggle-packages.sh status # Check current mode
 ```
-
-## TypeScript Support
-
-This example includes TypeScript type declarations for all `@hiyve/*` packages in `src/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
-
-The declarations cover:
-- `@hiyve/identity-react` - IdentityProvider, AuthFlow, UserProfile, hooks
-- `@hiyve/utilities` - Shared utilities
-- `@hiyve/identity-client` - Authentication client
 
 ## Troubleshooting
 

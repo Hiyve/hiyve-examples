@@ -12,6 +12,7 @@
 
 import { useState } from 'react';
 import { HiyveProvider, useConnection, useRoom } from '@hiyve/react';
+import { formatHiyveError } from '@hiyve/utilities';
 import { Box, CircularProgress, Typography, Snackbar, Alert } from '@mui/material';
 import JoinForm from '@/components/JoinForm';
 import VideoRoom from '@/components/VideoRoom';
@@ -31,16 +32,6 @@ async function generateRoomToken(): Promise<string> {
   return data.roomToken;
 }
 
-/**
- * Convert error to user-friendly message.
- */
-function getErrorMessage(err: string): string {
-  const errLower = err.toLowerCase();
-  if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
-    return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
-  }
-  return err;
-}
 
 /**
  * Inner component that uses Hiyve hooks (must be inside HiyveProvider).
@@ -100,7 +91,7 @@ export default function AppContent() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setError(null)} severity="warning" sx={{ width: '100%' }}>
-          {error && getErrorMessage(error)}
+          {error && formatHiyveError(error)}
         </Alert>
       </Snackbar>
     </>

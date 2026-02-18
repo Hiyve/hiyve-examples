@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Telehealth Example - Landing Page
+ * @module telehealth-example/components/LandingPage
+ *
+ * Presents a two-card mode selection screen: "Start a Visit" for launching a
+ * telehealth video call, and "Search Past Visits" for semantic transcript search.
+ */
+
 import { Box, Container, Paper, Typography } from '@mui/material';
 import {
   LocalHospital as LocalHospitalIcon,

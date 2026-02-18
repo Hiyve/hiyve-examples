@@ -2,6 +2,18 @@
 
 A prebuilt video room with zero manual component composition. This example uses `HiyveRoom` + `PrebuiltRoom` to get a complete video conferencing UI in under 80 lines of code.
 
+## Features
+
+This example provides a complete video room with no manual component wiring:
+
+- Create or join video rooms by name
+- Real-time video/audio with WebRTC
+- Mute/unmute audio and video
+- Screen sharing
+- Layout switching (grid, speaker, sidebar)
+- Device selection
+- All UI provided by `PrebuiltRoom` -- no need to compose `VideoGrid`, `ControlBar`, etc.
+
 ## Quick Start
 
 You can either run the root setup script (recommended) or set up manually:
@@ -55,18 +67,6 @@ pnpm run dev
 ```
 
 Open http://localhost:5173
-
-## Features
-
-This example provides a complete video room with no manual component wiring:
-
-- Create or join video rooms by name
-- Real-time video/audio with WebRTC
-- Mute/unmute audio and video
-- Screen sharing
-- Layout switching (grid, speaker, sidebar)
-- Device selection
-- All UI provided by `PrebuiltRoom` -- no need to compose `VideoGrid`, `ControlBar`, etc.
 
 ## Packages Used
 
@@ -126,9 +126,9 @@ This replaces the manual setup you would otherwise write:
 
 ```tsx
 // What HiyveRoom does internally (you do NOT need to write this):
-<ClientProvider generateRoomToken={...}>
+<HiyveProvider generateRoomToken={...}>
   <App />
-</ClientProvider>
+</HiyveProvider>
 ```
 
 ### Room Component (auto-connect on mount)
@@ -159,7 +159,7 @@ Here is how they compare:
 
 | Aspect | react-room-example (prebuilt) | basic-example (manual) |
 |--------|-------------------------------|------------------------|
-| Provider | `HiyveRoom` (all-in-one) | `ClientProvider` (explicit) |
+| Provider | `HiyveRoom` (all-in-one) | `HiyveProvider` (explicit) |
 | Room UI | `PrebuiltRoom` (batteries-included) | `VideoGrid` + `ControlBar` + custom layout |
 | Lines of code | ~77 (single file) | ~200+ (multiple files) |
 | Customization | Limited -- use props/callbacks | Full control over layout and behavior |

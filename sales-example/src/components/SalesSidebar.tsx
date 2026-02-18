@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Sales Example - Sales Sidebar
+ * @module sales-example/components/SalesSidebar
+ *
+ * Owner-only sidebar with tabbed panels for AI intelligence (live transcription,
+ * assistant, sentiment) and file management during a sales call.
+ */
+
 import { useState, useCallback } from 'react';
 import {
   SmartToy as AIIcon,

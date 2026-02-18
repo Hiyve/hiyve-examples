@@ -2,103 +2,61 @@
  * @fileoverview Basic Example - Main Application Component
  * @module basic-example/App
  *
- * The root application component that handles routing between views
- * based on connection state. This demonstrates the simplest flow:
+ * Routes between views based on WebRTC connection state using useRoomFlow.
  *
- * ```
- * Not Connected  →  JoinForm (enter room name & user name)
- *       ↓
- * Connecting     →  Loading spinner
- *       ↓
- * In Room        →  VideoRoom (video grid & controls)
- * ```
+ * View routing (via useRoomFlow screen):
+ * - lobby -> JoinForm (SDK)
+ * - connecting -> ConnectingScreen (SDK)
+ * - in-room -> VideoRoom
  *
- * ## Key Hooks Used
+ * This is the simplest example -- no waiting room, no waiting-for-host.
  *
- * - `useConnection()` - Connection state and room actions (createRoom, joinRoom, leaveRoom)
- * - `useRoom()` - Room state (room info, isOwner, isInRoom)
- *
- * ## State Flow
- *
- * 1. User enters room name and clicks "Create" or "Join"
- * 2. `isConnecting` becomes true → show loading
- * 3. Connection succeeds → `isInRoom` becomes true → show VideoRoom
- * 4. User clicks "Leave" → `isInRoom` becomes false → show JoinForm
- *
- * @see {@link JoinForm} - Room creation/join form
  * @see {@link VideoRoom} - In-room video experience
  */
 
 import { useState } from 'react';
-import { useConnection, useRoom } from '@hiyve/react';
-import { JoinForm } from './components/JoinForm';
+import { useRoomFlow } from '@hiyve/react';
+import { JoinForm, ConnectingScreen } from '@hiyve/react-ui';
 import { VideoRoom } from './components/VideoRoom';
-import { Box, CircularProgress, Typography } from '@mui/material';
+
+/**
+ * localStorage key used by the SDK JoinForm to persist the user name.
+ * Must match the storagePrefix passed to JoinForm + '-userName'.
+ */
+const STORAGE_KEY_USERNAME = 'hiyve-basic-userName';
+const STORAGE_KEY_USERROLE = 'hiyve-basic-userRole';
 
 /**
  * Main application component.
  *
- * Routes between JoinForm and VideoRoom based on connection state.
- * Manages userName state to pass to VideoRoom for display.
+ * Uses `useRoomFlow` to derive the current screen from connection state,
+ * replacing manual if/else routing with useConnection/useRoom hooks.
  *
  * @returns {JSX.Element} The appropriate view based on connection state
- *
- * @example
- * // Usage (already set up in main.tsx):
- * <ClientProvider generateRoomToken={generateRoomToken}>
- *   <App />
- * </ClientProvider>
  */
 function App() {
-  /**
-   * Connection hook provides:
-   * - isConnecting: true while establishing WebRTC connection
-   * - createRoom(roomName, userName): create and join a new room
-   * - joinRoom(roomName, userName): join an existing room
-   * - leaveRoom(): disconnect from current room
-   */
-  const { isConnecting } = useConnection();
+  const { screen } = useRoomFlow();
 
-  /**
-   * Room hook provides:
-   * - room: current room object (name, id, etc.) or null
-   * - isOwner: true if current user created the room
-   * - isInRoom: true if connected to a room
-   */
-  const { isInRoom } = useRoom();
+  // Read user data from localStorage (persisted by JoinForm via storagePrefix)
+  const [userName] = useState(() => localStorage.getItem(STORAGE_KEY_USERNAME) || '');
+  const [userRole] = useState(() => (localStorage.getItem(STORAGE_KEY_USERROLE) as 'owner' | 'guest') || 'owner');
 
-  /**
-   * Track user name locally to pass to VideoRoom.
-   * This is set by JoinForm when user creates/joins.
-   */
-  const [userName, setUserName] = useState('');
+  switch (screen) {
+    case 'connecting':
+      return <ConnectingScreen isCreating={userRole === 'owner'} />;
 
-  // Loading state while WebRTC connection is being established
-  if (isConnecting) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-          gap: 2,
-        }}
-      >
-        <CircularProgress />
-        <Typography variant="h6">Connecting...</Typography>
-      </Box>
-    );
+    case 'in-room':
+      return <VideoRoom userName={userName} />;
+
+    default:
+      return (
+        <JoinForm
+          autoConnect
+          devicePreviewMode="inline"
+          storagePrefix="hiyve-basic"
+        />
+      );
   }
-
-  // Connected to a room - show the video room
-  if (isInRoom) {
-    return <VideoRoom userName={userName} />;
-  }
-
-  // Not in a room - show the join form
-  return <JoinForm onUserNameChange={setUserName} />;
 }
 
 export default App;

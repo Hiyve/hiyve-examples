@@ -1,57 +1,57 @@
 /**
- * Main app component - routes between views based on connection state:
+ * @fileoverview Full Example - Main Application Component
+ * @module full-example/App
  *
- * - Not connected → JoinForm
- * - Connecting → ConnectingScreen
- * - Waiting for host → WaitForHostScreen
- * - Waiting for admission → WaitingScreen
- * - In room → VideoRoom
+ * Routes between views based on WebRTC connection state using useRoomFlow.
+ *
+ * View routing (via useRoomFlow screen):
+ * - lobby -> JoinForm (SDK)
+ * - connecting -> ConnectingScreen (SDK)
+ * - waiting-for-host -> WaitForHostScreen (SDK)
+ * - waiting-room / waiting-room-rejected -> WaitingScreen
+ * - in-room -> VideoRoom
  */
 
 import { useState } from 'react';
-import { useConnection, useRoom, useWaitingRoom, useWaitForHost } from '@hiyve/react';
-import { WaitForHostScreen } from '@hiyve/react-ui';
+import { useRoomFlow } from '@hiyve/react';
 import {
   JoinForm,
-  VideoRoom,
-  WaitingScreen,
   ConnectingScreen,
-} from './components';
+  WaitForHostScreen,
+} from '@hiyve/react-ui';
+import { VideoRoom, WaitingScreen } from './components';
 import { STORAGE_KEYS } from './constants';
 
 function App() {
-  // Get connection state from ClientProvider
-  const { isConnecting } = useConnection();
-  const { isInRoom } = useRoom();
-  const { isWaitingForAdmission, wasRejected } = useWaitingRoom();
-  const { isWaiting: isWaitingForHost } = useWaitForHost();
+  const { screen } = useRoomFlow();
 
-  // Read user data from localStorage (persisted by JoinForm)
+  // Read user data from localStorage (persisted by JoinForm via storagePrefix)
   const [userName] = useState(() => localStorage.getItem(STORAGE_KEYS.userName) || '');
   const [userRole] = useState(() => (localStorage.getItem(STORAGE_KEYS.userRole) as 'owner' | 'guest') || 'owner');
 
-  // Waiting for host state (guest joins before host starts)
-  if (isWaitingForHost) {
-    return <WaitForHostScreen />;
-  }
+  switch (screen) {
+    case 'waiting-for-host':
+      return <WaitForHostScreen />;
 
-  // Waiting room states (guest waiting or rejected)
-  if (isWaitingForAdmission || wasRejected) {
-    return <WaitingScreen />;
-  }
+    case 'waiting-room':
+    case 'waiting-room-rejected':
+      return <WaitingScreen />;
 
-  // Connecting state
-  if (isConnecting) {
-    return <ConnectingScreen isCreating={userRole === 'owner'} />;
-  }
+    case 'connecting':
+      return <ConnectingScreen isCreating={userRole === 'owner'} />;
 
-  // In room - show the main video room
-  if (isInRoom) {
-    return <VideoRoom userName={userName} />;
-  }
+    case 'in-room':
+      return <VideoRoom userName={userName} />;
 
-  // Not in room - show join form
-  return <JoinForm />;
+    default:
+      return (
+        <JoinForm
+          autoConnect
+          showWaitingRoomToggle
+          storagePrefix="hiyve-example"
+        />
+      );
+  }
 }
 
 export default App;

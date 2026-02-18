@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Interview Example - Video Room
+ * @module interview-example/components/VideoRoom
+ *
+ * Main video conferencing view with a grid layout, control bar, recording indicator,
+ * and an owner-only AI sidebar for live intelligence during interviews.
+ */
+
 import { useState, useCallback } from 'react';
 import {
   Box, AppBar, Toolbar, Typography, Snackbar, Button,

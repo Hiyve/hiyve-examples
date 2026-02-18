@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Interview Example - Landing Page
+ * @module interview-example/components/LandingPage
+ *
+ * Displays the initial screen with card-based navigation to start an interview
+ * or search past interview transcripts.
+ */
+
 import { Box, Container, Paper, Typography } from '@mui/material';
 import {
   VideoCall as VideoCallIcon,

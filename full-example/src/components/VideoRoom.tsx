@@ -1,5 +1,9 @@
 /**
- * VideoRoom Component - Main in-room view with video grid, controls, and sidebar.
+ * @fileoverview Full Example - Video Room Component
+ * @module full-example/components/VideoRoom
+ *
+ * Main in-room view composing the VideoGrid, ControlBar, and Sidebar with
+ * recording/streaming indicators, waiting room management, and hand raise tracking.
  */
 
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';

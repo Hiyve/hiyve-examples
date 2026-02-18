@@ -1,13 +1,19 @@
+/**
+ * @fileoverview Interview Example - Application Entry Point
+ * @module interview-example/main
+ *
+ * Bootstraps the React application with the full provider stack including
+ * theme, Hiyve WebRTC, cloud AI, file caching, and mood analysis.
+ */
+
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
 import { HiyveProvider } from '@hiyve/react';
 import { CloudProvider, MoodAnalysisProvider } from '@hiyve/react-intelligence';
 import { FileCacheProvider } from '@hiyve/react-collaboration';
-import { CloudClientProvider } from './cloudClient';
+import { formatHiyveError } from '@hiyve/utilities';
 import App from './App';
-
-const CLOUD_ENVIRONMENT = (import.meta.env.VITE_HIYVE_ENVIRONMENT || 'development') as 'production' | 'development';
 
 const theme = createTheme({
   palette: {
@@ -28,7 +34,7 @@ async function generateRoomToken(): Promise<string> {
   return data.roomToken;
 }
 
-async function generateCloudToken(): Promise<string> {
+async function generateCloudToken() {
   const response = await fetch('/api/generate-cloud-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -37,25 +43,18 @@ async function generateCloudToken(): Promise<string> {
   if (!response.ok) {
     throw new Error(data.message || 'Failed to generate cloud token');
   }
-  return data.cloudToken;
+  return { cloudToken: data.cloudToken, environment: data.environment };
 }
 
 function Root() {
   const [error, setError] = useState<string | null>(null);
-
-  const getErrorMessage = (err: string) => {
-    const errLower = err.toLowerCase();
-    if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
-      return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
-    }
-    return err;
-  };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <HiyveProvider
         generateRoomToken={generateRoomToken}
+        generateCloudToken={generateCloudToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err) => {
@@ -63,14 +62,12 @@ function Root() {
           setError(err.message || String(err));
         }}
       >
-        <CloudProvider generateCloudToken={generateCloudToken} environment={CLOUD_ENVIRONMENT}>
-          <CloudClientProvider>
-            <FileCacheProvider>
-              <MoodAnalysisProvider analyzerType="human">
-                <App />
-              </MoodAnalysisProvider>
-            </FileCacheProvider>
-          </CloudClientProvider>
+        <CloudProvider generateCloudToken={generateCloudToken}>
+          <FileCacheProvider>
+            <MoodAnalysisProvider analyzerType="human">
+              <App />
+            </MoodAnalysisProvider>
+          </FileCacheProvider>
         </CloudProvider>
       </HiyveProvider>
 
@@ -81,7 +78,7 @@ function Root() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setError(null)} severity="warning" sx={{ width: '100%' }}>
-          {error && getErrorMessage(error)}
+          {error && formatHiyveError(error)}
         </Alert>
       </Snackbar>
     </ThemeProvider>

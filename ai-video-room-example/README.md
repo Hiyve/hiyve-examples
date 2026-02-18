@@ -2,6 +2,20 @@
 
 An AI-powered video conferencing application demonstrating Hiyve's meeting intelligence features. This example builds on top of the basic video room to add real-time transcription, AI assistant queries, mood analysis, sentiment detection, and recording -- without the collaboration features (whiteboard, notes, Q&A, polls) found in the full-example.
 
+## Features
+
+This example focuses specifically on AI and intelligence capabilities:
+
+- **Video Conferencing** -- create or join rooms with WebRTC audio/video
+- **AI Assistant** -- ask the AI questions about the meeting in real-time (powered by live transcription context)
+- **Live Captions** -- real-time transcription with timestamps and per-utterance sentiment
+- **Intelligence Mode** -- recording with transcription that feeds AI context
+- **Mood Analysis** -- facial sentiment detection on video tiles, synced to the cloud AI context
+- **Engagement Indicators** -- visual engagement overlays on each participant tile
+- **Recording** -- start/stop recording with a visual indicator and elapsed timer
+- **Conversation Manager** -- manage and review AI conversation threads
+- **Alerts Concept** -- placeholder tab showing future SDK enhancement ideas
+
 ## Quick Start
 
 You can either run the root setup script (recommended) or set up manually:
@@ -57,20 +71,6 @@ pnpm run dev
 ```
 
 Open http://localhost:5173
-
-## Features
-
-This example focuses specifically on AI and intelligence capabilities:
-
-- **Video Conferencing** -- create or join rooms with WebRTC audio/video
-- **AI Assistant** -- ask the AI questions about the meeting in real-time (powered by live transcription context)
-- **Live Captions** -- real-time transcription with timestamps and per-utterance sentiment
-- **Intelligence Mode** -- recording with transcription that feeds AI context
-- **Mood Analysis** -- facial sentiment detection on video tiles, synced to the cloud AI context
-- **Engagement Indicators** -- visual engagement overlays on each participant tile
-- **Recording** -- start/stop recording with a visual indicator and elapsed timer
-- **Conversation Manager** -- manage and review AI conversation threads
-- **Alerts Concept** -- placeholder tab showing future SDK enhancement ideas
 
 ## Packages Used
 

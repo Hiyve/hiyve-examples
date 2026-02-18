@@ -1,9 +1,13 @@
 /**
- * Entry point for the Hiyve full-example application.
+ * @fileoverview Full Example - Application Entry Point
+ * @module full-example/main
+ *
+ * Sets up the provider hierarchy (HiyveProvider, CloudProvider, FileCacheProvider,
+ * MoodAnalysisProvider) and renders the root application with MUI dark theme.
  *
  * Provider hierarchy:
  * - ThemeProvider: MUI dark theme
- * - ClientProvider: WebRTC connection (requires generateRoomToken)
+ * - HiyveProvider: WebRTC connection (requires generateRoomToken)
  * - CloudProvider: AI cloud features (requires generateCloudToken)
  * - FileCacheProvider: File management
  * - MoodAnalysisProvider: Sentiment detection
@@ -15,14 +19,10 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
 import { HiyveProvider } from '@hiyve/react';
-import { CloudProvider } from '@hiyve/react-intelligence';
-import { MoodAnalysisProvider } from '@hiyve/react-intelligence';
+import { CloudProvider, MoodAnalysisProvider } from '@hiyve/react-intelligence';
 import { FileCacheProvider } from '@hiyve/react-collaboration';
+import { formatHiyveError } from '@hiyve/utilities';
 import App from './App';
-
-// Cloud API configuration
-// Environment determines which Hiyve Cloud server to connect to
-const CLOUD_ENVIRONMENT = (import.meta.env.VITE_HIYVE_ENVIRONMENT || 'development') as 'production' | 'development';
 
 const darkTheme = createTheme({
   palette: {
@@ -44,7 +44,7 @@ async function generateRoomToken(): Promise<string> {
 }
 
 /** Generate a cloud token from your backend server for AI features. */
-async function generateCloudToken(): Promise<string> {
+async function generateCloudToken() {
   const response = await fetch('/api/generate-cloud-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -53,20 +53,12 @@ async function generateCloudToken(): Promise<string> {
   if (!response.ok) {
     throw new Error(data.message || 'Failed to generate cloud token');
   }
-  return data.cloudToken;
+  return { cloudToken: data.cloudToken, environment: data.environment };
 }
 
 // Wrapper component to show connection errors
 function Root() {
   const [error, setError] = useState<string | null>(null);
-
-  const getErrorMessage = (err: string) => {
-    const errLower = err.toLowerCase();
-    if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
-      return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
-    }
-    return err;
-  };
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -80,7 +72,7 @@ function Root() {
           setError(err.message || String(err));
         }}
       >
-        <CloudProvider generateCloudToken={generateCloudToken} environment={CLOUD_ENVIRONMENT}>
+        <CloudProvider generateCloudToken={generateCloudToken}>
           <FileCacheProvider>
             <MoodAnalysisProvider analyzerType="human">
               <App />
@@ -96,7 +88,7 @@ function Root() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setError(null)} severity="warning" sx={{ width: '100%' }}>
-          {error && getErrorMessage(error)}
+          {error && formatHiyveError(error)}
         </Alert>
       </Snackbar>
     </ThemeProvider>

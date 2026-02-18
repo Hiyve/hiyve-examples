@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { Container, Button, TextField, Box, Typography } from '@mui/material';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { SearchPanel } from '@hiyve/react-intelligence';
-import { useCloudClient } from '../cloudClient';
+import { useCloudClient } from '@hiyve/react';
 
 const STORAGE_KEYS = {
   userName: 'hiyve-sales-example-userName',

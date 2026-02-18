@@ -1,5 +1,9 @@
 /**
- * WaitingScreen Component - Displays waiting room states for guests.
+ * @fileoverview Full Example - Waiting Screen Component
+ * @module full-example/components/WaitingScreen
+ *
+ * Displays waiting room states for guests, showing either a waiting or
+ * rejected view using the WaitingRoomGuest component.
  */
 
 import { Container } from '@mui/material';

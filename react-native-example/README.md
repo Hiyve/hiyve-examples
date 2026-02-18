@@ -9,6 +9,17 @@ A mobile video conferencing app built with React Native CLI and the `@hiyve/rn-r
 - Xcode 26+ (iOS) or Android Studio (Android)
 - Ruby + Bundler (for CocoaPods on iOS)
 
+## Features
+
+- Create or join video rooms by name
+- Real-time video/audio with WebRTC
+- SDK-managed video grid with adaptive layout
+- Built-in control bar (mute, camera, flip, layout, hand raise, record, stream, leave)
+- Material Design icons via `@react-native-vector-icons/material-design-icons`
+- Automatic permission handling (camera + microphone)
+- Platform-aware token server URL (localhost vs 10.0.2.2)
+- Dark theme UI
+
 ## Quick Start
 
 ### Option A: Root Setup Script (Recommended)
@@ -39,17 +50,6 @@ pnpm run dev
 pnpm run ios    # or pnpm run android
 ```
 
-## Features
-
-- Create or join video rooms by name
-- Real-time video/audio with WebRTC
-- SDK-managed video grid with adaptive layout
-- Built-in control bar (mute, camera, flip, layout, hand raise, record, stream, leave)
-- Material Design icons via `@react-native-vector-icons/material-design-icons`
-- Automatic permission handling (camera + microphone)
-- Platform-aware token server URL (localhost vs 10.0.2.2)
-- Dark theme UI
-
 ## Packages Used
 
 | Package | Purpose |
@@ -68,7 +68,6 @@ pnpm run ios    # or pnpm run android
 react-native-example/
 ├── src/
 │   ├── App.tsx              # HiyveRNProvider setup + state-based routing
-│   ├── declarations.d.ts    # TypeScript declarations for @hiyve/* packages
 │   └── screens/
 │       ├── JoinScreen.tsx   # Room name + user name form
 │       └── RoomScreen.tsx   # VideoGrid + ControlBar + header

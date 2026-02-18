@@ -6,7 +6,7 @@
  * using the Hiyve SDK. It demonstrates the minimal setup required:
  *
  * 1. **Theme Setup** - MUI dark theme with CssBaseline for consistent styling
- * 2. **ClientProvider** - The core provider that manages WebRTC state
+ * 2. **HiyveProvider** - The core provider that manages WebRTC state
  * 3. **Room Token Generation** - Server-side authentication for signaling
  *
  * ## Architecture
@@ -14,11 +14,11 @@
  * ```
  * ThemeProvider
  *   └── CssBaseline
- *       └── ClientProvider
+ *       └── HiyveProvider
  *           └── App
  * ```
  *
- * ## ClientProvider Props
+ * ## HiyveProvider Props
  *
  * - `generateRoomToken` - Async function to fetch JWT from your backend
  * - `localVideoElementId` - ID for the local video element (used across components)
@@ -32,6 +32,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
 import { HiyveProvider } from '@hiyve/react';
+import { formatHiyveError } from '@hiyve/utilities';
 import App from './App';
 
 /**
@@ -74,17 +75,6 @@ async function generateRoomToken(): Promise<string> {
 }
 
 /**
- * Convert error to user-friendly message.
- */
-function getErrorMessage(err: string): string {
-  const errLower = err.toLowerCase();
-  if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
-    return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
-  }
-  return err;
-}
-
-/**
  * Root component with error handling.
  *
  * Wraps the app with required providers and displays connection errors
@@ -100,10 +90,9 @@ function Root() {
         generateRoomToken={generateRoomToken}
         localVideoElementId="local-video"
         persistDeviceChanges
-        onError={(err: unknown) => {
+        onError={(err) => {
           console.error('[HiyveProvider Error]', err);
-          const message = err instanceof Error ? err.message : String(err);
-          setError(message);
+          setError(err.message || String(err));
         }}
       >
         <App />
@@ -116,7 +105,7 @@ function Root() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setError(null)} severity="warning" sx={{ width: '100%' }}>
-          {error && getErrorMessage(error)}
+          {error && formatHiyveError(error)}
         </Alert>
       </Snackbar>
     </ThemeProvider>

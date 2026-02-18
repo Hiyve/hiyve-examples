@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Sales Example - Landing Page
+ * @module sales-example/components/LandingPage
+ *
+ * Displays the initial screen with card-based navigation to start a sales
+ * call or search past call transcripts.
+ */
+
 import { Box, Container, Paper, Typography } from '@mui/material';
 import {
   VideoCall as VideoCallIcon,

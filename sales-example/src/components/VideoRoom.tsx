@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Sales Example - Video Room
+ * @module sales-example/components/VideoRoom
+ *
+ * Main video conferencing view with a grid layout, control bar, recording indicator,
+ * and an owner-only AI sidebar for live intelligence during sales calls.
+ */
+
 import { useState, useCallback } from 'react';
 import {
   Box, AppBar, Toolbar, Typography, Snackbar, Button,

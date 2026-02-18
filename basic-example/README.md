@@ -2,6 +2,17 @@
 
 The simplest possible video conferencing application using the Hiyve SDK. This example demonstrates the minimum setup required to create a working video app.
 
+## Features
+
+This is a minimal example with only essential features:
+
+- Create or join video rooms by name
+- Real-time video/audio with WebRTC
+- Mute/unmute audio and video
+- Screen sharing
+- Layout switching (grid, speaker, sidebar)
+- Device selection and preview before joining
+
 ## Quick Start
 
 You can either run the root setup script (recommended) or set up manually:
@@ -56,35 +67,21 @@ pnpm run dev
 
 Open http://localhost:5173
 
-## Features
-
-This is a minimal example with only essential features:
-
-- Create or join video rooms by name
-- Real-time video/audio with WebRTC
-- Mute/unmute audio and video
-- Screen sharing
-- Layout switching (grid, speaker, sidebar)
-- Device selection and preview before joining
-
 ## Packages Used
 
 | Package | Purpose |
 |---------|---------|
-| `@hiyve/client-provider` | Core state management and WebRTC client |
-| `@hiyve/video-grid` | Auto-layout video grid |
-| `@hiyve/video-tile` | Individual video tiles |
-| `@hiyve/control-bar` | Media controls |
-| `@hiyve/device-selector` | Camera/microphone selection and preview |
+| `@hiyve/react` | Core WebRTC provider and hooks (`useConnection`, `useRoom`) |
+| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `DevicePreview` |
+| `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
 | `@hiyve/utilities` | Shared utilities |
 
 ## Architecture
 
 ```
 src/
-├── main.tsx              # Provider setup with ClientProvider
+├── main.tsx              # Provider setup with HiyveProvider
 ├── App.tsx               # Routes between JoinForm and VideoRoom
-├── hiyve.d.ts            # Type declarations for @hiyve packages
 └── components/
     ├── JoinForm.tsx      # Room name input with device preview
     └── VideoRoom.tsx     # Video grid and control bar
@@ -93,7 +90,7 @@ src/
 ### Component Flow
 
 ```
-ClientProvider (main.tsx)
+HiyveProvider (main.tsx)
   └── App.tsx
       ├── JoinForm        # When not in room
       │   └── DevicePreview
@@ -107,26 +104,26 @@ ClientProvider (main.tsx)
 ### Provider Setup (main.tsx)
 
 ```tsx
-import { ClientProvider } from '@hiyve/client-provider';
+import { HiyveProvider } from '@hiyve/react';
 
-<ClientProvider
+<HiyveProvider
   generateRoomToken={generateRoomToken}
   localVideoElementId="local-video"
   persistDeviceChanges
 >
   <App />
-</ClientProvider>
+</HiyveProvider>
 ```
 
 ### Join Form with Device Preview (JoinForm.tsx)
 
 ```tsx
-import { useConnection } from '@hiyve/client-provider';
-import { DevicePreview } from '@hiyve/device-selector';
+import { useConnection } from '@hiyve/react';
+import { DevicePreview } from '@hiyve/react-ui';
 
 const { createRoom, joinRoom } = useConnection();
 
-<DevicePreview videoElementId="local-video" showDeviceSelectors />
+<DevicePreview persistSelection showAudioOutput showRefreshButton />
 <Button onClick={() => createRoom(roomName, userName)}>Create</Button>
 <Button onClick={() => joinRoom(roomName, userName)}>Join</Button>
 ```
@@ -134,9 +131,8 @@ const { createRoom, joinRoom } = useConnection();
 ### Video Room (VideoRoom.tsx)
 
 ```tsx
-import { useRoom, useConnection } from '@hiyve/client-provider';
-import { VideoGrid } from '@hiyve/video-grid';
-import { ControlBar } from '@hiyve/control-bar';
+import { useRoom, useConnection } from '@hiyve/react';
+import { VideoGrid, ControlBar } from '@hiyve/react-ui';
 
 const { room, isOwner } = useRoom();
 const { leaveRoom } = useConnection();
@@ -192,16 +188,6 @@ For development with local `hiyve-sdk`:
 ./toggle-packages.sh prod   # Use registry packages
 ./toggle-packages.sh status # Check current mode
 ```
-
-## TypeScript Support
-
-This example includes TypeScript type declarations for all `@hiyve/*` packages in `src/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
-
-The declarations cover:
-- `@hiyve/client-provider` - hooks and ClientProvider component
-- `@hiyve/control-bar` - ControlBar component and LayoutMode type
-- `@hiyve/device-selector` - DevicePreview component
-- `@hiyve/video-grid` - VideoGrid component
 
 ## Troubleshooting
 

@@ -2,43 +2,50 @@
  * @fileoverview AI Video Room Example - App Component
  * @module ai-video-room-example/App
  *
- * State-based router that selects the active view based on connection lifecycle:
+ * Routes between views based on WebRTC connection state using useRoomFlow.
  *
- * - Not connected -> JoinForm (room creation or join)
- * - Connecting -> ConnectingScreen (loading spinner)
- * - Waiting for host -> WaitForHostScreen (guest waiting room)
- * - In room -> VideoRoom (video grid, controls, AI sidebar)
- *
- * User name and role are persisted to localStorage so they survive page refreshes.
+ * View routing (via useRoomFlow screen):
+ * - lobby -> JoinForm (SDK)
+ * - connecting -> ConnectingScreen (SDK)
+ * - waiting-for-host -> WaitForHostScreen (SDK)
+ * - in-room -> VideoRoom
  */
 
 import { useState } from 'react';
-import { useConnection, useRoom, useWaitForHost } from '@hiyve/react';
-import { WaitForHostScreen } from '@hiyve/react-ui';
-import { JoinForm, VideoRoom, ConnectingScreen } from './components';
+import { useRoomFlow } from '@hiyve/react';
+import {
+  JoinForm,
+  ConnectingScreen,
+  WaitForHostScreen,
+} from '@hiyve/react-ui';
+import { VideoRoom } from './components';
 import { STORAGE_KEYS } from './constants';
 
 function App() {
-  const { isConnecting } = useConnection();
-  const { isInRoom } = useRoom();
-  const { isWaiting: isWaitingForHost } = useWaitForHost();
+  const { screen } = useRoomFlow();
 
+  // Read user data from localStorage (persisted by JoinForm via storagePrefix)
   const [userName] = useState(() => localStorage.getItem(STORAGE_KEYS.userName) || '');
   const [userRole] = useState(() => (localStorage.getItem(STORAGE_KEYS.userRole) as 'owner' | 'guest') || 'owner');
 
-  if (isWaitingForHost) {
-    return <WaitForHostScreen />;
-  }
+  switch (screen) {
+    case 'waiting-for-host':
+      return <WaitForHostScreen />;
 
-  if (isConnecting) {
-    return <ConnectingScreen isCreating={userRole === 'owner'} />;
-  }
+    case 'connecting':
+      return <ConnectingScreen isCreating={userRole === 'owner'} />;
 
-  if (isInRoom) {
-    return <VideoRoom userName={userName} />;
-  }
+    case 'in-room':
+      return <VideoRoom userName={userName} />;
 
-  return <JoinForm />;
+    default:
+      return (
+        <JoinForm
+          autoConnect
+          storagePrefix="hiyve-ai-example"
+        />
+      );
+  }
 }
 
 export default App;

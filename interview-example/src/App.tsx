@@ -1,34 +1,26 @@
+/**
+ * @fileoverview Interview Example - Application Root Component
+ * @module interview-example/App
+ *
+ * Routes between landing, video call, post-meeting analysis, and search modes.
+ * Manages the interview lifecycle including AI-powered post-interview assessment.
+ */
+
 import { useState, useCallback } from 'react';
-import { useConnection, useRoom, useWaitForHost } from '@hiyve/react';
-import { WaitForHostScreen } from '@hiyve/react-ui';
+import { useConnection, useRoom, useWaitForHost, useCloudClient } from '@hiyve/react';
+import { JoinForm, ConnectingScreen, WaitForHostScreen } from '@hiyve/react-ui';
 import { useAnalysis } from '@hiyve/react-intelligence';
-import { useCloudClient } from './cloudClient';
 import { LandingPage } from './components/LandingPage';
-import { JoinForm } from './components/JoinForm';
 import { VideoRoom } from './components/VideoRoom';
 import { PostMeetingView } from './components/PostMeetingView';
 import { SearchView } from './components/SearchView';
-import { Box, CircularProgress, Typography } from '@mui/material';
 
 type AppMode = 'landing' | 'call' | 'postMeeting' | 'search';
 
-const STORAGE_KEYS = {
-  userName: 'hiyve-interview-example-userName',
-  roomName: 'hiyve-interview-example-roomName',
-};
-
-function ConnectingScreen() {
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-      <CircularProgress size={60} />
-      <Typography variant="h6" sx={{ mt: 3 }}>Connecting...</Typography>
-    </Box>
-  );
-}
+const STORAGE_PREFIX = 'hiyve-interview-example';
 
 function App() {
   const [mode, setMode] = useState<AppMode>('landing');
-  const [lastTranscript, setLastTranscript] = useState('');
   const [lastResponseId, setLastResponseId] = useState<string | null>(null);
   const [lastRoomName, setLastRoomName] = useState('');
 
@@ -40,9 +32,8 @@ function App() {
   const { result, loading, analyzeInterview, clearResult } = useAnalysis({ cloud });
 
   const handleLeaveWithAnalysis = useCallback(async (transcript: string, responseId: string | null) => {
-    setLastTranscript(transcript);
     setLastResponseId(responseId);
-    setLastRoomName(room?.name || localStorage.getItem(STORAGE_KEYS.roomName) || '');
+    setLastRoomName(room?.name || localStorage.getItem(`${STORAGE_PREFIX}-roomName`) || '');
     setMode('postMeeting');
     if (transcript) {
       try {
@@ -55,7 +46,6 @@ function App() {
 
   const handleBack = useCallback(() => {
     clearResult();
-    setLastTranscript('');
     setLastResponseId(null);
     setLastRoomName('');
     setMode('landing');
@@ -73,7 +63,17 @@ function App() {
         />
       );
     }
-    return <JoinForm onBack={() => setMode('landing')} />;
+    return (
+      <JoinForm
+        autoConnect
+        onBack={() => setMode('landing')}
+        storagePrefix={STORAGE_PREFIX}
+        labels={{
+          title: 'Interview Room',
+          subtitle: 'Start or join an interview session',
+        }}
+      />
+    );
   }
 
   // Post-meeting analysis
@@ -81,10 +81,9 @@ function App() {
     return (
       <PostMeetingView
         data={result}
-        transcript={lastTranscript}
         responseId={lastResponseId}
         roomName={lastRoomName}
-        userName={localStorage.getItem(STORAGE_KEYS.userName) || ''}
+        userName={localStorage.getItem(`${STORAGE_PREFIX}-userName`) || ''}
         loading={loading}
         onBack={handleBack}
       />

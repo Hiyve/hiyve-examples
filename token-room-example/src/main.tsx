@@ -24,7 +24,7 @@
  *
  * ## Error Handling
  * `HiyveProvider.onError` catches all SDK-level errors (network failures,
- * token issues, media errors). The `getErrorMessage` helper translates
+ * token issues, media errors). The `formatHiyveError` utility translates
  * raw error strings into user-friendly messages.
  */
 
@@ -32,6 +32,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
 import { HiyveProvider } from '@hiyve/react';
+import { formatHiyveError } from '@hiyve/utilities';
 import App from './App';
 
 const darkTheme = createTheme({
@@ -67,26 +68,6 @@ async function generateRoomToken(): Promise<string> {
   return data.roomToken;
 }
 
-/**
- * Convert raw SDK error strings into user-friendly messages.
- *
- * The Hiyve SDK surfaces errors as technical strings (e.g. "room does not exist",
- * "token expired"). This function maps common patterns to messages that make
- * sense to end users who may not understand the underlying token flow.
- *
- * @param err - The raw error message from the SDK or backend
- * @returns A human-readable error message suitable for display in a Snackbar
- */
-function getErrorMessage(err: string): string {
-  const errLower = err.toLowerCase();
-  if (errLower.includes('does not exist') || errLower.includes('not found') || errLower.includes('no room')) {
-    return 'Unable to join room. The room name may be incorrect or the host hasn\'t started the meeting yet.';
-  }
-  if (errLower.includes('token') || errLower.includes('expired')) {
-    return 'The invite link is invalid or has expired. Please request a new invite link from the host.';
-  }
-  return err;
-}
 
 /**
  * Root component that wraps the app in providers and displays global errors.
@@ -125,7 +106,7 @@ function Root() {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setError(null)} severity="error" sx={{ width: '100%' }}>
-          {error && getErrorMessage(error)}
+          {error && formatHiyveError(error)}
         </Alert>
       </Snackbar>
     </ThemeProvider>

@@ -25,6 +25,7 @@ REACT_ROOM_EXAMPLE_DIR="$SCRIPT_DIR/react-room-example"
 SALES_EXAMPLE_DIR="$SCRIPT_DIR/sales-example"
 INTERVIEW_EXAMPLE_DIR="$SCRIPT_DIR/interview-example"
 TELEHEALTH_EXAMPLE_DIR="$SCRIPT_DIR/telehealth-example"
+ROOMS_EXAMPLE_DIR="$SCRIPT_DIR/rooms-example"
 COMPONENTS_DIR="$SCRIPT_DIR/../hiyve-sdk"
 
 # Colors
@@ -110,6 +111,10 @@ do_status() {
     echo -e "${CYAN}=== telehealth-example ===${NC}"
     cd "$TELEHEALTH_EXAMPLE_DIR"
     node scripts/toggle-packages.js status
+
+    echo -e "${CYAN}=== rooms-example ===${NC}"
+    cd "$ROOMS_EXAMPLE_DIR"
+    node scripts/toggle-packages.js status
 }
 
 toggle_example() {
@@ -189,6 +194,7 @@ do_dev() {
     toggle_example "$SALES_EXAMPLE_DIR" "sales-example" "dev"
     toggle_example "$INTERVIEW_EXAMPLE_DIR" "interview-example" "dev"
     toggle_example "$TELEHEALTH_EXAMPLE_DIR" "telehealth-example" "dev"
+    toggle_example "$ROOMS_EXAMPLE_DIR" "rooms-example" "dev"
 
     echo ""
     print_status "DEV mode ready!"
@@ -206,6 +212,7 @@ do_dev() {
     echo -e "    ${CYAN}cd sales-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd interview-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd telehealth-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd rooms-example && pnpm run dev${NC}"
     echo ""
     echo -e "  Run ${CYAN}pnpm dev${NC} in hiyve-sdk for watch mode"
     echo ""
@@ -231,6 +238,7 @@ do_prod() {
     toggle_example "$SALES_EXAMPLE_DIR" "sales-example" "prod"
     toggle_example "$INTERVIEW_EXAMPLE_DIR" "interview-example" "prod"
     toggle_example "$TELEHEALTH_EXAMPLE_DIR" "telehealth-example" "prod"
+    toggle_example "$ROOMS_EXAMPLE_DIR" "rooms-example" "prod"
 
     echo ""
     print_status "PROD mode ready!"
@@ -248,6 +256,7 @@ do_prod() {
     echo -e "    ${CYAN}cd sales-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd interview-example && pnpm run dev${NC}"
     echo -e "    ${CYAN}cd telehealth-example && pnpm run dev${NC}"
+    echo -e "    ${CYAN}cd rooms-example && pnpm run dev${NC}"
     echo ""
 }
 

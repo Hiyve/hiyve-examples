@@ -74,12 +74,10 @@ nextjs-example/
 │   │   └── generate-room-token/
 │   │       └── route.ts       # API route for token generation
 │   ├── layout.tsx             # Root layout with MUI theme
-│   └── page.tsx               # Main page with ClientProvider
+│   └── page.tsx               # Main page with HiyveProvider
 ├── components/
 │   ├── JoinForm.tsx           # Room entry form with device preview
 │   └── VideoRoom.tsx          # Video grid and controls
-├── types/
-│   └── hiyve.d.ts             # Type declarations for @hiyve packages
 ├── theme.ts                   # MUI dark theme configuration
 ├── next.config.mjs            # Next.js configuration
 └── package.json
@@ -96,16 +94,8 @@ nextjs-example/
 
 ## SDK Components Used
 
-- `@hiyve/react` - React context, hooks, and ClientProvider for WebRTC state
+- `@hiyve/react` - React context, hooks, and HiyveProvider for WebRTC state
 - `@hiyve/react-ui` - UI components (VideoGrid, ControlBar, DevicePreview, DeviceSelector)
-
-## TypeScript Support
-
-This example includes TypeScript type declarations for all `@hiyve/*` packages in `types/hiyve.d.ts`. These declarations provide type safety while the SDK packages are in development.
-
-The declarations cover:
-- `@hiyve/react` - hooks and ClientProvider component
-- `@hiyve/react-ui` - ControlBar, VideoGrid, DevicePreview, DeviceSelector components and ControlBarLayoutMode type
 
 ## Development Mode
 

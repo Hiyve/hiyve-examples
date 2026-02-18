@@ -2,7 +2,7 @@
 
 A video conferencing application built with **Angular 20** and the **@hiyve** Angular SDK packages.
 
-Unlike the React examples that use `@hiyve/client-provider` (React Context), this example demonstrates how to integrate the Hiyve SDK with any non-React framework by wrapping `HiyveStore` in an Angular service with RxJS Observables.
+Unlike the React examples that use `@hiyve/react` (React Context), this example demonstrates how to integrate the Hiyve SDK with any non-React framework by wrapping `HiyveStore` in an Angular service with RxJS Observables.
 
 ## Features
 
@@ -13,9 +13,65 @@ Unlike the React examples that use `@hiyve/client-provider` (React Context), thi
 - Participant count display
 - Angular Material dark theme UI
 
-## Architecture
+## Quick Start
 
-This example uses the following Hiyve packages:
+You can either run the root setup script (recommended) or set up manually:
+
+### Option A: Root Setup Script (Recommended)
+
+From the `hiyve-examples` root directory:
+
+```bash
+./setup.sh angular-example
+```
+
+This handles authentication, dependencies, and environment setup automatically.
+
+### Option B: Manual Setup
+
+**Prerequisites:** Node.js 18+, pnpm, and Hiyve API credentials from [console.hiyve.dev](https://console.hiyve.dev).
+
+#### 1. Authenticate with Hiyve
+
+The `@hiyve/*` packages require authentication:
+
+```bash
+npx hiyve-cli login
+```
+
+Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
+
+#### 2. Install Dependencies
+
+```bash
+pnpm run setup
+```
+
+#### 3. Configure Server Credentials
+
+```bash
+cp server/.env.example server/.env
+```
+
+Edit `server/.env` with your Hiyve credentials:
+
+```env
+APIKEY=your-hiyve-api-key
+CLIENT_SECRET=your-hiyve-secret
+SERVER_REGION=us-west-2
+```
+
+#### 4. Start the App
+
+```bash
+pnpm run dev
+```
+
+This starts both the Angular dev server (port 4200) and the Express API server (port 3001).
+
+Open [http://localhost:4200](http://localhost:4200)
+
+## Packages Used
 
 | Package | Description |
 |---------|-------------|
@@ -23,6 +79,8 @@ This example uses the following Hiyve packages:
 | `@hiyve/rtc-client` | WebRTC client library |
 | `@hiyve/angular` | Angular services, video grid, video tile, and control bar components |
 | `@hiyve/utilities` | Shared types and layout algorithms (via `@hiyve/utilities/video` subpath) |
+
+## Architecture
 
 The `HiyveService` (from `@hiyve/angular`) wraps `HiyveStore` and converts its callback-based subscriptions into RxJS Observables, enabling Angular's `async` pipe and `OnPush` change detection.
 
@@ -32,37 +90,6 @@ HiyveStore (callback-based)
         └── BehaviorSubjects → Observables
             └── async pipe in templates (OnPush)
 ```
-
-## Prerequisites
-
-- Node.js 18+
-- pnpm
-- Hiyve API credentials from [console.hiyve.dev](https://console.hiyve.dev)
-
-## Quick Start
-
-1. **Install dependencies:**
-
-   ```bash
-   pnpm run setup
-   ```
-
-2. **Configure credentials:**
-
-   ```bash
-   cp server/.env.example server/.env
-   # Edit server/.env with your APIKEY and CLIENT_SECRET
-   ```
-
-3. **Start the development server:**
-
-   ```bash
-   pnpm run dev
-   ```
-
-   This starts both the Angular dev server (port 4200) and the Express API server (port 3001).
-
-4. **Open** [http://localhost:4200](http://localhost:4200)
 
 ## Project Structure
 
@@ -104,8 +131,8 @@ angular-example/
 
 The pattern used in `HiyveService` can be adapted to any framework:
 
-- **Vue 3**: Wrap `subscribeToSlice` in `ref()` / `watchEffect()`
+- **Vue 3**: Wrap store subscriptions in `ref()` / `watchEffect()`
 - **Svelte**: Use Svelte stores with `subscribe()`
-- **Solid.js**: Use `createSignal()` with `subscribeToSlice()`
+- **Solid.js**: Use `createSignal()` with store subscriptions
 
-The key is to bridge `HiyveStore.subscribeToSlice()` callbacks to your framework's reactivity system.
+The key is to bridge `HiyveStore` callback-based subscriptions to your framework's reactivity system.

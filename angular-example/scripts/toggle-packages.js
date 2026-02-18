@@ -3,15 +3,12 @@
 /**
  * Toggle between local development packages and registry production packages
  *
- * The @hiyve/angular package uses file: (copy) instead of link: (symlink)
- * in dev mode because link: causes duplicate @angular/* module instances
- * that break Angular's dependency injection. With file:, pnpm copies the
- * package into the virtual store where peer deps resolve from the app's
- * node_modules — ensuring singleton Angular instances.
+ * This script dynamically finds all @hiyve/* packages in package.json and
+ * toggles them between local file paths and registry versions.
  *
  * Usage:
- *   node scripts/toggle-packages.js dev    # Use local packages
- *   node scripts/toggle-packages.js prod   # Use registry packages
+ *   node scripts/toggle-packages.js dev    # Update to local packages
+ *   node scripts/toggle-packages.js prod   # Update to registry packages
  *   node scripts/toggle-packages.js status # Show current mode
  */
 
@@ -22,9 +19,12 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PACKAGE_JSON = path.join(ROOT, 'package.json');
+const SERVER_PACKAGE_JSON = path.join(ROOT, 'server', 'package.json');
 
 // Relative path from this example to hiyve-sdk packages
 const COMPONENTS_PATH = '../../hiyve-sdk/packages';
+// Relative path from server/ subdirectory (one level deeper)
+const SERVER_COMPONENTS_PATH = '../../../hiyve-sdk/packages';
 
 // Path to package metadata (contains actual version numbers)
 const METADATA_PATH = path.resolve(__dirname, '../../../hiyve-sdk/package-metadata');
@@ -65,12 +65,6 @@ function getVersionFromMetadata(pkg, tag = 'latest') {
   return tag;
 }
 
-// Angular packages need file: (copy) instead of link: (symlink) in dev mode
-// because link: creates duplicate @angular/* instances that break DI
-function isAngularPackage(name) {
-  return name === 'angular';
-}
-
 /**
  * Dynamically find all @hiyve/* packages in package.json
  */
@@ -84,25 +78,10 @@ function getHiyvePackages(pkg) {
   return packages.sort();
 }
 
-function getLocalPath(pkg) {
-  // Angular uses file: (copy) to avoid duplicate module instances
-  // All others use link: (symlink) for live development
-  const protocol = isAngularPackage(pkg) ? 'file' : 'link';
-  return `${protocol}:${COMPONENTS_PATH}/${pkg}`;
-}
-
 function getProdPath(pkg) {
   // rtc-client uses alpha tag, all others use latest
   const tag = pkg === 'rtc-client' ? 'alpha' : 'latest';
   return getVersionFromMetadata(pkg, tag);
-}
-
-function readPackageJson() {
-  return JSON.parse(fs.readFileSync(PACKAGE_JSON, 'utf8'));
-}
-
-function writePackageJson(pkg) {
-  fs.writeFileSync(PACKAGE_JSON, JSON.stringify(pkg, null, 2) + '\n');
 }
 
 /**
@@ -113,17 +92,17 @@ function isDevVersion(version) {
 }
 
 /**
- * Get current mode by checking all @hiyve/* packages.
+ * Get current mode by checking ALL packages.
  * Returns 'dev' if all are local, 'prod' if all are registry, 'mixed' if some of each.
  */
 function getCurrentMode(pkg) {
-  const packages = getHiyvePackages(pkg);
-  if (packages.length === 0) return 'unknown';
+  const hiyvePackages = getHiyvePackages(pkg);
+  if (hiyvePackages.length === 0) return 'unknown';
 
   let devCount = 0;
   let prodCount = 0;
 
-  for (const name of packages) {
+  for (const name of hiyvePackages) {
     const version = pkg.dependencies[`@hiyve/${name}`];
     if (isDevVersion(version)) {
       devCount++;
@@ -132,20 +111,29 @@ function getCurrentMode(pkg) {
     }
   }
 
-  if (devCount === packages.length) return 'dev';
-  if (prodCount === packages.length) return 'prod';
+  if (devCount === hiyvePackages.length) return 'dev';
+  if (prodCount === hiyvePackages.length) return 'prod';
   return 'mixed';
 }
 
-function setMode(mode) {
-  const pkg = readPackageJson();
-  const allPackages = getHiyvePackages(pkg);
+/**
+ * Toggle @hiyve/* packages in a single package.json file.
+ * @param {string} filePath - Path to package.json
+ * @param {string} componentsPath - Relative path to hiyve-sdk/packages
+ * @param {string} mode - 'dev' or 'prod'
+ * @param {string} label - Display label (e.g., 'package.json' or 'server/package.json')
+ */
+function toggleFile(filePath, componentsPath, mode, label) {
+  if (!fs.existsSync(filePath)) return;
+
+  const pkg = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const hiyvePackages = getHiyvePackages(pkg);
+  if (hiyvePackages.length === 0) return;
 
   let updated = 0;
-
-  for (const name of allPackages) {
+  for (const name of hiyvePackages) {
     const key = `@hiyve/${name}`;
-    const targetVersion = mode === 'dev' ? getLocalPath(name) : getProdPath(name);
+    const targetVersion = mode === 'dev' ? `link:${componentsPath}/${name}` : getProdPath(name);
     if (pkg.dependencies[key] !== targetVersion) {
       pkg.dependencies[key] = targetVersion;
       updated++;
@@ -153,38 +141,44 @@ function setMode(mode) {
   }
 
   if (updated === 0) {
-    console.log(`Already in ${mode} mode (all ${allPackages.length} packages up to date)`);
+    console.log(`${label}: Already in ${mode} mode (${hiyvePackages.length} packages)`);
     return;
   }
 
-  writePackageJson(pkg);
-  console.log(`Updated package.json to ${mode.toUpperCase()} mode`);
-  console.log(`  Toggled ${updated} package(s)`);
-
-  const angular = allPackages.filter(isAngularPackage);
-  if (angular.length > 0 && mode === 'dev') {
-    console.log(`  Note: @hiyve/angular uses file: (copy) — run pnpm install after SDK rebuilds`);
-  }
+  fs.writeFileSync(filePath, JSON.stringify(pkg, null, 2) + '\n');
+  console.log(`${label}: Updated to ${mode.toUpperCase()} mode (${updated} of ${hiyvePackages.length} @hiyve/* packages)`);
 }
 
-function showStatus() {
-  const pkg = readPackageJson();
+function setMode(mode) {
+  toggleFile(PACKAGE_JSON, COMPONENTS_PATH, mode, 'package.json');
+  toggleFile(SERVER_PACKAGE_JSON, SERVER_COMPONENTS_PATH, mode, 'server/package.json');
+}
+
+function showStatusForFile(filePath, label) {
+  if (!fs.existsSync(filePath)) return;
+
+  const pkg = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const mode = getCurrentMode(pkg);
-  const allPackages = getHiyvePackages(pkg);
+  const hiyvePackages = getHiyvePackages(pkg);
+  if (hiyvePackages.length === 0) return;
 
   const modeLabel = mode === 'mixed' ? 'MIXED (run dev or prod to fix)' : mode.toUpperCase();
-  console.log(`\nCurrent mode: ${modeLabel}\n`);
+  console.log(`\n${label} — mode: ${modeLabel}`);
 
-  console.log(`Packages (${allPackages.length}):\n`);
-  for (const name of allPackages) {
+  for (const name of hiyvePackages) {
     const key = `@hiyve/${name}`;
     const value = pkg.dependencies[key];
     const isDev = isDevVersion(value);
     const source = isDev ? 'LOCAL' : 'REGISTRY';
-    const protocol = isAngularPackage(name) && isDev ? ' (file: copy)' : '';
-    const versionInfo = isDev ? protocol : ` (v${value})`;
-    console.log(`  ${key}: ${source}${versionInfo}`);
+    const versionInfo = isDev ? '' : ` (v${value})`;
+    const highlight = mode === 'mixed' ? (isDev ? '' : ' ⚠️') : '';
+    console.log(`  ${key}: ${source}${versionInfo}${highlight}`);
   }
+}
+
+function showStatus() {
+  showStatusForFile(PACKAGE_JSON, 'package.json');
+  showStatusForFile(SERVER_PACKAGE_JSON, 'server/package.json');
   console.log('');
 }
 
@@ -207,7 +201,7 @@ Usage: node scripts/toggle-packages.js <command>
 
 Commands:
   dev     Update package.json to use local packages
-  prod    Update package.json to use registry packages
+  prod    Update package.json to use S3 packages
   status  Show current mode and package sources
 `);
 }

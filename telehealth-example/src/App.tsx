@@ -1,28 +1,22 @@
+/**
+ * @fileoverview Telehealth Example - Application Mode Router
+ * @module telehealth-example/App
+ *
+ * Routes between landing, call, postMeeting, and search modes. Manages the
+ * transition from an active video visit to the post-meeting clinical notes view.
+ */
+
 import { useState, useCallback } from 'react';
 import { useConnection, useRoom, useWaitForHost } from '@hiyve/react';
-import { WaitForHostScreen } from '@hiyve/react-ui';
+import { JoinForm, ConnectingScreen, WaitForHostScreen } from '@hiyve/react-ui';
 import { LandingPage } from './components/LandingPage';
-import { JoinForm } from './components/JoinForm';
 import { VideoRoom } from './components/VideoRoom';
 import { PostMeetingView } from './components/PostMeetingView';
 import { SearchView } from './components/SearchView';
-import { Box, CircularProgress, Typography } from '@mui/material';
 
 type AppMode = 'landing' | 'call' | 'postMeeting' | 'search';
 
-const STORAGE_KEYS = {
-  userName: 'hiyve-telehealth-example-userName',
-  roomName: 'hiyve-telehealth-example-roomName',
-};
-
-function ConnectingScreen() {
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-      <CircularProgress size={60} />
-      <Typography variant="h6" sx={{ mt: 3 }}>Connecting...</Typography>
-    </Box>
-  );
-}
+const STORAGE_PREFIX = 'hiyve-telehealth-example';
 
 function App() {
   const [mode, setMode] = useState<AppMode>('landing');
@@ -35,7 +29,7 @@ function App() {
 
   const handleLeaveWithResponseId = useCallback((responseId: string | null) => {
     setLastResponseId(responseId);
-    setLastRoomName(room?.name || localStorage.getItem(STORAGE_KEYS.roomName) || '');
+    setLastRoomName(room?.name || localStorage.getItem(`${STORAGE_PREFIX}-roomName`) || '');
     setMode('postMeeting');
   }, [room]);
 
@@ -57,7 +51,17 @@ function App() {
         />
       );
     }
-    return <JoinForm onBack={() => setMode('landing')} />;
+    return (
+      <JoinForm
+        autoConnect
+        onBack={() => setMode('landing')}
+        storagePrefix={STORAGE_PREFIX}
+        labels={{
+          title: 'Telehealth Session',
+          subtitle: 'Start or join a telehealth consultation',
+        }}
+      />
+    );
   }
 
   // Post-meeting view
@@ -66,7 +70,7 @@ function App() {
       <PostMeetingView
         responseId={lastResponseId}
         roomName={lastRoomName}
-        userName={localStorage.getItem(STORAGE_KEYS.userName) || ''}
+        userName={localStorage.getItem(`${STORAGE_PREFIX}-userName`) || ''}
         onBack={handleBack}
       />
     );

@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Telehealth Example - Video Room
+ * @module telehealth-example/components/VideoRoom
+ *
+ * Main video conferencing view with VideoGrid, ControlBar, recording indicator,
+ * and a host-only TelehealthSidebar. Provides a leave dialog that offers
+ * clinical note generation before exiting the room.
+ */
+
 import { useState, useCallback } from 'react';
 import {
   Box, AppBar, Toolbar, Typography, Snackbar, Button,

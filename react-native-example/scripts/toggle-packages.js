@@ -6,22 +6,25 @@
  * This script dynamically finds all @hiyve/* packages in package.json and
  * toggles them between local file paths and registry versions.
  *
- * Uses pnpm with `link:` protocol for dev mode (symlinks to local SDK).
- *
  * Usage:
  *   node scripts/toggle-packages.js dev    # Update to local packages
  *   node scripts/toggle-packages.js prod   # Update to registry packages
  *   node scripts/toggle-packages.js status # Show current mode
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PACKAGE_JSON = path.join(ROOT, 'package.json');
+const SERVER_PACKAGE_JSON = path.join(ROOT, 'server', 'package.json');
 
 // Relative path from this example to hiyve-sdk packages
 const COMPONENTS_PATH = '../../hiyve-sdk/packages';
+// Relative path from server/ subdirectory (one level deeper)
+const SERVER_COMPONENTS_PATH = '../../../hiyve-sdk/packages';
 
 // Path to package metadata (contains actual version numbers)
 const METADATA_PATH = path.resolve(__dirname, '../../../hiyve-sdk/package-metadata');
@@ -31,35 +34,34 @@ const versionCache = new Map();
 
 /**
  * Get the actual version number from package metadata
- * @param {string} pkg - Package name without @hiyve/ prefix (e.g., 'rtc-client-rn')
+ * @param {string} pkg - Package name without @hiyve/ prefix (e.g., 'video-grid')
  * @param {string} tag - Dist tag to use ('latest' or 'alpha')
  * @returns {string} The actual version number or the tag as fallback
  */
-function getVersionFromMetadata(pkg, tag) {
-  tag = tag || 'latest';
-  const cacheKey = pkg + ':' + tag;
+function getVersionFromMetadata(pkg, tag = 'latest') {
+  const cacheKey = `${pkg}:${tag}`;
   if (versionCache.has(cacheKey)) {
     return versionCache.get(cacheKey);
   }
 
-  // Map package name to metadata filename (e.g., 'rtc-client-rn' -> 'hiyve-rtc-client-rn.json')
-  const metadataFile = path.join(METADATA_PATH, 'hiyve-' + pkg + '.json');
+  // Map package name to metadata filename (e.g., 'video-grid' -> 'hiyve-video-grid.json')
+  const metadataFile = path.join(METADATA_PATH, `hiyve-${pkg}.json`);
 
   try {
     if (fs.existsSync(metadataFile)) {
       const metadata = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
-      const version = metadata['dist-tags'] && metadata['dist-tags'][tag];
+      const version = metadata['dist-tags']?.[tag];
       if (version) {
         versionCache.set(cacheKey, version);
         return version;
       }
     }
   } catch (error) {
-    console.warn('Warning: Could not read metadata for ' + pkg + ': ' + error.message);
+    console.warn(`Warning: Could not read metadata for ${pkg}: ${error.message}`);
   }
 
   // Fallback to tag if metadata not found
-  console.warn('Warning: Using \'' + tag + '\' tag as fallback for @hiyve/' + pkg);
+  console.warn(`Warning: Using '${tag}' tag as fallback for @hiyve/${pkg}`);
   return tag;
 }
 
@@ -67,40 +69,26 @@ function getVersionFromMetadata(pkg, tag) {
  * Dynamically find all @hiyve/* packages in package.json
  */
 function getHiyvePackages(pkg) {
-  var packages = [];
-  var deps = Object.keys(pkg.dependencies || {});
-  for (var i = 0; i < deps.length; i++) {
-    if (deps[i].startsWith('@hiyve/')) {
-      packages.push(deps[i].replace('@hiyve/', ''));
+  const packages = [];
+  for (const dep of Object.keys(pkg.dependencies || {})) {
+    if (dep.startsWith('@hiyve/')) {
+      packages.push(dep.replace('@hiyve/', ''));
     }
   }
   return packages.sort();
 }
 
-function getLocalPath(pkg) {
-  // pnpm uses link: protocol for local packages (creates symlink)
-  return 'link:' + COMPONENTS_PATH + '/' + pkg;
-}
-
 function getProdPath(pkg) {
   // rtc-client uses alpha tag, all others use latest
-  var tag = pkg === 'rtc-client' ? 'alpha' : 'latest';
+  const tag = pkg === 'rtc-client' ? 'alpha' : 'latest';
   return getVersionFromMetadata(pkg, tag);
-}
-
-function readPackageJson() {
-  return JSON.parse(fs.readFileSync(PACKAGE_JSON, 'utf8'));
-}
-
-function writePackageJson(pkg) {
-  fs.writeFileSync(PACKAGE_JSON, JSON.stringify(pkg, null, 2) + '\n');
 }
 
 /**
  * Check if a package version is in dev mode (local file path)
  */
 function isDevVersion(version) {
-  return version && (version.startsWith('link:') || version.startsWith('file:'));
+  return version?.startsWith('link:') || version?.startsWith('file:');
 }
 
 /**
@@ -108,14 +96,14 @@ function isDevVersion(version) {
  * Returns 'dev' if all are local, 'prod' if all are registry, 'mixed' if some of each.
  */
 function getCurrentMode(pkg) {
-  var hiyvePackages = getHiyvePackages(pkg);
+  const hiyvePackages = getHiyvePackages(pkg);
   if (hiyvePackages.length === 0) return 'unknown';
 
-  var devCount = 0;
-  var prodCount = 0;
+  let devCount = 0;
+  let prodCount = 0;
 
-  for (var i = 0; i < hiyvePackages.length; i++) {
-    var version = pkg.dependencies['@hiyve/' + hiyvePackages[i]];
+  for (const name of hiyvePackages) {
+    const version = pkg.dependencies[`@hiyve/${name}`];
     if (isDevVersion(version)) {
       devCount++;
     } else {
@@ -128,15 +116,24 @@ function getCurrentMode(pkg) {
   return 'mixed';
 }
 
-function setMode(mode) {
-  var pkg = readPackageJson();
-  var hiyvePackages = getHiyvePackages(pkg);
+/**
+ * Toggle @hiyve/* packages in a single package.json file.
+ * @param {string} filePath - Path to package.json
+ * @param {string} componentsPath - Relative path to hiyve-sdk/packages
+ * @param {string} mode - 'dev' or 'prod'
+ * @param {string} label - Display label (e.g., 'package.json' or 'server/package.json')
+ */
+function toggleFile(filePath, componentsPath, mode, label) {
+  if (!fs.existsSync(filePath)) return;
 
-  var updated = 0;
-  for (var i = 0; i < hiyvePackages.length; i++) {
-    var name = hiyvePackages[i];
-    var key = '@hiyve/' + name;
-    var targetVersion = mode === 'dev' ? getLocalPath(name) : getProdPath(name);
+  const pkg = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const hiyvePackages = getHiyvePackages(pkg);
+  if (hiyvePackages.length === 0) return;
+
+  let updated = 0;
+  for (const name of hiyvePackages) {
+    const key = `@hiyve/${name}`;
+    const targetVersion = mode === 'dev' ? `link:${componentsPath}/${name}` : getProdPath(name);
     if (pkg.dependencies[key] !== targetVersion) {
       pkg.dependencies[key] = targetVersion;
       updated++;
@@ -144,39 +141,49 @@ function setMode(mode) {
   }
 
   if (updated === 0) {
-    console.log('Already in ' + mode + ' mode (all ' + hiyvePackages.length + ' packages up to date)');
+    console.log(`${label}: Already in ${mode} mode (${hiyvePackages.length} packages)`);
     return;
   }
 
-  writePackageJson(pkg);
-  console.log('Updated package.json to ' + mode.toUpperCase() + ' mode');
-  console.log('  Toggled ' + updated + ' of ' + hiyvePackages.length + ' @hiyve/* packages');
+  fs.writeFileSync(filePath, JSON.stringify(pkg, null, 2) + '\n');
+  console.log(`${label}: Updated to ${mode.toUpperCase()} mode (${updated} of ${hiyvePackages.length} @hiyve/* packages)`);
+}
+
+function setMode(mode) {
+  toggleFile(PACKAGE_JSON, COMPONENTS_PATH, mode, 'package.json');
+  toggleFile(SERVER_PACKAGE_JSON, SERVER_COMPONENTS_PATH, mode, 'server/package.json');
+}
+
+function showStatusForFile(filePath, label) {
+  if (!fs.existsSync(filePath)) return;
+
+  const pkg = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const mode = getCurrentMode(pkg);
+  const hiyvePackages = getHiyvePackages(pkg);
+  if (hiyvePackages.length === 0) return;
+
+  const modeLabel = mode === 'mixed' ? 'MIXED (run dev or prod to fix)' : mode.toUpperCase();
+  console.log(`\n${label} — mode: ${modeLabel}`);
+
+  for (const name of hiyvePackages) {
+    const key = `@hiyve/${name}`;
+    const value = pkg.dependencies[key];
+    const isDev = isDevVersion(value);
+    const source = isDev ? 'LOCAL' : 'REGISTRY';
+    const versionInfo = isDev ? '' : ` (v${value})`;
+    const highlight = mode === 'mixed' ? (isDev ? '' : ' ⚠️') : '';
+    console.log(`  ${key}: ${source}${versionInfo}${highlight}`);
+  }
 }
 
 function showStatus() {
-  var pkg = readPackageJson();
-  var mode = getCurrentMode(pkg);
-  var hiyvePackages = getHiyvePackages(pkg);
-
-  var modeLabel = mode === 'mixed' ? 'MIXED (run dev or prod to fix)' : mode.toUpperCase();
-  console.log('\nCurrent mode: ' + modeLabel + '\n');
-  console.log('Found ' + hiyvePackages.length + ' @hiyve/* packages:\n');
-
-  for (var i = 0; i < hiyvePackages.length; i++) {
-    var name = hiyvePackages[i];
-    var key = '@hiyve/' + name;
-    var value = pkg.dependencies[key];
-    var isDev = isDevVersion(value);
-    var source = isDev ? 'LOCAL' : 'REGISTRY';
-    var versionInfo = isDev ? '' : ' (v' + value + ')';
-    var highlight = mode === 'mixed' ? (isDev ? '' : ' ⚠️') : '';
-    console.log('  ' + key + ': ' + source + versionInfo + highlight);
-  }
+  showStatusForFile(PACKAGE_JSON, 'package.json');
+  showStatusForFile(SERVER_PACKAGE_JSON, 'server/package.json');
   console.log('');
 }
 
 // Main
-var command = process.argv[2];
+const command = process.argv[2];
 
 switch (command) {
   case 'dev':
@@ -189,5 +196,12 @@ switch (command) {
     showStatus();
     break;
   default:
-    console.log('\nUsage: node scripts/toggle-packages.js <command>\n\nCommands:\n  dev     Update package.json to use local packages\n  prod    Update package.json to use registry packages\n  status  Show current mode and package sources\n');
+    console.log(`
+Usage: node scripts/toggle-packages.js <command>
+
+Commands:
+  dev     Update package.json to use local packages
+  prod    Update package.json to use S3 packages
+  status  Show current mode and package sources
+`);
 }

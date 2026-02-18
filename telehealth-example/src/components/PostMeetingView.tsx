@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Telehealth Example - Post-Meeting Clinical Notes View
+ * @module telehealth-example/components/PostMeetingView
+ *
+ * Generates structured clinical notes via the useNoteGeneration hook
+ * and displays them as plain text. Includes an AI follow-up chat for
+ * asking questions about the completed visit.
+ */
+
 import { useState, useCallback, useEffect } from 'react';
 import {
   Container, Box, Button, Typography, Paper, TextField, IconButton,
@@ -8,7 +17,7 @@ import {
   Send as SendIcon,
   CheckCircle as SavedIcon,
 } from '@mui/icons-material';
-import { useLiveContext } from '@hiyve/react-intelligence';
+import { useLiveContext, useNoteGeneration } from '@hiyve/react-intelligence';
 
 const CLINICAL_NOTE_PROMPT = `Based on this patient visit conversation, generate a structured clinical note. Include the following sections where applicable:
 
@@ -50,57 +59,25 @@ export function PostMeetingView({
   userName,
   onBack,
 }: PostMeetingViewProps) {
-  const [notes, setNotes] = useState('');
-  const [generating, setGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [querying, setQuerying] = useState(false);
 
   const { askWithResponseId } = useLiveContext(roomName, userName);
+  const { generateNote, loading: noteGenerating, saved: noteSaved } = useNoteGeneration();
 
   // Generate clinical notes on mount
   useEffect(() => {
     if (!responseId) return;
-
-    let cancelled = false;
-    setGenerating(true);
-    setError(null);
-
-    fetch('/api/generate-note', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        responseId,
-        prompt: CLINICAL_NOTE_PROMPT,
-        roomName,
-        userId: userName,
-        userName,
-        title: 'Clinical Notes',
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        if (cancelled) return;
-        if (result.success) {
-          setNotes(result.content);
-          setSaved(!!result.fileId);
-        } else {
-          setError(result.message || 'Failed to generate clinical notes.');
-        }
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        console.error('Note generation failed:', err);
-        setError('Failed to generate clinical notes. Please try again.');
-      })
-      .finally(() => {
-        if (!cancelled) setGenerating(false);
-      });
-
-    return () => { cancelled = true; };
-  }, [responseId, roomName, userName]);
+    generateNote({
+      responseId,
+      prompt: CLINICAL_NOTE_PROMPT,
+      roomName,
+      userId: userName,
+      userName,
+      title: 'Clinical Notes',
+    });
+  }, [responseId, roomName, userName, generateNote]);
 
   const handleSendQuery = useCallback(async () => {
     if (!query.trim() || !responseId) return;
@@ -127,42 +104,26 @@ export function PostMeetingView({
 
       <Typography variant="h4" gutterBottom>Clinical Notes</Typography>
 
-      {/* Loading state */}
-      {generating && (
-        <Paper sx={{ p: 3, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-          <CircularProgress size={24} />
-          <Typography>Generating clinical notes...</Typography>
-        </Paper>
-      )}
-
-      {/* Error state */}
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>
-      )}
-
-      {/* Generated clinical notes */}
-      {notes && (
-        <Paper sx={{ p: 3, mb: 3 }}>
-          {saved && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <SavedIcon color="success" fontSize="small" />
-              <Typography variant="body2" color="success.main">
-                Saved to Notes
-              </Typography>
-            </Box>
-          )}
-          <Typography
-            variant="body1"
-            sx={{ whiteSpace: 'pre-wrap', '& h2, & h3': { mt: 2, mb: 1 } }}
-            component="div"
-          >
-            {notes}
+      {/* Note save status */}
+      {noteSaved && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <SavedIcon color="success" fontSize="small" />
+          <Typography variant="body2" color="success.main">
+            Clinical notes saved to Notes
           </Typography>
-        </Paper>
+        </Box>
+      )}
+      {noteGenerating && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <CircularProgress size={16} />
+          <Typography variant="body2" color="text.secondary">
+            Saving clinical notes...
+          </Typography>
+        </Box>
       )}
 
       {/* No responseId */}
-      {!responseId && !generating && !notes && (
+      {!responseId && !noteGenerating && (
         <Alert severity="info" sx={{ mb: 3 }}>
           No clinical notes were generated. You can use the assistant below to ask questions about the visit.
         </Alert>

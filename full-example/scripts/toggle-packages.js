@@ -19,9 +19,12 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PACKAGE_JSON = path.join(ROOT, 'package.json');
+const SERVER_PACKAGE_JSON = path.join(ROOT, 'server', 'package.json');
 
 // Relative path from this example to hiyve-sdk packages
 const COMPONENTS_PATH = '../../hiyve-sdk/packages';
+// Relative path from server/ subdirectory (one level deeper)
+const SERVER_COMPONENTS_PATH = '../../../hiyve-sdk/packages';
 
 // Path to package metadata (contains actual version numbers)
 const METADATA_PATH = path.resolve(__dirname, '../../../hiyve-sdk/package-metadata');
@@ -75,22 +78,10 @@ function getHiyvePackages(pkg) {
   return packages.sort();
 }
 
-function getLocalPath(pkg) {
-  return `link:${COMPONENTS_PATH}/${pkg}`;
-}
-
 function getProdPath(pkg) {
   // rtc-client uses alpha tag, all others use latest
   const tag = pkg === 'rtc-client' ? 'alpha' : 'latest';
   return getVersionFromMetadata(pkg, tag);
-}
-
-function readPackageJson() {
-  return JSON.parse(fs.readFileSync(PACKAGE_JSON, 'utf8'));
-}
-
-function writePackageJson(pkg) {
-  fs.writeFileSync(PACKAGE_JSON, JSON.stringify(pkg, null, 2) + '\n');
 }
 
 /**
@@ -125,14 +116,24 @@ function getCurrentMode(pkg) {
   return 'mixed';
 }
 
-function setMode(mode) {
-  const pkg = readPackageJson();
+/**
+ * Toggle @hiyve/* packages in a single package.json file.
+ * @param {string} filePath - Path to package.json
+ * @param {string} componentsPath - Relative path to hiyve-sdk/packages
+ * @param {string} mode - 'dev' or 'prod'
+ * @param {string} label - Display label (e.g., 'package.json' or 'server/package.json')
+ */
+function toggleFile(filePath, componentsPath, mode, label) {
+  if (!fs.existsSync(filePath)) return;
+
+  const pkg = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const hiyvePackages = getHiyvePackages(pkg);
+  if (hiyvePackages.length === 0) return;
 
   let updated = 0;
   for (const name of hiyvePackages) {
     const key = `@hiyve/${name}`;
-    const targetVersion = mode === 'dev' ? getLocalPath(name) : getProdPath(name);
+    const targetVersion = mode === 'dev' ? `link:${componentsPath}/${name}` : getProdPath(name);
     if (pkg.dependencies[key] !== targetVersion) {
       pkg.dependencies[key] = targetVersion;
       updated++;
@@ -140,35 +141,44 @@ function setMode(mode) {
   }
 
   if (updated === 0) {
-    console.log(`Already in ${mode} mode (all ${hiyvePackages.length} packages up to date)`);
+    console.log(`${label}: Already in ${mode} mode (${hiyvePackages.length} packages)`);
     return;
   }
 
-  writePackageJson(pkg);
-  console.log(`Updated package.json to ${mode.toUpperCase()} mode`);
-  console.log(`  Toggled ${updated} of ${hiyvePackages.length} @hiyve/* packages`);
+  fs.writeFileSync(filePath, JSON.stringify(pkg, null, 2) + '\n');
+  console.log(`${label}: Updated to ${mode.toUpperCase()} mode (${updated} of ${hiyvePackages.length} @hiyve/* packages)`);
 }
 
-function showStatus() {
-  const pkg = readPackageJson();
+function setMode(mode) {
+  toggleFile(PACKAGE_JSON, COMPONENTS_PATH, mode, 'package.json');
+  toggleFile(SERVER_PACKAGE_JSON, SERVER_COMPONENTS_PATH, mode, 'server/package.json');
+}
+
+function showStatusForFile(filePath, label) {
+  if (!fs.existsSync(filePath)) return;
+
+  const pkg = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   const mode = getCurrentMode(pkg);
   const hiyvePackages = getHiyvePackages(pkg);
+  if (hiyvePackages.length === 0) return;
 
   const modeLabel = mode === 'mixed' ? 'MIXED (run dev or prod to fix)' : mode.toUpperCase();
-  console.log(`\nCurrent mode: ${modeLabel}\n`);
-  console.log(`Found ${hiyvePackages.length} @hiyve/* packages:\n`);
+  console.log(`\n${label} — mode: ${modeLabel}`);
 
   for (const name of hiyvePackages) {
     const key = `@hiyve/${name}`;
     const value = pkg.dependencies[key];
     const isDev = isDevVersion(value);
     const source = isDev ? 'LOCAL' : 'REGISTRY';
-    // Show version info for registry packages
     const versionInfo = isDev ? '' : ` (v${value})`;
-    // Highlight mismatched packages in mixed mode
     const highlight = mode === 'mixed' ? (isDev ? '' : ' ⚠️') : '';
     console.log(`  ${key}: ${source}${versionInfo}${highlight}`);
   }
+}
+
+function showStatus() {
+  showStatusForFile(PACKAGE_JSON, 'package.json');
+  showStatusForFile(SERVER_PACKAGE_JSON, 'server/package.json');
   console.log('');
 }
 

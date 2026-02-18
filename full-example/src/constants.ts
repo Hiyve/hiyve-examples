@@ -1,5 +1,8 @@
 /**
- * Application constants - localStorage keys.
+ * @fileoverview Full Example - Application Constants
+ * @module full-example/constants
+ *
+ * Defines localStorage keys used for persisting user preferences across sessions.
  */
 
 export const STORAGE_KEYS = {

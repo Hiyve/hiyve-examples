@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Telehealth Example - Telehealth Sidebar
+ * @module telehealth-example/components/TelehealthSidebar
+ *
+ * Host-only sidebar with two tabs: an AI intelligence tab (IntelligenceHub with
+ * live transcription and assistant) and a Files tab (FileManager for documents).
+ * Manages mood cloud sync and intelligence readiness state.
+ */
+
 import { useState, useCallback } from 'react';
 import {
   SmartToy as AIIcon,

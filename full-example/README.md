@@ -2,6 +2,40 @@
 
 A complete video conferencing application demonstrating all `@hiyve/*` packages.
 
+## Features
+
+- Create/join video rooms
+- Real-time video/audio with WebRTC
+- Mute/unmute audio and video
+- Screen sharing
+- Recording with auto-compose
+- Live streaming to external platforms (YouTube, Twitch, etc.)
+- Live transcription (captions)
+- Mood/sentiment analysis with visual indicators
+- Engagement tracking (attentive, distracted, looking away)
+- Real-time chat
+- Participant list with hand raising
+- Hand raise notifications and queue
+- Waiting room
+- File management with custom viewers
+- Q&A panel (questions, upvoting, answers, auto-save)
+- Live polls with voting and real-time results
+- Rich text notes with auto-save and PDF export
+- Device selection & preview
+- Audio gain control
+- Collaborative whiteboard
+- Customizable overlay order for video tiles
+- Live clock display in header
+- Responsive layout with container breakpoints
+- **AI Intelligence** (cloud-powered)
+  - Bot-managed transcript context via OpenAI Responses API
+  - Client-side mood analysis pushed to shared context
+  - Mood/sentiment indicators displayed alongside live captions
+  - Conversation history persists across sidebar tab switches (sessionStorage)
+  - Ad-hoc AI queries against accumulated meeting context
+  - Meeting summary generation
+  - Action items extraction
+
 ## Quick Start
 
 You can either run the root setup script (recommended) or set up manually:
@@ -62,146 +96,29 @@ This starts both the frontend (port 5173) and backend (port 3001).
 
 Open http://localhost:5173
 
-## Features
+## Packages Used
 
-- Create/join video rooms
-- Real-time video/audio with WebRTC
-- Mute/unmute audio and video
-- Screen sharing
-- Recording with auto-compose
-- Live streaming to external platforms (YouTube, Twitch, etc.)
-- Live transcription (captions)
-- Mood/sentiment analysis with visual indicators
-- Engagement tracking (attentive, distracted, looking away)
-- Real-time chat
-- Participant list with hand raising
-- Hand raise notifications and queue
-- Waiting room
-- File management with custom viewers
-- Q&A panel (questions, upvoting, answers, auto-save)
-- Live polls with voting and real-time results
-- Rich text notes with auto-save and PDF export
-- Device selection & preview
-- Audio gain control
-- Collaborative whiteboard
-- Customizable overlay order for video tiles
-- Live clock display in header
-- Responsive layout with container breakpoints
-- **AI Intelligence** (cloud-powered)
-  - Bot-managed transcript context via OpenAI Responses API
-  - Client-side mood analysis pushed to shared context
-  - Mood/sentiment indicators displayed alongside live captions
-  - Conversation history persists across sidebar tab switches (sessionStorage)
-  - Ad-hoc AI queries against accumulated meeting context
-  - Meeting summary generation
-  - Action items extraction
-
-## SDK Packages Used
-
-This example uses **20 SDK packages** with **45+ components and hooks** to create a complete video conferencing application.
-
-### Core Providers (4 packages)
-
-| Package | Component/Hook | Description |
-|---------|---------------|-------------|
-| `@hiyve/client-provider` | `ClientProvider` | Root provider that manages WebRTC client state, connection, and media |
-| | `useConnection` | Hook for room create/join/leave and connection status |
-| | `useRoom` | Hook for room info (name, isOwner, isInRoom) |
-| | `useParticipants` | Hook for participant list, local user ID, participant count |
-| | `useLocalMedia` | Hook for local audio/video mute controls |
-| | `useDevices` | Hook for camera/mic device selection |
-| | `useRecording` | Hook for recording state, duration, start/stop controls |
-| | `useStreaming` | Hook for live streaming state and controls |
-| | `useTranscription` | Hook for live transcription state and enrichment |
-| | `useChat` | Hook for chat messages, unread count, send/clear |
-| | `useWaitingRoom` | Hook for waiting room admission state |
-| | `useAudioProcessing` | Hook for audio gain/feedback control |
-| | `useLayout` | Hook for dominant speaker tracking |
-| `@hiyve/file-manager` | `FileCacheProvider` | Provider for file system caching and sync |
-| | `FileManager` | Full-featured file browser with drag/drop, multi-select |
-| | `useFileCache` | Hook for file operations (upload, delete, create folder) |
-| `@hiyve/mood-analysis` | `MoodAnalysisProvider` | Provider for real-time sentiment/emotion detection |
-
-### Video & Layout Components (2 packages)
-
-| Package | Component | Description |
-|---------|-----------|-------------|
-| `@hiyve/video-grid` | `VideoGrid` | Auto-layout video grid with multiple layout modes (grid, spotlight, side-by-side) |
-| `@hiyve/control-bar` | `ControlBar` | Media controls bar with mute, recording, streaming, screen share, layout selector |
-| | `IntelligenceSettings` | Settings panel for AI features (transcription, mood, post-meeting summary) |
-| | `DEFAULT_LAYOUTS` | Pre-defined layout configurations |
-
-### Sidebar & Panel Components (2 packages)
-
-| Package | Component | Description |
-|---------|-----------|-------------|
-| `@hiyve/sidebar` | `Sidebar` | Collapsible, resizable tabbed sidebar container |
-| `@hiyve/participant-list` | `ParticipantList` | List of room participants with status indicators |
-
-### Communication Components (2 packages)
-
-| Package | Component/Hook | Description |
-|---------|----------------|-------------|
-| `@hiyve/chat` | `ChatPanel` | Real-time text chat with message history |
-| `@hiyve/transcription` | `TranscriptViewer` | Live captions display with timestamps, sentiment indicators, and auto-scroll |
-
-### Device & Audio Components (2 packages)
-
-| Package | Component | Description |
-|---------|-----------|-------------|
-| `@hiyve/device-selector` | `DevicePreview` | Camera/mic preview with device selection before joining |
-| `@hiyve/audio-monitor` | `GainControl` | Microphone volume slider with mute toggle |
-
-### Recording & Streaming Components (2 packages)
-
-| Package | Component | Description |
-|---------|-----------|-------------|
-| `@hiyve/recording` | `RecordingIndicator` | Recording status indicator with duration timer |
-| `@hiyve/streaming` | `StreamingIndicator` | Live streaming status indicator |
-| | `StreamingUrlDisplay` | Displays streaming URL with copy button |
-| | `StreamingSettingsForm` | Stream mode, RTMP URL, and MP4 creation settings |
-
-### Waiting Room Components (1 package)
-
-| Package | Component | Description |
-|---------|-----------|-------------|
-| `@hiyve/waiting-room` | `WaitingRoomSetup` | Toggle to enable/disable waiting room for owners |
-| | `WaitingRoomAdmittance` | Popover for owners to admit/reject waiting users |
-| | `WaitingRoomGuest` | Waiting/rejected state display for guests |
-| | `WaitForHostScreen` | Waiting screen when guest joins before host starts |
-
-### Collaboration Components (4 packages)
-
-| Package | Component/Hook | Description |
-|---------|----------------|-------------|
-| `@hiyve/whiteboard` | `Whiteboard` | Collaborative drawing canvas with tools |
-| | `CreateWhiteboardDialog` | Dialog for creating new whiteboards |
-| `@hiyve/qa` | `QAPanel` | Q&A session with questions and answers |
-| | `QASessionViewer` | Read-only viewer for saved Q&A sessions |
-| | `useQAListener` | Hook for real-time Q&A sync across participants |
-| `@hiyve/polls` | `PollsWindow` | Live polling with vote tracking and results |
-| | `PollCreator` | Dialog for creating new polls |
-| | `PollsSessionViewer` | Read-only viewer for saved poll sessions |
-| | `usePollListener` | Hook for detecting new active polls |
-| | `usePollSync` | Hook for real-time poll state synchronization |
-| `@hiyve/notes` | `NoteEditor` | Rich text note-taking with auto-save and PDF export |
-
-### Utility Components (1 package)
-
-| Package | Component/Hook | Description |
-|---------|----------------|-------------|
-| `@hiyve/utilities` | `LiveClock` | Real-time clock display |
-| | `TooltipIconButton` | Icon button with tooltip wrapper |
-| | `useContainerBreakpoint` | Hook for responsive container-based breakpoints |
+| Package | Purpose |
+|---------|---------|
+| `@hiyve/react` | Core WebRTC provider and hooks (`useConnection`, `useRoom`, `useParticipants`, `useLocalMedia`, `useDevices`, `useRecording`, `useStreaming`, `useTranscription`, `useChat`, `useWaitingRoom`, `useAudioProcessing`, `useHandRaise`, `useWaitForHost`, `useLayout`) |
+| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `Sidebar`, `ParticipantList`, `GainControl`, `DevicePreview`, `WaitForHostScreen`, `WaitingRoomSetup`, `WaitingRoomAdmittance`, `WaitingRoomGuest` |
+| `@hiyve/react-capture` | `RecordingIndicator`, `StreamingIndicator`, `StreamingUrlDisplay`, `StreamingSettingsForm`, `TranscriptViewer` |
+| `@hiyve/react-collaboration` | `FileCacheProvider`, `FileManager`, `ChatPanel`, `QASession`, `QASessionViewer`, `useQASessionState`, `PollsSession`, `PollsSessionViewer`, `usePollListener` |
+| `@hiyve/react-intelligence` | `CloudProvider`, `MoodAnalysisProvider`, `IntelligenceHub` |
+| `@hiyve/react-whiteboard` | `WhiteboardSession` |
+| `@hiyve/react-notes` | `NotesSession` |
+| `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
+| `@hiyve/utilities` | `LiveClock`, `TooltipIconButton`, `useContainerBreakpoint` |
 
 ## Architecture
 
 ```
 main.tsx
-└── ClientProvider              # Manages WebRTC client state
-    └── FileCacheProvider       # File system caching (@hiyve/file-manager)
-        └── MoodAnalysisProvider    # Sentiment detection
-            └── App.tsx             # Main application shell
+└── HiyveProvider              # Manages WebRTC client state (@hiyve/react)
+    └── CloudProvider          # AI cloud features (@hiyve/react-intelligence)
+        └── FileCacheProvider  # File system caching (@hiyve/react-collaboration)
+            └── MoodAnalysisProvider    # Sentiment detection (@hiyve/react-intelligence)
+                └── App.tsx             # Main application shell
 
 src/
 ├── App.tsx                     # Routes between views based on state
@@ -210,7 +127,7 @@ src/
     ├── JoinForm.tsx            # Room name, user name, create/join
     ├── ConnectingScreen.tsx    # Loading state while connecting
     ├── WaitingScreen.tsx       # Waiting room for guests
-    ├── WaitForHostScreen       # From @hiyve/waiting-room - shown when host hasn't started
+    ├── WaitForHostScreen       # From @hiyve/react-ui - shown when host hasn't started
     ├── VideoRoom.tsx           # Main in-room view
     │   ├── VideoGrid               # Video tiles
     │   ├── ControlBar              # Media controls
@@ -226,7 +143,7 @@ src/
 | `VideoRoom` | `useRoom`, `useConnection`, `useRecording`, `useStreaming`, `useChat`, `useWaitingRoom` | Main room layout |
 | `Sidebar` | `useRoom`, `useParticipants`, `useChat`, `useAudioProcessing`, `useRecording`, `useTranscription`, `useStreaming` | Tabbed sidebar |
 | `WaitingScreen` | `useWaitingRoom`, `useRoom`, `useConnection` | Waiting room UI |
-| `WaitForHostScreen` | `useWaitForHost`, `useConnection` | Wait for host UI (from @hiyve/waiting-room) |
+| `WaitForHostScreen` | `useWaitForHost`, `useConnection` | Wait for host UI (from @hiyve/react-ui) |
 | `ConnectingScreen` | (none - presentational) | Loading state |
 
 **Note:** ParticipantList has built-in owner controls for muting and removing participants. These controls automatically appear when the current user is the room owner.
@@ -257,13 +174,13 @@ const { raisedHandCount, lowerAllHands } = useHandRaise();
 // Audio Processing
 const { feedbackDetected, setGain } = useAudioProcessing();
 
-// File Management (from @hiyve/file-manager)
-import { useFileCache } from '@hiyve/file-manager';
+// File Management (from @hiyve/react-collaboration)
+import { useFileCache } from '@hiyve/react-collaboration';
 const { isReady, getFileTree, uploadFile } = useFileCache();
 
-// Q&A (from @hiyve/qa)
-import { useQAListener } from '@hiyve/qa';
-useQAListener({ isOwner, localUserId, questions, onQuestionsChange });
+// Q&A (from @hiyve/react-collaboration)
+import { useQASessionState } from '@hiyve/react-collaboration';
+const { hasNewQuestion, hasActiveQASession, clearNewQuestionBadge } = useQASessionState({ isOwner, localUserId, activeTabId });
 ```
 
 ## Component Customization
@@ -302,7 +219,7 @@ All components support customization via props:
 <VideoGrid sx={{ flex: 1, background: '#1a1a1a' }} />
 
 // Custom overlay order (controls render order of elements at same position)
-import { VideoGrid, type VideoTileOverlayElement, type LocalVideoTileOverlayElement } from '@hiyve/video-grid';
+import { VideoGrid, type VideoTileOverlayElement, type LocalVideoTileOverlayElement } from '@hiyve/react-ui';
 
 const tileOverlayOrder: VideoTileOverlayElement[] = ['engagement', 'mood', 'name', 'status', 'controls'];
 const localTileOverlayOrder: LocalVideoTileOverlayElement[] = ['indicator', 'timer', 'engagement', 'mood', 'name', 'status', 'controls'];
@@ -313,8 +230,8 @@ const localTileOverlayOrder: LocalVideoTileOverlayElement[] = ['indicator', 'tim
 />
 
 // Custom file viewers (for specialized file types)
-import { FileManager, type CustomViewerMap } from '@hiyve/file-manager';
-import { QASessionViewer, type QASessionFile } from '@hiyve/qa';
+import { FileManager, type CustomViewerMap } from '@hiyve/react-collaboration';
+import { QASessionViewer, type QASessionFile } from '@hiyve/react-collaboration';
 
 const customViewers: CustomViewerMap = {
   'qa-session': (data, file, onClose) => (
@@ -356,22 +273,16 @@ The Q&A panel allows participants to ask questions during a meeting:
 - **Session viewer**: View saved Q&A sessions in the file manager
 
 ```tsx
-import { QAPanel, useQAListener } from '@hiyve/qa';
+import { QASession, useQASessionState } from '@hiyve/react-collaboration';
 
-// Keep Q&A state synced even when tab is hidden
-useQAListener({
+// Track Q&A session state and badge notifications
+const { hasNewQuestion, hasActiveQASession, clearNewQuestionBadge } = useQASessionState({
   isOwner,
   localUserId,
-  questions,
-  onQuestionsChange: setQuestions,
+  activeTabId,
 });
 
-<QAPanel
-  initialQuestions={questions}
-  onQuestionsChange={setQuestions}
-  enableAutoSave={true}
-  onAutoSave={(fileId) => console.log('Saved to:', fileId)}
-/>
+<QASession isSessionActive={hasActiveQASession} sx={{ height: '100%' }} />
 ```
 
 ## Intelligence Mode

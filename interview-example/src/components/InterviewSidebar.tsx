@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Interview Example - Interview Sidebar
+ * @module interview-example/components/InterviewSidebar
+ *
+ * Owner-only sidebar with tabbed panels for AI intelligence (live transcription,
+ * assistant, sentiment) and file management during an interview.
+ */
+
 import { useState, useCallback } from 'react';
 import {
   SmartToy as AIIcon,

@@ -2,30 +2,6 @@
 
 An AI-powered sales coaching application with live meeting intelligence, real-time transcription, post-call analysis, and semantic search. Built with `@hiyve/react`, `@hiyve/react-intelligence`, `@hiyve/react-capture`, and `@hiyve/react-collaboration`.
 
-## Quick Start
-
-### Option A: Root Setup Script
-
-```bash
-cd hiyve-examples
-./setup.sh
-cd sales-example
-pnpm run dev
-```
-
-### Option B: Manual Setup
-
-```bash
-cd sales-example
-pnpm install
-cd server && pnpm install && cd ..
-cp server/.env.example server/.env
-# Edit server/.env with your Hiyve API credentials
-pnpm run dev
-```
-
-Open http://localhost:5173
-
 ## Features
 
 ### During the Call (Owner)
@@ -54,6 +30,30 @@ Open http://localhost:5173
 
 - **Semantic Search** - Search across past sales call transcripts using natural language via `SearchPanel`
 - **Device Preview** - Test camera and microphone before joining
+
+## Quick Start
+
+### Option A: Root Setup Script
+
+```bash
+cd hiyve-examples
+./setup.sh
+cd sales-example
+pnpm run dev
+```
+
+### Option B: Manual Setup
+
+```bash
+cd sales-example
+pnpm install
+cd server && pnpm install && cd ..
+cp server/.env.example server/.env
+# Edit server/.env with your Hiyve API credentials
+pnpm run dev
+```
+
+Open http://localhost:5173
 
 ## Packages Used
 
