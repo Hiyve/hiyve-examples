@@ -11,6 +11,7 @@ import { useUser, UserProfile } from '@hiyve/react-identity';
 import { Box, Typography, Paper, Chip } from '@mui/material';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
+/** Dashboard displaying user profile info and logout button using useUser hook */
 export function Dashboard() {
   const { user } = useUser();
 

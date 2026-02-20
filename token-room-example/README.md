@@ -79,6 +79,24 @@ pnpm run dev
 
    Visit `http://localhost:5173`
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+This starts the Vite dev server on http://localhost:5173 and the Express API server on http://localhost:3001.
+
 ## User Flows
 
 ### Owner Flow
@@ -100,7 +118,7 @@ pnpm run dev
 
 ## Invite Link Format
 
-```
+```text
 https://example.com/join?joinToken={token}&region={region}
 ```
 
@@ -127,7 +145,7 @@ When generating invite links, owners can configure:
 
 ## Project Structure
 
-```
+```text
 token-room-example/
 ├── src/
 │   ├── main.tsx              # App entry with HiyveProvider
@@ -153,6 +171,7 @@ token-room-example/
 | `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `InviteLinkDialog`, `JoinWithTokenForm` |
 | `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
 | `@hiyve/utilities` | `LiveClock`, `TooltipIconButton`, `useContainerBreakpoint` |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## API Endpoints
 

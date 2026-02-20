@@ -33,7 +33,9 @@ import {
 } from '@hiyve/react-ui';
 
 interface SalesSidebarProps {
+  /** Configuration for the AI intelligence panel */
   intelligenceConfig: IntelligenceConfig;
+  /** Callback when intelligence configuration changes */
   onIntelligenceConfigChange: (config: IntelligenceConfig) => void;
 }
 

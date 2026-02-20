@@ -2,17 +2,17 @@
  * @fileoverview Full Example - Application Entry Point
  * @module full-example/main
  *
- * Sets up the provider hierarchy (HiyveProvider, CloudProvider, FileCacheProvider,
- * MoodAnalysisProvider) and renders the root application with MUI dark theme.
+ * Sets up the provider hierarchy and renders the root application with MUI dark theme.
  *
  * Provider hierarchy:
  * - ThemeProvider: MUI dark theme
- * - HiyveProvider: WebRTC connection (requires generateRoomToken)
- * - CloudProvider: AI cloud features (requires generateCloudToken)
+ * - HiyveProvider: WebRTC connection + cloud tokens (auto-generated via @hiyve/admin server middleware)
+ * - CloudProvider: AI cloud features (auto-generates tokens via server proxy)
  * - FileCacheProvider: File management
  * - MoodAnalysisProvider: Sentiment detection
  *
- * See SDK documentation for detailed API reference.
+ * Room tokens and cloud tokens are generated automatically by HiyveProvider
+ * when the server uses @hiyve/admin middleware (mountHiyveRoutes).
  */
 
 import React, { useState } from 'react';
@@ -30,33 +30,6 @@ const darkTheme = createTheme({
   },
 });
 
-/** Generate a room token from your backend server. */
-async function generateRoomToken(): Promise<string> {
-  const response = await fetch('/api/generate-room-token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to generate room token');
-  }
-  return data.roomToken;
-}
-
-/** Generate a cloud token from your backend server for AI features. */
-async function generateCloudToken() {
-  const response = await fetch('/api/generate-cloud-token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to generate cloud token');
-  }
-  return { cloudToken: data.cloudToken, environment: data.environment };
-}
-
-// Wrapper component to show connection errors
 function Root() {
   const [error, setError] = useState<string | null>(null);
 
@@ -64,7 +37,6 @@ function Root() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <HiyveProvider
-        generateRoomToken={generateRoomToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err) => {
@@ -72,7 +44,7 @@ function Root() {
           setError(err.message || String(err));
         }}
       >
-        <CloudProvider generateCloudToken={generateCloudToken}>
+        <CloudProvider>
           <FileCacheProvider>
             <MoodAnalysisProvider analyzerType="human">
               <App />

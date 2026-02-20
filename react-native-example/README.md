@@ -2,13 +2,6 @@
 
 A mobile video conferencing app built with React Native CLI and the `@hiyve/rn-react` SDK. Uses the same provider + hooks pattern as the web examples, with pre-built `VideoGrid` and `ControlBar` components designed for React Native.
 
-## Prerequisites
-
-- Node.js >= 20
-- [pnpm](https://pnpm.io/) (all examples use pnpm)
-- Xcode 26+ (iOS) or Android Studio (Android)
-- Ruby + Bundler (for CocoaPods on iOS)
-
 ## Features
 
 - Create or join video rooms by name
@@ -19,6 +12,13 @@ A mobile video conferencing app built with React Native CLI and the `@hiyve/rn-r
 - Automatic permission handling (camera + microphone)
 - Platform-aware token server URL (localhost vs 10.0.2.2)
 - Dark theme UI
+
+## Prerequisites
+
+- Node.js >= 20
+- [pnpm](https://pnpm.io/) (all examples use pnpm)
+- Xcode 26+ (iOS) or Android Studio (Android)
+- Ruby + Bundler (for CocoaPods on iOS)
 
 ## Quick Start
 
@@ -50,6 +50,26 @@ pnpm run dev
 pnpm run ios    # or pnpm run android
 ```
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+# Start Metro bundler + token server
+pnpm run dev
+
+# In a separate terminal, build for your platform
+pnpm run ios    # or pnpm run android
+```
+
 ## Packages Used
 
 | Package | Purpose |
@@ -61,10 +81,11 @@ pnpm run ios    # or pnpm run android
 | `react-native-safe-area-context` | Safe area insets for notch/island devices |
 | `@react-native-async-storage/async-storage` | Persistent storage (peer dep) |
 | `@react-native-vector-icons/material-design-icons` | ControlBar icons (peer dep of rn-react) |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## Architecture
 
-```
+```text
 react-native-example/
 ├── src/
 │   ├── App.tsx              # HiyveRNProvider setup + state-based routing
@@ -83,7 +104,7 @@ react-native-example/
 
 ### Component Flow
 
-```
+```text
 SafeAreaProvider
   └── HiyveRNProvider (options: { generateRoomToken })
       └── AppContent
@@ -245,7 +266,7 @@ cd ios && bundle install && bundle exec pod install
 
 Create `android/local.properties`:
 
-```
+```text
 sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
 ```
 

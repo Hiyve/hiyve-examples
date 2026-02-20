@@ -65,9 +65,27 @@ pnpm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Configuration
+
+This example uses a `.env` file in the project root (not a separate server directory):
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
 ## Project Structure
 
-```
+```text
 nextjs-example/
 ├── app/
 │   ├── api/

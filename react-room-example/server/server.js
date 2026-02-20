@@ -1,5 +1,6 @@
 /**
- * React Room Example - Server
+ * @fileoverview React Room Example - Server
+ * @module react-room-example/server
  *
  * Uses @hiyve/admin middleware for standard Hiyve server endpoints:
  * - POST /api/generate-room-token - Room token for Hiyve Client

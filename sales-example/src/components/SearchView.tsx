@@ -19,6 +19,7 @@ const STORAGE_KEYS = {
 };
 
 interface SearchViewProps {
+  /** Callback to return to the landing page */
   onBack: () => void;
 }
 

@@ -1,5 +1,9 @@
 /**
- * AIPanel Component - AI-powered meeting intelligence using IntelligenceHub.
+ * @fileoverview AIPanel - AI-powered meeting intelligence using IntelligenceHub
+ * @module full-example/components/AIPanel
+ *
+ * Key SDK Components:
+ * - IntelligenceHub from @hiyve/react-intelligence - renders the AI intelligence panel
  *
  * Provides a tabbed dashboard with AI Assistant, Captions, Alerts, and Sentiment
  * features via the IntelligenceHub component.

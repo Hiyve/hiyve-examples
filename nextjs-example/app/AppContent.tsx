@@ -66,6 +66,7 @@ function RoomRouter() {
   return <JoinForm onUserNameChange={setUserName} />;
 }
 
+/** Main application content with HiyveProvider and room routing */
 export default function AppContent() {
   const [error, setError] = useState<string | null>(null);
 

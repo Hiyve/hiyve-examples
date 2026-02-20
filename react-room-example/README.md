@@ -68,6 +68,24 @@ pnpm run dev
 
 Open http://localhost:5173
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+This starts the Vite dev server on http://localhost:5173 and the Express API server on http://localhost:3001.
+
 ## Packages Used
 
 | Package | Purpose |
@@ -77,10 +95,11 @@ Open http://localhost:5173
 | `@hiyve/react-ui` | UI primitives used internally by `PrebuiltRoom` |
 | `@hiyve/rtc-client` | WebRTC client (peer dependency) |
 | `@hiyve/utilities` | Shared utilities (peer dependency) |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## Architecture
 
-```
+```text
 src/
   App.tsx                # Entire app: join form, room wrapper, prebuilt room
 
@@ -92,7 +111,7 @@ server/
 
 ### Component Flow
 
-```
+```text
 App
   ├── Loading              # While fetching room token
   ├── Join Form (inline)   # When not yet joined

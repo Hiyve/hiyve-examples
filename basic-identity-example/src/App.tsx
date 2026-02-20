@@ -28,6 +28,7 @@ import { useUser, AuthFlow } from '@hiyve/react-identity';
 import { Box, CircularProgress } from '@mui/material';
 import { Dashboard } from './components/Dashboard';
 
+/** Main application component handling authentication flow and routing */
 function App() {
   const { isAuthenticated, isLoading } = useUser();
 

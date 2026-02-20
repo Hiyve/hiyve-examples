@@ -55,37 +55,54 @@ pnpm run dev
 
 Open http://localhost:5173
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+This starts the Vite dev server on http://localhost:5173 and the Express API server on http://localhost:3001.
+
 ## Packages Used
 
 | Package | Description |
 |---------|-------------|
 | `@hiyve/react` | Core provider, hooks (`useConnection`, `useRoom`, `useRecording`, `useTranscription`, `useParticipants`) |
-| `@hiyve/react-ui` | UI components (`VideoGrid`, `ControlBar`, `Sidebar`, `DevicePreview`, `WaitForHostScreen`) |
+| `@hiyve/react-ui` | UI components (`VideoGrid`, `ControlBar`, `Sidebar`, `JoinForm`, `ConnectingScreen`, `WaitForHostScreen`, `DevicePreview`) |
 | `@hiyve/react-intelligence` | AI components and hooks (`CloudProvider`, `MoodAnalysisProvider`, `IntelligenceHub`, `SearchPanel`, `useIntelligenceReadiness`, `useLiveContext`, `useMoodAnalysisSafe`, `useMoodCloudSync`) |
 | `@hiyve/react-capture` | Recording and transcription components (`RecordingIndicator`, `TranscriptViewer`) |
 | `@hiyve/react-collaboration` | File management (`FileCacheProvider`, `FileManager`) |
 | `@hiyve/cloud` | Cloud AI client (`CloudClient`) |
 | `@hiyve/rtc-client` | WebRTC signaling client (used internally by @hiyve/react) |
 | `@hiyve/utilities` | Shared utilities (`LiveClock`, `TooltipIconButton`) |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## Project Structure
 
-```
+```text
 telehealth-example/
 ├── src/
 │   ├── main.tsx              # Providers: Theme + Hiyve + Cloud + CloudClient + FileCache + Mood
 │   ├── App.tsx               # Mode router (landing/call/postMeeting/search)
-│   ├── cloudClient.tsx       # CloudClient context provider + useCloudClient hook
 │   ├── vite-env.d.ts         # Vite type declarations
 │   └── components/
 │       ├── LandingPage.tsx          # 2-card mode selection: Visit, Search
-│       ├── JoinForm.tsx             # Room name + user name + Create/Join + DevicePreview
 │       ├── VideoRoom.tsx            # VideoGrid + ControlBar + intelligence + host-only sidebar
 │       ├── TelehealthSidebar.tsx    # AI tab (IntelligenceHub) + Files tab (FileManager)
 │       ├── PostMeetingView.tsx      # AI-generated clinical notes + follow-up AI assistant
 │       └── SearchView.tsx           # SearchPanel wrapper with telehealth-themed labels
 ├── server/
-│   ├── server.js             # Express: room token + cloud token endpoints
+│   ├── server.js             # Express: room token + cloud token + note generation endpoints
 │   ├── package.json
 │   └── .env.example
 ├── scripts/
@@ -102,7 +119,7 @@ telehealth-example/
 
 ### Provider Stack
 
-```
+```text
 ThemeProvider (MUI dark theme, primary: #00897b)
   └── HiyveProvider (WebRTC signaling + room management)
       └── CloudProvider (Cloud API authentication)
@@ -123,7 +140,7 @@ Both are generated via the Express backend to keep API credentials secure.
 
 ### Application Flow
 
-```
+```text
 LandingPage
   ├── "Start a Visit" → JoinForm → VideoRoom (with live intelligence) → PostMeetingView
   └── "Search Past Visits" → SearchView

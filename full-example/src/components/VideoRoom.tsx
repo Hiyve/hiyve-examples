@@ -85,6 +85,7 @@ const LOCAL_TILE_OVERLAY_ORDER: LocalVideoTileOverlayElement[] = [
 ];
 
 interface VideoRoomProps {
+  /** Display name of the current user, shown in video tiles and participant list */
   userName: string;
 }
 

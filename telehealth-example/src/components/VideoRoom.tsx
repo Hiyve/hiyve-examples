@@ -56,7 +56,9 @@ const LOCAL_TILE_OVERLAY_ORDER: LocalVideoTileOverlayElement[] = [
 ];
 
 interface VideoRoomProps {
+  /** Callback when leaving room with AI response ID for clinical notes */
   onLeaveWithResponseId: (responseId: string | null) => void;
+  /** Callback when leaving room without generating notes */
   onLeave: () => void;
 }
 

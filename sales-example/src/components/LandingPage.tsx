@@ -13,7 +13,9 @@ import {
 } from '@mui/icons-material';
 
 interface LandingPageProps {
+  /** Callback to initiate a new sales call */
   onStartCall: () => void;
+  /** Callback to navigate to past call search */
   onSearch: () => void;
 }
 

@@ -96,12 +96,30 @@ This starts both the frontend (port 5173) and backend (port 3001).
 
 Open http://localhost:5173
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+This starts the Vite dev server on http://localhost:5173 and the Express API server on http://localhost:3001.
+
 ## Packages Used
 
 | Package | Purpose |
 |---------|---------|
-| `@hiyve/react` | Core WebRTC provider and hooks (`useConnection`, `useRoom`, `useParticipants`, `useLocalMedia`, `useDevices`, `useRecording`, `useStreaming`, `useTranscription`, `useChat`, `useWaitingRoom`, `useAudioProcessing`, `useHandRaise`, `useWaitForHost`, `useLayout`) |
-| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `Sidebar`, `ParticipantList`, `GainControl`, `DevicePreview`, `WaitForHostScreen`, `WaitingRoomSetup`, `WaitingRoomAdmittance`, `WaitingRoomGuest` |
+| `@hiyve/react` | Core WebRTC provider and hooks (`useRoomFlow`, `useConnection`, `useRoom`, `useParticipants`, `useLocalMedia`, `useDevices`, `useRecording`, `useStreaming`, `useTranscription`, `useChat`, `useWaitingRoom`, `useAudioProcessing`, `useHandRaise`, `useWaitForHost`, `useLayout`) |
+| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `Sidebar`, `ParticipantList`, `GainControl`, `DevicePreview`, `JoinForm`, `ConnectingScreen`, `WaitForHostScreen`, `WaitingRoomSetup`, `WaitingRoomAdmittance`, `WaitingRoomGuest` |
 | `@hiyve/react-capture` | `RecordingIndicator`, `StreamingIndicator`, `StreamingUrlDisplay`, `StreamingSettingsForm`, `TranscriptViewer` |
 | `@hiyve/react-collaboration` | `FileCacheProvider`, `FileManager`, `ChatPanel`, `QASession`, `QASessionViewer`, `useQASessionState`, `PollsSession`, `PollsSessionViewer`, `usePollListener` |
 | `@hiyve/react-intelligence` | `CloudProvider`, `MoodAnalysisProvider`, `IntelligenceHub` |
@@ -109,10 +127,11 @@ Open http://localhost:5173
 | `@hiyve/react-notes` | `NotesSession` |
 | `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
 | `@hiyve/utilities` | `LiveClock`, `TooltipIconButton`, `useContainerBreakpoint` |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## Architecture
 
-```
+```text
 main.tsx
 └── HiyveProvider              # Manages WebRTC client state (@hiyve/react)
     └── CloudProvider          # AI cloud features (@hiyve/react-intelligence)
@@ -124,34 +143,35 @@ src/
 ├── App.tsx                     # Routes between views based on state
 ├── main.tsx                    # Provider setup
 └── components/
-    ├── JoinForm.tsx            # Room name, user name, create/join
-    ├── ConnectingScreen.tsx    # Loading state while connecting
     ├── WaitingScreen.tsx       # Waiting room for guests
     ├── WaitForHostScreen       # From @hiyve/react-ui - shown when host hasn't started
     ├── VideoRoom.tsx           # Main in-room view
     │   ├── VideoGrid               # Video tiles
     │   ├── ControlBar              # Media controls
     │   └── Sidebar                 # Tabbed panel
-    └── Sidebar.tsx             # Participants, chat, settings, files, Q&A, AI, captions
+    ├── Sidebar.tsx             # Participants, chat, settings, files, Q&A, AI, captions
+    └── AIPanel.tsx             # AI intelligence panel
 ```
 
 ### Component Responsibilities
 
 | Component | Hooks Used | Purpose |
 |-----------|------------|---------|
-| `JoinForm` | `useConnection` | Room creation/join form |
 | `VideoRoom` | `useRoom`, `useConnection`, `useRecording`, `useStreaming`, `useChat`, `useWaitingRoom` | Main room layout |
 | `Sidebar` | `useRoom`, `useParticipants`, `useChat`, `useAudioProcessing`, `useRecording`, `useTranscription`, `useStreaming` | Tabbed sidebar |
 | `WaitingScreen` | `useWaitingRoom`, `useRoom`, `useConnection` | Waiting room UI |
 | `WaitForHostScreen` | `useWaitForHost`, `useConnection` | Wait for host UI (from @hiyve/react-ui) |
-| `ConnectingScreen` | (none - presentational) | Loading state |
 
 **Note:** ParticipantList has built-in owner controls for muting and removing participants. These controls automatically appear when the current user is the room owner.
 
 ## Hooks Reference
 
 ```tsx
-// Connection & Room
+// Room Flow (App.tsx routing)
+const { screen } = useRoomFlow();
+// screen: 'lobby' | 'connecting' | 'waiting-for-host' | 'waiting-room' | 'in-room'
+
+// Connection & Room (used by sub-components)
 const { isConnecting, error, createRoom, joinRoom, leaveRoom } = useConnection();
 const { room, isOwner, isInRoom } = useRoom();
 
@@ -416,7 +436,6 @@ pnpm install
 See the JSDoc comments in source files:
 - `src/main.tsx` - Provider setup documentation
 - `src/App.tsx` - Overview and component usage
-- `src/components/JoinForm.tsx` - Room creation/join with `useConnection`
 - `src/components/VideoRoom.tsx` - Main room view with customization examples
 - `src/components/Sidebar.tsx` - Tabbed sidebar with multiple hooks
 - `src/components/WaitingScreen.tsx` - Waiting room with `useWaitingRoom`

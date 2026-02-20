@@ -16,11 +16,13 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '@/theme';
 
+/** Next.js metadata configuration for the application */
 export const metadata: Metadata = {
   title: 'Hiyve Video - Next.js Example',
   description: 'Video conferencing with Hiyve SDK and Next.js',
 };
 
+/** Root layout providing theme and global styles to all pages */
 export default function RootLayout({
   children,
 }: {

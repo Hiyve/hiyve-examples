@@ -49,11 +49,17 @@ interface Message {
 }
 
 interface PostMeetingViewProps {
+  /** AI analysis data from the completed sales call */
   data: unknown;
+  /** Cloud response ID for fetching additional analysis */
   responseId: string | null;
+  /** Name of the sales call room */
   roomName: string;
+  /** Display name of the sales representative */
   userName: string;
+  /** Whether analysis data is still loading */
   loading: boolean;
+  /** Callback to return to the landing page */
   onBack: () => void;
 }
 

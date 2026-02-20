@@ -16,7 +16,7 @@ import { mountHiyveRoutes, loadHiyveConfig } from '@hiyve/admin';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'] }));
+app.use(cors({ origin: ['http://localhost:4200', 'http://localhost:5173', 'http://localhost:3000'] }));
 app.use(express.json());
 
 const apiRouter = express.Router();

@@ -14,6 +14,7 @@
 
 import { NextResponse } from 'next/server';
 
+/** Generates a room token using Hiyve SDK credentials from environment variables */
 export async function POST() {
   const APIKEY = process.env.APIKEY;
   const CLIENT_SECRET = process.env.CLIENT_SECRET;

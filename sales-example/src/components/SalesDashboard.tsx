@@ -12,7 +12,9 @@ import { ArrowBack as ArrowBackIcon, TrendingUp as StrengthIcon } from '@mui/ico
 import { ScorecardPanel } from '@hiyve/react-intelligence';
 
 interface SalesDashboardProps {
+  /** Sales analysis data to display in the dashboard */
   data: unknown;
+  /** Callback to return to the landing page */
   onBack: () => void;
 }
 

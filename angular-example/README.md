@@ -2,7 +2,7 @@
 
 A video conferencing application built with **Angular 20** and the **@hiyve** Angular SDK packages.
 
-Unlike the React examples that use `@hiyve/react` (React Context), this example demonstrates how to integrate the Hiyve SDK with any non-React framework by wrapping `HiyveStore` in an Angular service with RxJS Observables.
+Unlike the React examples that use `@hiyve/react` (React Context), this example uses `@hiyve/angular` which provides Angular-native services, components, and directives for Hiyve SDK integration.
 
 ## Features
 
@@ -71,29 +71,72 @@ This starts both the Angular dev server (port 4200) and the Express API server (
 
 Open [http://localhost:4200](http://localhost:4200)
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+This starts the Angular dev server on http://localhost:4200 and the Express API server on http://localhost:3001.
+
 ## Packages Used
 
 | Package | Description |
 |---------|-------------|
-| `@hiyve/core` | Framework-agnostic store (`HiyveStore`) for state management |
+| `@hiyve/core` | Framework-agnostic state management (peer dependency of `@hiyve/angular`) |
 | `@hiyve/rtc-client` | WebRTC client library |
 | `@hiyve/angular` | Angular services, video grid, video tile, and control bar components |
 | `@hiyve/utilities` | Shared types and layout algorithms (via `@hiyve/utilities/video` subpath) |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## Architecture
 
-The `HiyveService` (from `@hiyve/angular`) wraps `HiyveStore` and converts its callback-based subscriptions into RxJS Observables, enabling Angular's `async` pipe and `OnPush` change detection.
+`provideHiyve()` registers SDK services at the application level. Components inject `ConnectionService`, `RoomService`, and `ParticipantsService` which expose RxJS Observables for use with Angular's `async` pipe and `OnPush` change detection.
 
+```text
+provideHiyve(config)               # app.config.ts
+    ├── ConnectionService          # createRoom(), joinRoom(), leaveRoom(), connection$
+    ├── RoomService                # room$, isOwner$, isInRoom$
+    └── ParticipantsService        # participants$, participantCount$
 ```
-HiyveStore (callback-based)
-    └── HiyveService (@Injectable)
-        └── BehaviorSubjects → Observables
-            └── async pipe in templates (OnPush)
+
+### Code Example
+
+```typescript
+// app.config.ts - register Hiyve providers
+import { provideHiyve } from '@hiyve/angular';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideHiyve({
+      generateRoomToken: async () => { /* fetch from your server */ },
+      localVideoElementId: 'local-video',
+    }),
+  ],
+};
+
+// video-room.component.ts - inject services
+import { ConnectionService, RoomService, ParticipantsService } from '@hiyve/angular';
+
+private connection = inject(ConnectionService);
+private room = inject(RoomService);
+room$ = this.room.room$;
+isOwner$ = this.room.isOwner$;
 ```
 
 ## Project Structure
 
-```
+```text
 angular-example/
   angular.json              # Angular CLI workspace config
   proxy.conf.json           # Dev proxy: /api → localhost:3001
@@ -107,10 +150,6 @@ angular-example/
     app/
       app.component.*       # Root: routing between JoinForm and VideoRoom
       app.config.ts         # Application providers
-      services/
-        hiyve.service.ts    # HiyveStore → RxJS wrapper
-      directives/
-        media-stream.directive.ts  # [appMediaStream] for video srcObject
       components/
         join-form/          # Room name + user name inputs
         video-room/         # Video grid + controls
@@ -129,10 +168,10 @@ angular-example/
 
 ## Adapting for Other Frameworks
 
-The pattern used in `HiyveService` can be adapted to any framework:
+The `@hiyve/angular` package bridges the Hiyve SDK to Angular's reactivity. Similar bridges can be built for other frameworks:
 
 - **Vue 3**: Wrap store subscriptions in `ref()` / `watchEffect()`
 - **Svelte**: Use Svelte stores with `subscribe()`
 - **Solid.js**: Use `createSignal()` with store subscriptions
 
-The key is to bridge `HiyveStore` callback-based subscriptions to your framework's reactivity system.
+The key is to bridge the SDK's state management to your framework's reactivity system.

@@ -5,13 +5,12 @@
  * Sets up the provider hierarchy that enables AI-powered video conferencing:
  *
  * 1. ThemeProvider -- MUI dark theme for the entire app
- * 2. HiyveProvider -- WebRTC connection and room management (requires generateRoomToken)
- * 3. CloudProvider -- Hiyve Cloud API authentication for AI features (requires generateCloudToken)
+ * 2. HiyveProvider -- WebRTC connection and room management (auto-generates room + cloud tokens)
+ * 3. CloudProvider -- Hiyve Cloud API authentication for AI features (auto-generates tokens via server proxy)
  * 4. MoodAnalysisProvider -- Facial sentiment detection on local video stream
  *
- * Token generation functions fetch from the local Express server, which in turn
- * calls the Hiyve signaling server (room token) and Hiyve Cloud API (cloud token).
- * This keeps API credentials server-side only.
+ * All tokens are generated automatically by the SDK when the server uses
+ * @hiyve/admin middleware (mountHiyveRoutes). API credentials stay server-side only.
  */
 
 import React, { useState } from 'react';
@@ -28,32 +27,6 @@ const darkTheme = createTheme({
   },
 });
 
-/** Generate a room token from your backend server. */
-async function generateRoomToken(): Promise<string> {
-  const response = await fetch('/api/generate-room-token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to generate room token');
-  }
-  return data.roomToken;
-}
-
-/** Generate a cloud token from your backend server for AI features. */
-async function generateCloudToken() {
-  const response = await fetch('/api/generate-cloud-token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to generate cloud token');
-  }
-  return { cloudToken: data.cloudToken, environment: data.environment };
-}
-
 function Root() {
   const [error, setError] = useState<string | null>(null);
 
@@ -61,7 +34,6 @@ function Root() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <HiyveProvider
-        generateRoomToken={generateRoomToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err) => {
@@ -69,7 +41,7 @@ function Root() {
           setError(err.message || String(err));
         }}
       >
-        <CloudProvider generateCloudToken={generateCloudToken}>
+        <CloudProvider>
           <MoodAnalysisProvider analyzerType="human">
             <App />
           </MoodAnalysisProvider>

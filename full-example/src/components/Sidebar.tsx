@@ -42,10 +42,15 @@ import { AIPanel } from './AIPanel';
 
 
 interface SidebarProps {
+  /** Display name of the current user */
   userName: string;
+  /** Configuration for the AI intelligence panel */
   intelligenceConfig: IntelligenceConfig;
+  /** Callback when intelligence configuration changes */
   onIntelligenceConfigChange: (config: IntelligenceConfig) => void;
+  /** Configuration for live streaming */
   streamingConfig: StreamingConfig;
+  /** Callback when streaming configuration changes */
   onStreamingConfigChange: (config: StreamingConfig) => void;
   /** Persist sidebar width to localStorage */
   persistWidth?: boolean;

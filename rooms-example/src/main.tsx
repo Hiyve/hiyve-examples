@@ -2,8 +2,8 @@
  * @fileoverview Rooms Example - Application Entry Point
  * @module rooms-example/main
  *
- * Bootstraps the React app with HiyveProvider, wiring up server-side token
- * generation for both room authentication and cloud features.
+ * Bootstraps the React app with HiyveProvider. Room tokens and cloud tokens
+ * are generated automatically when the server uses @hiyve/admin middleware.
  */
 
 import React, { useState } from 'react';
@@ -19,33 +19,6 @@ const darkTheme = createTheme({
   },
 });
 
-/**
- * Fetches a room token from the backend server.
- */
-async function generateRoomToken(): Promise<string> {
-  const response = await fetch('/api/generate-room-token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to generate room token');
-  }
-  return data.roomToken;
-}
-
-/**
- * Fetches a cloud token from the backend server.
- * The API key stays server-side; the browser only gets short-lived tokens.
- */
-async function generateCloudToken() {
-  const res = await fetch('/api/generate-cloud-token', { method: 'POST' });
-  if (!res.ok) throw new Error('Failed to generate cloud token');
-  const { cloudToken, environment } = await res.json();
-  return { cloudToken, environment };
-}
-
-
 function Root() {
   const [error, setError] = useState<string | null>(null);
 
@@ -53,8 +26,6 @@ function Root() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <HiyveProvider
-        generateRoomToken={generateRoomToken}
-        generateCloudToken={generateCloudToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err: unknown) => {

@@ -56,7 +56,9 @@ const LOCAL_TILE_OVERLAY_ORDER: LocalVideoTileOverlayElement[] = [
 ];
 
 interface VideoRoomProps {
+  /** Callback when leaving room with transcript and AI response data */
   onLeaveWithAnalysis: (transcript: string, responseId: string | null) => void;
+  /** Callback when leaving room without analysis */
   onLeave: () => void;
 }
 

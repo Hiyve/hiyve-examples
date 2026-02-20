@@ -13,7 +13,9 @@ import {
 } from '@mui/icons-material';
 
 interface LandingPageProps {
+  /** Callback to initiate a new telehealth consultation */
   onStartCall: () => void;
+  /** Callback to navigate to past visit search */
   onSearch: () => void;
 }
 

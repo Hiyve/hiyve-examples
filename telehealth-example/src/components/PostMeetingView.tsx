@@ -42,14 +42,20 @@ Any vital signs mentioned during the visit.
 Format the response as a clear, organized clinical document using markdown.`;
 
 interface Message {
+  /** Whether the message is from the user or AI assistant */
   role: 'user' | 'ai';
+  /** The message text content */
   content: string;
 }
 
 interface PostMeetingViewProps {
+  /** Cloud response ID for fetching clinical notes and analysis */
   responseId: string | null;
+  /** Name of the telehealth consultation room */
   roomName: string;
+  /** Display name of the healthcare provider */
   userName: string;
+  /** Callback to return to the landing page */
   onBack: () => void;
 }
 

@@ -2,10 +2,11 @@
  * Telehealth Example - Server
  *
  * Uses @hiyve/admin middleware for standard Hiyve server endpoints:
- * - POST /api/generate-room-token - Room token for Hiyve Client
+ * - POST /api/generate-room-token  - Room token for Hiyve Client
  * - POST /api/generate-cloud-token - Cloud token for AI features
- * - POST /api/generate-note - AI note generation
- * - GET  /api/health - Health check
+ * - POST /api/generate-note        - AI note generation
+ * - ALL  /api/hiyve/identity/*     - Identity proxy to Hiyve Cloud
+ * - GET  /api/health               - Health check
  */
 
 import 'dotenv/config';
@@ -29,5 +30,6 @@ app.listen(PORT, () => {
   console.log(`  POST /api/generate-room-token`);
   console.log(`  POST /api/generate-cloud-token`);
   console.log(`  POST /api/generate-note`);
+  console.log(`  ALL  /api/hiyve/identity/*`);
   console.log(`  GET  /api/health\n`);
 });

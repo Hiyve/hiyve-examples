@@ -67,34 +67,52 @@ pnpm run dev
 
 Open http://localhost:5173
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+This starts the Vite dev server on http://localhost:5173 and the Express API server on http://localhost:3001.
+
 ## Packages Used
 
 | Package | Purpose |
 |---------|---------|
-| `@hiyve/react` | Core WebRTC provider and hooks (`useConnection`, `useRoom`) |
-| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `DevicePreview` |
+| `@hiyve/react` | Core WebRTC provider and hooks (`useRoomFlow`) |
+| `@hiyve/react-ui` | `VideoGrid`, `ControlBar`, `JoinForm`, `ConnectingScreen`, `DevicePreview` |
 | `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
 | `@hiyve/utilities` | Shared utilities |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## Architecture
 
-```
+```text
 src/
 ├── main.tsx              # Provider setup with HiyveProvider
-├── App.tsx               # Routes between JoinForm and VideoRoom
+├── App.tsx               # Join form and room routing
 └── components/
-    ├── JoinForm.tsx      # Room name input with device preview
     └── VideoRoom.tsx     # Video grid and control bar
 ```
 
 ### Component Flow
 
-```
+```text
 HiyveProvider (main.tsx)
-  └── App.tsx
-      ├── JoinForm        # When not in room
-      │   └── DevicePreview
-      └── VideoRoom       # When in room
+  └── App.tsx (useRoomFlow)
+      ├── JoinForm (SDK)        # screen = "lobby"
+      ├── ConnectingScreen (SDK) # screen = "connecting"
+      └── VideoRoom              # screen = "in-room"
           ├── VideoGrid
           └── ControlBar
 ```
@@ -105,27 +123,34 @@ HiyveProvider (main.tsx)
 
 ```tsx
 import { HiyveProvider } from '@hiyve/react';
+import { formatHiyveError } from '@hiyve/utilities';
 
 <HiyveProvider
   generateRoomToken={generateRoomToken}
   localVideoElementId="local-video"
   persistDeviceChanges
+  onError={(err) => setError(err.message || String(err))}
 >
   <App />
 </HiyveProvider>
 ```
 
-### Join Form with Device Preview (JoinForm.tsx)
+### Room Flow Routing (App.tsx)
 
 ```tsx
-import { useConnection } from '@hiyve/react';
-import { DevicePreview } from '@hiyve/react-ui';
+import { useRoomFlow } from '@hiyve/react';
+import { JoinForm, ConnectingScreen } from '@hiyve/react-ui';
 
-const { createRoom, joinRoom } = useConnection();
+const { screen } = useRoomFlow();
 
-<DevicePreview persistSelection showAudioOutput showRefreshButton />
-<Button onClick={() => createRoom(roomName, userName)}>Create</Button>
-<Button onClick={() => joinRoom(roomName, userName)}>Join</Button>
+switch (screen) {
+  case 'connecting':
+    return <ConnectingScreen />;
+  case 'in-room':
+    return <VideoRoom userName={userName} />;
+  default:
+    return <JoinForm autoConnect devicePreviewMode="inline" storagePrefix="hiyve-basic" />;
+}
 ```
 
 ### Video Room (VideoRoom.tsx)
@@ -146,11 +171,9 @@ const { leaveRoom } = useConnection();
 ### Used in This Example
 
 ```tsx
-// Connection - create/join/leave rooms
-const { createRoom, joinRoom, leaveRoom, isConnecting } = useConnection();
-
-// Room state - check room info and ownership
-const { room, isOwner, isInRoom } = useRoom();
+// Room flow - derives current screen from connection state
+const { screen } = useRoomFlow();
+// screen: 'lobby' | 'connecting' | 'waiting-for-host' | 'in-room'
 ```
 
 ### Advanced (Not Used Here)
@@ -158,6 +181,12 @@ const { room, isOwner, isInRoom } = useRoom();
 These hooks are available for more complex implementations:
 
 ```tsx
+// Connection - create/join/leave rooms (used internally by JoinForm)
+const { createRoom, joinRoom, leaveRoom, isConnecting } = useConnection();
+
+// Room state - check room info and ownership
+const { room, isOwner, isInRoom } = useRoom();
+
 // Participants - access participant list
 const { participants, localUserId, participantCount } = useParticipants();
 

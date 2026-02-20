@@ -64,6 +64,25 @@ pnpm run dev
 
 Open http://localhost:5173
 
+## Configuration
+
+This example requires a `.env` file in the project root:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_HIYVE_API_KEY` | Yes | Your Hiyve public API key (`pk_test_*` or `pk_live_*`) from [console.hiyve.dev](https://console.hiyve.dev) |
+| `VITE_HIYVE_ENVIRONMENT` | No | Environment setting (default: `development`) |
+
+No server-side configuration is needed — this example communicates directly with the Hiyve Identity API.
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+Open http://localhost:5173
+
 ## Packages Used
 
 | Package | Purpose |
@@ -74,7 +93,7 @@ Open http://localhost:5173
 
 ## Architecture
 
-```
+```text
 src/
 ├── main.tsx              # IdentityProvider setup with API key
 ├── App.tsx               # Routes between AuthFlow and Dashboard
@@ -84,7 +103,7 @@ src/
 
 ### Component Flow
 
-```
+```text
 IdentityProvider (main.tsx)
   └── App.tsx
       ├── AuthFlow        # When not authenticated

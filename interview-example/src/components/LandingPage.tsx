@@ -13,7 +13,9 @@ import {
 } from '@mui/icons-material';
 
 interface LandingPageProps {
+  /** Callback to initiate a new interview call */
   onStartCall: () => void;
+  /** Callback to navigate to past interview search */
   onSearch: () => void;
 }
 

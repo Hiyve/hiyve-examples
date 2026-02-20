@@ -4,6 +4,7 @@
  *
  * Bootstraps the React application with the full provider stack including
  * theme, Hiyve WebRTC, cloud AI, file caching, and mood analysis.
+ * All tokens are generated automatically via @hiyve/admin server middleware.
  */
 
 import React, { useState } from 'react';
@@ -22,30 +23,6 @@ const theme = createTheme({
   },
 });
 
-async function generateRoomToken(): Promise<string> {
-  const response = await fetch('/api/generate-room-token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to generate room token');
-  }
-  return data.roomToken;
-}
-
-async function generateCloudToken() {
-  const response = await fetch('/api/generate-cloud-token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to generate cloud token');
-  }
-  return { cloudToken: data.cloudToken, environment: data.environment };
-}
-
 function Root() {
   const [error, setError] = useState<string | null>(null);
 
@@ -53,8 +30,6 @@ function Root() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <HiyveProvider
-        generateRoomToken={generateRoomToken}
-        generateCloudToken={generateCloudToken}
         localVideoElementId="local-video"
         persistDeviceChanges
         onError={(err) => {
@@ -62,7 +37,7 @@ function Root() {
           setError(err.message || String(err));
         }}
       >
-        <CloudProvider generateCloudToken={generateCloudToken}>
+        <CloudProvider>
           <FileCacheProvider>
             <MoodAnalysisProvider analyzerType="human">
               <App />

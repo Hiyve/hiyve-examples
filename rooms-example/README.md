@@ -66,18 +66,43 @@ pnpm run dev
 
 The client runs on http://localhost:5173 and the server on http://localhost:3001.
 
+## Configuration
+
+The server requires the following environment variables in `server/.env`:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `CLIENT_SECRET` | Yes | — | Hiyve client secret |
+| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
+| `SERVER_REGION_URL` | No | `.rtc.muziemedia.com` | Signaling server domain suffix |
+| `PORT` | No | `3001` | Server port |
+
+## Running the App
+
+```bash
+pnpm run dev
+```
+
+The client runs on http://localhost:5173 and the server on http://localhost:3001.
+
 ## Packages Used
 
-- `@hiyve/react` — Provider, hooks (`useConnection`, `useRoom`, `useCloudClient`)
-- `@hiyve/react-rooms` — `RoomsList`, `ActiveRoomsList` components
-- `@hiyve/react-ui` — `VideoGrid`, `ControlBar` components
-- `@hiyve/cloud` — `CloudClient` type (used by GuestLobby props)
-- `@hiyve/core` — Shared types (`StoredRoom`, `ActiveRoom`)
+| Package | Purpose |
+|---------|---------|
+| `@hiyve/react` | Core provider and hooks (`useConnection`, `useRoom`, `useCloudClient`) |
+| `@hiyve/react-rooms` | `RoomsList`, `ActiveRoomsList` components |
+| `@hiyve/react-ui` | `VideoGrid`, `ControlBar` components |
+| `@hiyve/cloud` | `CloudClient` type (used by GuestLobby props) |
+| `@hiyve/core` | Shared types (`StoredRoom`, `ActiveRoom`) |
+| `@hiyve/rtc-client` | Underlying WebRTC client library (peer dependency) |
+| `@hiyve/utilities` | Shared utilities |
+| `@hiyve/admin` | Server-side middleware for token generation endpoints |
 
 ## Architecture
 
-```
-main.tsx          — HiyveProvider with generateRoomToken + generateCloudToken
+```text
+main.tsx          — HiyveProvider (token generation handled by @hiyve/admin server)
   └── App.tsx     — Tab router (host / guest / video room)
         ├── RoomDashboard   — Local wrapper around RoomsList (@hiyve/react-rooms)
         ├── GuestLobby      — Active room discovery via ActiveRoomsList (@hiyve/react-rooms)
@@ -86,7 +111,7 @@ main.tsx          — HiyveProvider with generateRoomToken + generateCloudToken
 
 ### Token Flow
 
-```
+```text
 Browser                          Server                     Hiyve API
   │                                │                           │
   ├─ POST /api/generate-room-token─►│                           │
@@ -100,7 +125,7 @@ Browser                          Server                     Hiyve API
   │◄── cloudToken ─────────────────┤                           │
 ```
 
-API keys never reach the browser. The `generateCloudToken` function is passed to `HiyveProvider`, which creates a `CloudClient` internally. Any component can access it via `useCloudClient()`.
+API keys never reach the browser. The `@hiyve/admin` middleware auto-discovers available endpoints and `HiyveProvider` resolves tokens automatically.
 
 ### Key Patterns
 
@@ -108,8 +133,9 @@ API keys never reach the browser. The `generateCloudToken` function is passed to
 
 ```tsx
 <HiyveProvider
-  generateRoomToken={generateRoomToken}
-  generateCloudToken={generateCloudToken}
+  localVideoElementId="local-video"
+  persistDeviceChanges
+  onError={(err) => setError(err.message)}
 >
   <App />
 </HiyveProvider>
@@ -129,16 +155,6 @@ const cloudClient = useCloudClient();
 | `/api/generate-room-token` | POST | Generate a room token for WebRTC authentication |
 | `/api/generate-cloud-token` | POST | Generate a cloud token for AI and room discovery |
 | `/api/health` | GET | Health check and configuration status |
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `APIKEY` | Yes | - | Hiyve API key |
-| `CLIENT_SECRET` | Yes | - | Hiyve client secret |
-| `SERVER_REGION` | No | `us-west-2` | Signaling server region |
-| `SERVER_REGION_URL` | No | `.rtc.muziemedia.com` | Signaling server domain suffix |
-| `PORT` | No | `3001` | Server port |
 
 ## Development Mode
 

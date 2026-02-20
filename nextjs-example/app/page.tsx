@@ -21,6 +21,7 @@ const AppContent = dynamic(() => import('./AppContent'), {
   ),
 });
 
+/** Home page component that renders the main application content */
 export default function Home() {
   return <AppContent />;
 }
