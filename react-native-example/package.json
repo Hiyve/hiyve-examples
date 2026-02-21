@@ -16,9 +16,9 @@
     "packages:status": "node scripts/toggle-packages.js status"
   },
   "dependencies": {
-    "@hiyve/rn-core": "1.6.0",
-    "@hiyve/rn-react": "1.6.0",
-    "@hiyve/rtc-client-rn": "1.6.0",
+    "@hiyve/rn-core": "1.6.1",
+    "@hiyve/rn-react": "1.6.1",
+    "@hiyve/rtc-client-rn": "1.6.1",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "react": "19.2.0",
     "react-native": "0.83.1",

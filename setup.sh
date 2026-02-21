@@ -25,6 +25,7 @@ TOKEN_EXAMPLE_DIR="$SCRIPT_DIR/token-room-example"
 NEXTJS_EXAMPLE_DIR="$SCRIPT_DIR/nextjs-example"
 ANGULAR_EXAMPLE_DIR="$SCRIPT_DIR/angular-example"
 RN_EXAMPLE_DIR="$SCRIPT_DIR/react-native-example"
+MEDIA_PLAYER_DIR="$SCRIPT_DIR/media-player-example"
 
 # Colors
 RED='\033[0;31m'
@@ -47,7 +48,7 @@ for arg in "$@"; do
         --quick|-q)
             QUICK_MODE=true
             ;;
-        basic-example|basic-identity-example|full-example|token-room-example|nextjs-example|angular-example|react-native-example)
+        basic-example|basic-identity-example|full-example|token-room-example|nextjs-example|angular-example|react-native-example|media-player-example)
             TARGET_EXAMPLE="$arg"
             ;;
     esac
@@ -235,6 +236,7 @@ install_dependencies() {
         install_example_dependencies "$TOKEN_EXAMPLE_DIR"
         install_example_dependencies "$NEXTJS_EXAMPLE_DIR"
         install_example_dependencies "$ANGULAR_EXAMPLE_DIR"
+        install_example_dependencies "$MEDIA_PLAYER_DIR"
     fi
 }
 
@@ -347,6 +349,9 @@ print_success() {
     echo ""
     echo -e "  ${CYAN}Angular Example${NC} - Angular 19 with framework-agnostic SDK"
     echo -e "    cd angular-example && pnpm run dev"
+    echo ""
+    echo -e "  ${CYAN}Media Player Example${NC} - Audio/video player with waveform (Vite, no server)"
+    echo -e "    cd media-player-example && pnpm run dev"
     echo ""
     echo -e "  ${CYAN}React Native Example${NC} - Mobile app (iOS + Android)"
     echo -e "    cd react-native-example && npm run dev"
