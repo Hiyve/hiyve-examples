@@ -38,7 +38,7 @@ Every example README must include these sections in order:
 - Reference `@hiyve/*` packages by their public API (hooks, components, props)
 - Do NOT expose internal SDK implementation details (context names, internal state, storage keys)
 - GOOD: "Use `useHiyveClient()` to connect to a room"
-- BAD: "The `HiyveContext` internally manages a mediasoup transport"
+- BAD: "The `HiyveContext` internally manages a WebRTC transport"
 
 ### 3. Copy-Pasteable Examples
 
