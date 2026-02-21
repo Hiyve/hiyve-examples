@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Media Player Example - Main Application Component
+ * @module media-player-example/App
+ *
+ * Demonstrates three ways to use `@hiyve/react-media-player`:
+ *
+ * 1. **BasicDemo** — Minimal `<MediaPlayer src={url} />` with a URL input
+ * 2. **FullFeaturedDemo** — Region editing, loop playback, custom colors, region persistence
+ * 3. **CustomHookDemo** — `useMediaPlayer` hook for building a fully custom player UI
+ *
+ * Each demo includes a text field to load any media URL, making it easy to
+ * test with different audio/video files.
+ */
+
 import { useState, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -13,8 +27,13 @@ import Replay10Icon from '@mui/icons-material/Replay10';
 import LinearProgress from '@mui/material/LinearProgress';
 import { MediaPlayer, useMediaPlayer, type RegionData } from '@hiyve/react-media-player';
 
+/** Sample media URL used as default for all demos. */
 const SAMPLE_AUDIO = 'https://hiyve-io-public.s3.us-east-1.amazonaws.com/Zombie+Frogs+-+Potentially+Broken+Orange+Guitar+Play-Through.mp4';
 
+/**
+ * Minimal MediaPlayer demo — just a `src` URL and error handler.
+ * Shows the simplest possible integration with `<MediaPlayer>`.
+ */
 function BasicDemo() {
   const [url, setUrl] = useState(SAMPLE_AUDIO);
   const [activeUrl, setActiveUrl] = useState(SAMPLE_AUDIO);
@@ -59,6 +78,11 @@ function BasicDemo() {
   );
 }
 
+/**
+ * Full-featured MediaPlayer demo with region editing, loop playback,
+ * and custom waveform colors. Demonstrates `enableRegions`, `regions`,
+ * `onRegionChange`, `onRegionDelete`, and the `colors` prop.
+ */
 function FullFeaturedDemo() {
   const [url, setUrl] = useState(SAMPLE_AUDIO);
   const [activeUrl, setActiveUrl] = useState(SAMPLE_AUDIO);
@@ -142,6 +166,11 @@ function FullFeaturedDemo() {
   );
 }
 
+/**
+ * Custom player UI built with the `useMediaPlayer` hook.
+ * Demonstrates accessing playback state (isPlaying, playbackTime, loaded)
+ * and controls (togglePlayPause, rewind) to build a fully custom interface.
+ */
 function CustomHookDemo() {
   const [url, setUrl] = useState(SAMPLE_AUDIO);
   const [activeUrl, setActiveUrl] = useState(SAMPLE_AUDIO);
@@ -234,9 +263,13 @@ function CustomHookDemo() {
   );
 }
 
+/** Props for the TabPanel wrapper component. */
 interface TabPanelProps {
+  /** Panel content, rendered only when active. */
   children?: React.ReactNode;
+  /** Index of this panel (0-based). */
   index: number;
+  /** Currently selected tab index. */
   value: number;
 }
 
@@ -245,6 +278,11 @@ function TabPanel({ children, value, index }: TabPanelProps) {
   return <Box sx={{ pt: 3 }}>{children}</Box>;
 }
 
+/**
+ * Main application component with tabbed navigation between demos.
+ *
+ * Tabs: Basic | Full-Featured | Custom Hook
+ */
 export default function App() {
   const [tab, setTab] = useState(0);
 
