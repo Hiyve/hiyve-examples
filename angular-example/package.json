@@ -13,7 +13,9 @@
     "setup": "pnpm install && cd server && pnpm install",
     "packages:dev": "node scripts/toggle-packages.js dev",
     "packages:prod": "node scripts/toggle-packages.js prod",
-    "packages:status": "node scripts/toggle-packages.js status"
+    "packages:status": "node scripts/toggle-packages.js status",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@angular/animations": "^20.0.0",
@@ -25,10 +27,10 @@
     "@angular/material": "^20.0.0",
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
-    "@hiyve/angular": "1.6.4",
-    "@hiyve/core": "1.10.6",
-    "@hiyve/utilities": "1.37.4",
-    "@hiyve/rtc-client": "1.46.4",
+    "@hiyve/angular": "1.7.1",
+    "@hiyve/core": "1.12.1",
+    "@hiyve/utilities": "1.38.1",
+    "@hiyve/rtc-client": "1.47.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.6.0",
     "zone.js": "~0.15.0"
@@ -37,7 +39,11 @@
     "@angular/build": "^20.0.0",
     "@angular/cli": "^20.0.0",
     "@angular/compiler-cli": "^20.0.0",
+    "@types/jest": "^29.5.0",
     "concurrently": "^8.2.2",
+    "jest": "^29.7.0",
+    "jest-preset-angular": "^14.0.0",
+    "ts-node": "^10.9.0",
     "typescript": "~5.8.0"
   }
 }

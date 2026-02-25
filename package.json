@@ -8,7 +8,9 @@
     "docs": "./generate-docs.sh",
     "docs:serve": "./generate-docs.sh --serve",
     "docs:clean": "./generate-docs.sh --clean",
-    "docs:json": "./generate-docs.sh --json"
+    "docs:json": "./generate-docs.sh --json",
+    "test": "./scripts/test-all.sh",
+    "test:bail": "./scripts/test-all.sh --bail"
   },
   "devDependencies": {
     "typedoc": "^0.25.0",
