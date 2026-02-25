@@ -8,6 +8,8 @@ dist/
 build/
 *.tsbuildinfo
 
+.claude/
+
 # Next.js
 .next/
 out/
