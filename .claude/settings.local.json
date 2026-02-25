@@ -177,7 +177,9 @@
       "Bash(pnpm --filter @hiyve/cloud run build:*)",
       "Bash(mongosh:*)",
       "Bash(pnpm exec tsc:*)",
-      "Skill(validate-docs)"
+      "Skill(validate-docs)",
+      "Bash(pnpm test:bail:*)",
+      "Bash(./scripts/test-all.sh:*)"
     ]
   }
 }
