@@ -37,7 +37,7 @@ The `@hiyve/*` packages require authentication:
 npx hiyve-cli login
 ```
 
-Enter your Hiyve API key when prompted. Get one at [api.hiyve.dev](https://api.hiyve.dev).
+Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
 
 #### 2. Install Dependencies
 

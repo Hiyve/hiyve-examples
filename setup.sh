@@ -122,7 +122,10 @@ check_pnpm() {
 collect_credentials() {
     print_step "Hiyve API Credentials"
     echo ""
-    echo -e "  Get your credentials at: ${CYAN}https://api.muziemedia.com${NC}"
+    echo -e "  Get your credentials at: ${CYAN}https://console.hiyve.dev${NC}"
+    echo -e "  You need an ${BOLD}API Key${NC} (pk_*) for all apps."
+    echo -e "  You also need a ${BOLD}Client Secret${NC} (sk_*) for video conferencing examples."
+    echo -e "  Identity-only examples (basic-identity-example) only need the API key."
     echo ""
 
     if [ "$QUICK_MODE" = true ]; then
@@ -131,39 +134,36 @@ collect_credentials() {
         return 0
     fi
 
+    # Collect Secret Key (used for registry auth + CLIENT_SECRET)
+    read -p "  Enter your Secret Key (sk_*): " HIYVE_CLIENT_SECRET
+    echo ""
+
+    if [ -z "$HIYVE_CLIENT_SECRET" ]; then
+        print_warning "No secret key provided. Registry auth and video examples will need manual setup."
+        print_info "You can still run identity-only examples with just an API key."
+    else
+        # Validate Secret Key by authenticating with the registry
+        print_info "Validating Secret Key and configuring npm registry..."
+        if npx hiyve-cli login --key "$HIYVE_CLIENT_SECRET" 2>/dev/null; then
+            print_status "Secret key validated and npm registry configured"
+        else
+            print_error "Invalid Secret Key"
+            echo ""
+            echo "  Please check your secret key (sk_*) and try again."
+            echo "  Get your credentials at: https://console.hiyve.dev"
+            echo ""
+            exit 1
+        fi
+    fi
+
     # Collect API Key
-    read -p "  Enter your API Key: " HIYVE_APIKEY
+    read -p "  Enter your API Key (pk_*): " HIYVE_APIKEY
     echo ""
 
     if [ -z "$HIYVE_APIKEY" ]; then
         print_error "API Key is required"
         echo ""
-        echo "  Get your API key at: https://api.muziemedia.com"
-        echo ""
-        exit 1
-    fi
-
-    # Validate API Key by authenticating with the registry
-    print_info "Validating API Key..."
-    if npx hiyve-cli login --key "$HIYVE_APIKEY" 2>/dev/null; then
-        print_status "API Key validated and npm registry configured"
-    else
-        print_error "Invalid API Key"
-        echo ""
-        echo "  Please check your API key and try again."
-        echo "  Get your API key at: https://api.muziemedia.com"
-        echo ""
-        exit 1
-    fi
-
-    # Collect Client Secret
-    read -p "  Enter your Client Secret: " HIYVE_CLIENT_SECRET
-    echo ""
-
-    if [ -z "$HIYVE_CLIENT_SECRET" ]; then
-        print_error "Client Secret is required"
-        echo ""
-        echo "  Get your credentials at: https://api.muziemedia.com"
+        echo "  Get your API key (pk_*) at: https://console.hiyve.dev"
         echo ""
         exit 1
     fi
@@ -326,7 +326,7 @@ print_success() {
         echo "  - react-native-example/server/.env"
         echo ""
         echo "  Set APIKEY and CLIENT_SECRET in the .env file."
-        echo "  Get credentials at https://api.muziemedia.com"
+        echo "  Get credentials at https://console.hiyve.dev"
         echo ""
     fi
 

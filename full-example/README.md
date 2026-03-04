@@ -60,7 +60,7 @@ The `@hiyve/*` packages require authentication. If you haven't already:
 npx hiyve-cli login
 ```
 
-Enter your Hiyve API key when prompted. Get one at [api.hiyve.dev](https://api.hiyve.dev).
+Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
 
 #### 2. Install Dependencies
 
@@ -84,7 +84,7 @@ CLIENT_SECRET=your-hiyve-secret
 SERVER_REGION=us-west-2
 ```
 
-Get credentials at [api.hiyve.dev](https://api.hiyve.dev).
+Get credentials at [console.hiyve.dev](https://console.hiyve.dev).
 
 #### 4. Start the App
 
@@ -102,7 +102,7 @@ The server requires the following environment variables in `server/.env`:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `APIKEY` | Yes | — | Hiyve API key from [api.hiyve.dev](https://api.hiyve.dev) |
+| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
 | `CLIENT_SECRET` | Yes | — | Hiyve client secret |
 | `SERVER_REGION` | No | `us-west-2` | Signaling server region |
 

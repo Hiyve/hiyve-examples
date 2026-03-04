@@ -62,7 +62,7 @@ The `@hiyve/*` packages provide React and Angular components for building video 
 
 - Node.js 18+
 - pnpm
-- **Hiyve API Key** - Get one at [api.hiyve.dev](https://api.hiyve.dev)
+- **Hiyve API Key** - Get one at [console.hiyve.dev](https://console.hiyve.dev)
 
 ## Authentication
 
