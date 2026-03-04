@@ -62,7 +62,7 @@ The `@hiyve/*` packages provide React and Angular components for building video 
 
 - Node.js 18+
 - pnpm
-- **Hiyve API Key** - Get one at [console.hiyve.dev](https://console.hiyve.dev)
+- **Hiyve API Key** - Get one at [api.hiyve.dev](https://api.hiyve.dev)
 
 ## Authentication
 
@@ -76,7 +76,7 @@ npx hiyve-cli login
 npx hiyve-cli whoami
 ```
 
-This configures npm to access `@hiyve/*` packages from `https://console.hiyve.dev/api/registry/`.
+This configures npm to access `@hiyve/*` packages from `https://api.hiyve.dev/registry/`.
 
 ## Available Packages
 
@@ -126,7 +126,7 @@ Packages are installed from the private Hiyve registry. After authenticating wit
 Your project needs an `.npmrc` file to configure the registry:
 
 ```
-@hiyve:registry=https://console.hiyve.dev/api/registry/
+@hiyve:registry=https://api.hiyve.dev/registry/
 ```
 
 ## Examples

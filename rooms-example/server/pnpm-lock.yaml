@@ -24,7 +24,7 @@ importers:
 packages:
 
   '@hiyve/cloud@1.12.5':
-    resolution: {integrity: sha1-DdBiddt9pIHJ4nKqEgkAVDY/L4M=, tarball: https://console.hiyve.dev/api/registry/@hiyve/cloud/-/hiyve-cloud-1.12.5.tgz}
+    resolution: {integrity: sha1-DdBiddt9pIHJ4nKqEgkAVDY/L4M=, tarball: https://api.muziemedia.com/registry/@hiyve/cloud/-/hiyve-cloud-1.12.5.tgz}
 
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}

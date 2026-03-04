@@ -40,7 +40,7 @@ The `@hiyve/*` packages require authentication:
 npx hiyve-cli login
 ```
 
-Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
+Enter your Hiyve API key when prompted. Get one at [api.hiyve.dev](https://api.hiyve.dev).
 
 #### 2. Install Dependencies
 
@@ -78,7 +78,7 @@ The server requires the following environment variables in `server/.env`:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `APIKEY` | Yes | — | Hiyve API key from [api.hiyve.dev](https://api.hiyve.dev) |
 | `CLIENT_SECRET` | Yes | — | Hiyve client secret |
 | `SERVER_REGION` | No | `us-west-2` | Signaling server region |
 
@@ -372,5 +372,5 @@ Once you understand this AI-focused example, check out:
 ## Learn More
 
 - [Hiyve SDK Documentation](https://sdk.hiyve.dev)
-- [Hiyve Console](https://console.hiyve.dev) -- manage API keys and view usage
+- [Hiyve Console](https://api.hiyve.dev) -- manage API keys and view usage
 - [Full Example README](../full-example/README.md)

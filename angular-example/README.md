@@ -29,7 +29,7 @@ This handles authentication, dependencies, and environment setup automatically.
 
 ### Option B: Manual Setup
 
-**Prerequisites:** Node.js 18+, pnpm, and Hiyve API credentials from [console.hiyve.dev](https://console.hiyve.dev).
+**Prerequisites:** Node.js 18+, pnpm, and Hiyve API credentials from [api.hiyve.dev](https://api.hiyve.dev).
 
 #### 1. Authenticate with Hiyve
 
@@ -39,7 +39,7 @@ The `@hiyve/*` packages require authentication:
 npx hiyve-cli login
 ```
 
-Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
+Enter your Hiyve API key when prompted. Get one at [api.hiyve.dev](https://api.hiyve.dev).
 
 #### 2. Install Dependencies
 
@@ -77,7 +77,7 @@ The server requires the following environment variables in `server/.env`:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `APIKEY` | Yes | — | Hiyve API key from [api.hiyve.dev](https://api.hiyve.dev) |
 | `CLIENT_SECRET` | Yes | — | Hiyve client secret |
 | `SERVER_REGION` | No | `us-west-2` | Signaling server region |
 

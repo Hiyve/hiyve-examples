@@ -35,7 +35,7 @@ The `@hiyve/*` packages require authentication:
 npx hiyve-cli login
 ```
 
-Enter your Hiyve API key when prompted. Get one at [console.hiyve.dev](https://console.hiyve.dev).
+Enter your Hiyve API key when prompted. Get one at [api.hiyve.dev](https://api.hiyve.dev).
 
 #### 2. Install Dependencies
 
@@ -70,7 +70,7 @@ This example requires a `.env` file in the project root:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_HIYVE_API_KEY` | Yes | Your Hiyve public API key (`pk_test_*` or `pk_live_*`) from [console.hiyve.dev](https://console.hiyve.dev) |
+| `VITE_HIYVE_API_KEY` | Yes | Your Hiyve public API key (`pk_test_*` or `pk_live_*`) from [api.hiyve.dev](https://api.hiyve.dev) |
 | `VITE_HIYVE_ENVIRONMENT` | No | Environment setting (default: `development`) |
 
 No server-side configuration is needed — this example communicates directly with the Hiyve Identity API.

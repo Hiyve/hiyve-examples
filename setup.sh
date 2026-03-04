@@ -122,7 +122,7 @@ check_pnpm() {
 collect_credentials() {
     print_step "Hiyve API Credentials"
     echo ""
-    echo -e "  Get your credentials at: ${CYAN}https://console.hiyve.dev${NC}"
+    echo -e "  Get your credentials at: ${CYAN}https://api.muziemedia.com${NC}"
     echo ""
 
     if [ "$QUICK_MODE" = true ]; then
@@ -138,7 +138,7 @@ collect_credentials() {
     if [ -z "$HIYVE_APIKEY" ]; then
         print_error "API Key is required"
         echo ""
-        echo "  Get your API key at: https://console.hiyve.dev"
+        echo "  Get your API key at: https://api.muziemedia.com"
         echo ""
         exit 1
     fi
@@ -151,7 +151,7 @@ collect_credentials() {
         print_error "Invalid API Key"
         echo ""
         echo "  Please check your API key and try again."
-        echo "  Get your API key at: https://console.hiyve.dev"
+        echo "  Get your API key at: https://api.muziemedia.com"
         echo ""
         exit 1
     fi
@@ -163,7 +163,7 @@ collect_credentials() {
     if [ -z "$HIYVE_CLIENT_SECRET" ]; then
         print_error "Client Secret is required"
         echo ""
-        echo "  Get your credentials at: https://console.hiyve.dev"
+        echo "  Get your credentials at: https://api.muziemedia.com"
         echo ""
         exit 1
     fi
@@ -326,7 +326,7 @@ print_success() {
         echo "  - react-native-example/server/.env"
         echo ""
         echo "  Set APIKEY and CLIENT_SECRET in the .env file."
-        echo "  Get credentials at https://console.hiyve.dev"
+        echo "  Get credentials at https://api.muziemedia.com"
         echo ""
     fi
 

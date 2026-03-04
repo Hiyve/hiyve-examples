@@ -49,7 +49,7 @@ Copy the example environment file and add your credentials:
 cp .env.example .env
 ```
 
-Edit `.env` with your Hiyve API credentials from [console.hiyve.dev](https://console.hiyve.dev):
+Edit `.env` with your Hiyve API credentials from [api.hiyve.dev](https://api.hiyve.dev):
 
 ```env
 APIKEY=your-api-key
@@ -71,7 +71,7 @@ This example uses a `.env` file in the project root (not a separate server direc
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `APIKEY` | Yes | — | Hiyve API key from [api.hiyve.dev](https://api.hiyve.dev) |
 | `CLIENT_SECRET` | Yes | — | Hiyve client secret |
 | `SERVER_REGION` | No | `us-west-2` | Signaling server region |
 

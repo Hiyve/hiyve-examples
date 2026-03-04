@@ -62,7 +62,7 @@ The server requires the following environment variables in `server/.env`:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `APIKEY` | Yes | — | Hiyve API key from [console.hiyve.dev](https://console.hiyve.dev) |
+| `APIKEY` | Yes | — | Hiyve API key from [api.hiyve.dev](https://api.hiyve.dev) |
 | `CLIENT_SECRET` | Yes | — | Hiyve client secret |
 | `SERVER_REGION` | No | `us-west-2` | Signaling server region |
 

@@ -82,8 +82,8 @@ function ApiKeyRequired() {
       </Box>
       <Typography variant="body2" color="text.secondary">
         Get your API key at{' '}
-        <Link href="https://console.hiyve.dev" target="_blank" rel="noopener">
-          console.hiyve.dev
+        <Link href="https://api.muziemedia.com" target="_blank" rel="noopener">
+          api.muziemedia.com
         </Link>
       </Typography>
     </Box>
