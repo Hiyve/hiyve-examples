@@ -134,29 +134,7 @@ collect_credentials() {
         return 0
     fi
 
-    # Collect Secret Key (used for registry auth + CLIENT_SECRET)
-    read -p "  Enter your Secret Key (sk_*): " HIYVE_CLIENT_SECRET
-    echo ""
-
-    if [ -z "$HIYVE_CLIENT_SECRET" ]; then
-        print_warning "No secret key provided. Registry auth and video examples will need manual setup."
-        print_info "You can still run identity-only examples with just an API key."
-    else
-        # Validate Secret Key by authenticating with the registry
-        print_info "Validating Secret Key and configuring npm registry..."
-        if npx hiyve-cli login --key "$HIYVE_CLIENT_SECRET" 2>/dev/null; then
-            print_status "Secret key validated and npm registry configured"
-        else
-            print_error "Invalid Secret Key"
-            echo ""
-            echo "  Please check your secret key (sk_*) and try again."
-            echo "  Get your credentials at: https://console.hiyve.dev"
-            echo ""
-            exit 1
-        fi
-    fi
-
-    # Collect API Key
+    # Collect API Key (used for registry auth + APIKEY env var)
     read -p "  Enter your API Key (pk_*): " HIYVE_APIKEY
     echo ""
 
@@ -166,6 +144,28 @@ collect_credentials() {
         echo "  Get your API key (pk_*) at: https://console.hiyve.dev"
         echo ""
         exit 1
+    fi
+
+    # Validate API Key by authenticating with the registry
+    print_info "Validating API Key and configuring npm registry..."
+    if npx @hiyve/cli login --key "$HIYVE_APIKEY" 2>/dev/null; then
+        print_status "API Key validated and npm registry configured"
+    else
+        print_error "Invalid API Key"
+        echo ""
+        echo "  Please check your API key (pk_*) and try again."
+        echo "  Get your credentials at: https://console.hiyve.dev"
+        echo ""
+        exit 1
+    fi
+
+    # Collect Client Secret (only needed for video conferencing examples)
+    read -p "  Enter your Client Secret (sk_*, or press Enter to skip): " HIYVE_CLIENT_SECRET
+    echo ""
+
+    if [ -z "$HIYVE_CLIENT_SECRET" ]; then
+        print_warning "No client secret provided. Video conferencing examples will need manual setup."
+        print_info "Identity-only examples will work with just the API key."
     fi
 }
 
