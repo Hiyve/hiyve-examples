@@ -11,7 +11,8 @@
     "setup": "pnpm install",
     "packages:dev": "node scripts/toggle-packages.js dev",
     "packages:prod": "node scripts/toggle-packages.js prod",
-    "packages:status": "node scripts/toggle-packages.js status"
+    "packages:status": "node scripts/toggle-packages.js status",
+    "test": "vitest run"
   },
   "dependencies": {
     "@emotion/cache": "^11.11.0",
@@ -20,16 +21,21 @@
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
     "@mui/material-nextjs": "^5.15.0",
-    "@hiyve/react": "2.11.1",
-    "@hiyve/react-ui": "1.10.1",
+    "@hiyve/react": "2.11.4",
+    "@hiyve/react-ui": "1.10.3",
     "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.0",
+    "@testing-library/react": "^14.2.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "typescript": "^5.4.0"
+    "@vitejs/plugin-react": "^4.2.0",
+    "jsdom": "^24.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.1.0"
   }
 }
