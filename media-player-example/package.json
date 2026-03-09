@@ -18,7 +18,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
-    "@hiyve/react-media-player": "1.4.3",
+    "@hiyve/react-media-player": "1.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -31,6 +31,7 @@
     "vitest": "^2.1.0",
     "jsdom": "^24.0.0",
     "@testing-library/react": "^14.2.0",
+    "@testing-library/user-event": "^14.5.0",
     "@testing-library/jest-dom": "^6.4.0"
   }
 }

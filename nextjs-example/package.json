@@ -21,8 +21,8 @@
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
     "@mui/material-nextjs": "^5.15.0",
-    "@hiyve/react": "2.11.4",
-    "@hiyve/react-ui": "1.10.3",
+    "@hiyve/react": "2.11.5",
+    "@hiyve/react-ui": "1.10.4",
     "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

@@ -20,14 +20,14 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
-    "@hiyve/cloud": "1.18.3",
-    "@hiyve/react": "2.11.4",
-    "@hiyve/react-capture": "1.10.3",
-    "@hiyve/react-collaboration": "1.10.3",
-    "@hiyve/react-intelligence": "1.10.3",
-    "@hiyve/react-ui": "1.10.3",
-    "@hiyve/rtc-client": "1.50.5",
-    "@hiyve/utilities": "1.41.3",
+    "@hiyve/cloud": "1.18.4",
+    "@hiyve/react": "2.11.5",
+    "@hiyve/react-capture": "1.10.4",
+    "@hiyve/react-collaboration": "1.10.4",
+    "@hiyve/react-intelligence": "1.10.4",
+    "@hiyve/react-ui": "1.10.4",
+    "@hiyve/rtc-client": "1.50.6",
+    "@hiyve/utilities": "1.41.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -41,6 +41,7 @@
     "vitest": "^2.1.0",
     "jsdom": "^24.0.0",
     "@testing-library/react": "^14.2.0",
+    "@testing-library/user-event": "^14.5.0",
     "@testing-library/jest-dom": "^6.4.0"
   }
 }
