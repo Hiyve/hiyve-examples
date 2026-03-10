@@ -8,7 +8,7 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
-    "@hiyve/admin": "1.6.4",
+    "@hiyve/admin": "1.7.0",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.18.2"
