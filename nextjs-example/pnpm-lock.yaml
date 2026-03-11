@@ -18,11 +18,11 @@ importers:
         specifier: ^11.11.0
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
       '@hiyve/react':
-        specifier: 2.12.0
-        version: 2.12.0(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
+        specifier: 2.12.3
+        version: 2.12.3(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
       '@hiyve/react-ui':
-        specifier: 1.11.0
-        version: 1.11.0(b3c7f69df4a31b3ec06aa8eb8e31a402)
+        specifier: 1.11.1
+        version: 1.11.1(8a418b09d3213f49199072688d54f6de)
       '@mui/icons-material':
         specifier: ^5.15.0
         version: 5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
@@ -388,8 +388,8 @@ packages:
   '@hiyve/cloud@1.19.0':
     resolution: {integrity: sha1-fVUutEPHvkeptmQ1HBM+JtQ6EH0=, tarball: https://api.muziemedia.com/registry/@hiyve/cloud/-/hiyve-cloud-1.19.0.tgz}
 
-  '@hiyve/core@1.16.0':
-    resolution: {integrity: sha1-vgCKTCno6fuDibHXSUW5qJkSWn8=, tarball: https://api.muziemedia.com/registry/@hiyve/core/-/hiyve-core-1.16.0.tgz}
+  '@hiyve/core@1.16.2':
+    resolution: {integrity: sha1-7Qe+xMO5ChgWuVM0rBLLms/WPkM=, tarball: https://api.muziemedia.com/registry/@hiyve/core/-/hiyve-core-1.16.2.tgz}
     peerDependencies:
       '@hiyve/rtc-client': '*'
 
@@ -407,8 +407,8 @@ packages:
       react: ^18.0.0
       react-dom: ^18.0.0
 
-  '@hiyve/react-ui@1.11.0':
-    resolution: {integrity: sha1-IDYIaR/ByZR/DX9BI97gei/iA+4=, tarball: https://api.muziemedia.com/registry/@hiyve/react-ui/-/hiyve-react-ui-1.11.0.tgz}
+  '@hiyve/react-ui@1.11.1':
+    resolution: {integrity: sha1-k117pRyEfZBTs4sgos8QvXEAOP4=, tarball: https://api.muziemedia.com/registry/@hiyve/react-ui/-/hiyve-react-ui-1.11.1.tgz}
     peerDependencies:
       '@emotion/react': '>=11'
       '@emotion/styled': '>=11'
@@ -421,8 +421,8 @@ packages:
       react: ^18.0.0
       react-dom: '>=18'
 
-  '@hiyve/react@2.12.0':
-    resolution: {integrity: sha1-n0WhzpJvIR/1AAqCKVUM9VBvMTc=, tarball: https://api.muziemedia.com/registry/@hiyve/react/-/hiyve-react-2.12.0.tgz}
+  '@hiyve/react@2.12.3':
+    resolution: {integrity: sha1-08hhWdPIEnazH9sWb9sgm9r4TcM=, tarball: https://api.muziemedia.com/registry/@hiyve/react/-/hiyve-react-2.12.3.tgz}
     peerDependencies:
       '@hiyve/cloud': ^1.0.0
       '@hiyve/core': ^1.0.0
@@ -2248,16 +2248,16 @@ snapshots:
 
   '@hiyve/cloud@1.19.0': {}
 
-  '@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5)':
+  '@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5)':
     dependencies:
       '@hiyve/rtc-client': 1.50.5
 
-  '@hiyve/react-intelligence@1.11.0(5447ba202a6f1043dccc75c629d879ef)':
+  '@hiyve/react-intelligence@1.11.0(e94307a999f55c1c4c15bc05cf04a79a)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.28)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
       '@hiyve/cloud': 1.19.0
-      '@hiyve/react': 2.12.0(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
+      '@hiyve/react': 2.12.3(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
       '@hiyve/rtc-client': 1.50.5
       '@hiyve/utilities': 1.42.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/icons-material@5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(dayjs@1.11.19)(react@18.3.1)
       '@mui/icons-material': 5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
@@ -2265,12 +2265,12 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@hiyve/react-ui@1.11.0(b3c7f69df4a31b3ec06aa8eb8e31a402)':
+  '@hiyve/react-ui@1.11.1(8a418b09d3213f49199072688d54f6de)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.28)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
-      '@hiyve/react': 2.12.0(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
-      '@hiyve/react-intelligence': 1.11.0(5447ba202a6f1043dccc75c629d879ef)
+      '@hiyve/react': 2.12.3(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
+      '@hiyve/react-intelligence': 1.11.0(e94307a999f55c1c4c15bc05cf04a79a)
       '@hiyve/rtc-client': 1.50.5
       '@hiyve/utilities': 1.42.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/icons-material@5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(dayjs@1.11.19)(react@18.3.1)
       '@mui/icons-material': 5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
@@ -2278,10 +2278,10 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@hiyve/react@2.12.0(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)':
+  '@hiyve/react@2.12.3(@hiyve/cloud@1.19.0)(@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)':
     dependencies:
       '@hiyve/cloud': 1.19.0
-      '@hiyve/core': 1.16.0(@hiyve/rtc-client@1.50.5)
+      '@hiyve/core': 1.16.2(@hiyve/rtc-client@1.50.5)
       '@hiyve/rtc-client': 1.50.5
       react: 18.3.1
 

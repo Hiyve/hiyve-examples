@@ -27,7 +27,7 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@hiyve/angular": "1.11.0",
-    "@hiyve/core": "1.16.0",
+    "@hiyve/core": "1.16.2",
     "@hiyve/utilities": "1.42.0",
     "@hiyve/rtc-client": "1.51.0",
     "rxjs": "~7.8.0",

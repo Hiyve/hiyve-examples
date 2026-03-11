@@ -19,7 +19,7 @@ importers:
         version: 1.16.0
       '@hiyve/react-identity':
         specifier: 1.17.0
-        version: 1.17.0(3a5320812a2ff48670e37609fad9b084)
+        version: 1.17.0(7f69cfed7f11522f82998c5a0d92ce1f)
       '@hiyve/utilities':
         specifier: 1.42.0
         version: 1.42.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/icons-material@5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(dayjs@1.11.19)(react@18.3.1)
@@ -379,8 +379,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@hiyve/core@1.16.0':
-    resolution: {integrity: sha1-vgCKTCno6fuDibHXSUW5qJkSWn8=, tarball: https://api.muziemedia.com/registry/@hiyve/core/-/hiyve-core-1.16.0.tgz}
+  '@hiyve/core@1.16.2':
+    resolution: {integrity: sha1-7Qe+xMO5ChgWuVM0rBLLms/WPkM=, tarball: https://api.muziemedia.com/registry/@hiyve/core/-/hiyve-core-1.16.2.tgz}
     peerDependencies:
       '@hiyve/rtc-client': '*'
 
@@ -2094,27 +2094,27 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
-  '@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5)':
+  '@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5)':
     dependencies:
       '@hiyve/rtc-client': 1.50.5
 
   '@hiyve/identity-client@1.16.0': {}
 
-  '@hiyve/react-identity@1.17.0(3a5320812a2ff48670e37609fad9b084)':
+  '@hiyve/react-identity@1.17.0(7f69cfed7f11522f82998c5a0d92ce1f)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.28)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
       '@hiyve/identity-client': 1.16.0
-      '@hiyve/react': 1.4.4(@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
+      '@hiyve/react': 1.4.4(@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)
       '@hiyve/utilities': 1.42.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/icons-material@5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(dayjs@1.11.19)(react@18.3.1)
       '@mui/icons-material': 5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.28)(react@18.3.1)
       '@mui/material': 5.18.0(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@hiyve/react@1.4.4(@hiyve/core@1.16.0(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)':
+  '@hiyve/react@1.4.4(@hiyve/core@1.16.2(@hiyve/rtc-client@1.50.5))(@hiyve/rtc-client@1.50.5)(react@18.3.1)':
     dependencies:
-      '@hiyve/core': 1.16.0(@hiyve/rtc-client@1.50.5)
+      '@hiyve/core': 1.16.2(@hiyve/rtc-client@1.50.5)
       '@hiyve/rtc-client': 1.50.5
       react: 18.3.1
 
