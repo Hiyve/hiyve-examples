@@ -12,7 +12,7 @@ import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline, Snackbar, Alert } from '@mui/material';
 import { HiyveProvider } from '@hiyve/react';
 import { CloudProvider, MoodAnalysisProvider } from '@hiyve/react-intelligence';
-import { FileCacheProvider } from '@hiyve/react-collaboration';
+import { FileCacheProvider, RoomFileScope } from '@hiyve/react-collaboration';
 import { formatHiyveError } from '@hiyve/utilities';
 import App from './App';
 
@@ -39,9 +39,11 @@ function Root() {
       >
         <CloudProvider>
           <FileCacheProvider>
-            <MoodAnalysisProvider analyzerType="human">
-              <App />
-            </MoodAnalysisProvider>
+            <RoomFileScope>
+              <MoodAnalysisProvider analyzerType="human">
+                <App />
+              </MoodAnalysisProvider>
+            </RoomFileScope>
           </FileCacheProvider>
         </CloudProvider>
       </HiyveProvider>

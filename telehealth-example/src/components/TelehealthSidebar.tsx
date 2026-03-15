@@ -101,6 +101,7 @@ export function TelehealthSidebar({
               showToolbar
               showBreadcrumbs
               enableDragDrop
+              sortStorageKey="telehealth-files"
               sx={{ height: '100%' }}
             />
           );

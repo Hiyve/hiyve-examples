@@ -299,6 +299,7 @@ export function Sidebar({
               enableSmartOpening
               availableTabs={['whiteboard', 'notes', 'qa', 'polls']}
               onSwitchToTab={(tabName) => setActiveTab(tabName)}
+              sortStorageKey="full-example-files"
               sx={{ height: '100%' }}
             />
           );

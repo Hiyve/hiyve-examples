@@ -100,6 +100,7 @@ export function SalesSidebar({
               showToolbar
               showBreadcrumbs
               enableDragDrop
+              sortStorageKey="sales-files"
               sx={{ height: '100%' }}
             />
           );

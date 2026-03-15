@@ -100,6 +100,7 @@ export function InterviewSidebar({
               showToolbar
               showBreadcrumbs
               enableDragDrop
+              sortStorageKey="interview-files"
               sx={{ height: '100%' }}
             />
           );

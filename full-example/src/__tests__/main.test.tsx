@@ -12,7 +12,7 @@ vi.mock('@hiyve/utilities', () => import('../test/mocks/hiyve-utilities'));
 
 import { HiyveProvider } from '@hiyve/react';
 import { CloudProvider, MoodAnalysisProvider } from '@hiyve/react-intelligence';
-import { FileCacheProvider } from '@hiyve/react-collaboration';
+import { FileCacheProvider, RoomFileScope } from '@hiyve/react-collaboration';
 import { formatHiyveError } from '@hiyve/utilities';
 
 describe('main entry point', () => {
@@ -63,14 +63,25 @@ describe('main entry point', () => {
     expect(props).toMatchObject({ analyzerType: 'human' });
   });
 
+  it('RoomFileScope renders children', () => {
+    render(
+      <RoomFileScope>
+        <div data-testid="scope-child">Scoped Content</div>
+      </RoomFileScope>
+    );
+    expect(screen.getByTestId('scope-child')).toBeInTheDocument();
+  });
+
   it('full provider chain renders nested children', () => {
     render(
       <HiyveProvider localVideoElementId="local-video" persistDeviceChanges onError={vi.fn()}>
         <CloudProvider>
           <FileCacheProvider>
-            <MoodAnalysisProvider analyzerType="human">
-              <div data-testid="app-child">App Content</div>
-            </MoodAnalysisProvider>
+            <RoomFileScope>
+              <MoodAnalysisProvider analyzerType="human">
+                <div data-testid="app-child">App Content</div>
+              </MoodAnalysisProvider>
+            </RoomFileScope>
           </FileCacheProvider>
         </CloudProvider>
       </HiyveProvider>
@@ -78,6 +89,7 @@ describe('main entry point', () => {
     expect(screen.getByTestId('app-child')).toBeInTheDocument();
     expect(screen.getByTestId('cloud-provider')).toBeInTheDocument();
     expect(screen.getByTestId('file-cache-provider')).toBeInTheDocument();
+    expect(screen.getByTestId('room-file-scope')).toBeInTheDocument();
     expect(screen.getByTestId('mood-analysis-provider')).toBeInTheDocument();
   });
 

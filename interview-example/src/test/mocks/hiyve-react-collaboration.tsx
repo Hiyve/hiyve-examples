@@ -18,6 +18,10 @@ export function FileCacheProvider({ children }: { children: ReactNode; [key: str
   return <div data-testid="file-cache-provider">{children}</div>;
 }
 
+export function RoomFileScope({ children }: { children: ReactNode; [key: string]: unknown }) {
+  return <div data-testid="room-file-scope">{children}</div>;
+}
+
 export function ChatPanel(props: Record<string, unknown>) {
   return <div data-testid="chat-panel" data-props={serializeProps(props)} />;
 }
