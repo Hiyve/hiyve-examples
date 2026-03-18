@@ -9,14 +9,14 @@ importers:
   .:
     dependencies:
       '@hiyve/rn-core':
-        specifier: 1.12.3
-        version: 1.12.3(@hiyve/rtc-client-rn@1.12.3(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
+        specifier: 1.14.2
+        version: 1.14.2(@hiyve/rtc-client-rn@1.14.2(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
       '@hiyve/rn-react':
-        specifier: 1.12.3
-        version: 1.12.3(d2e1c1cca4108fb5a8bcabb5075c2cf8)
+        specifier: 1.14.2
+        version: 1.14.2(756eb27cb65c8ad8b83b7ae033979622)
       '@hiyve/rtc-client-rn':
-        specifier: 1.12.3
-        version: 1.12.3(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
+        specifier: 1.14.2
+        version: 1.14.2(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
       '@react-native-async-storage/async-storage':
         specifier: ^2.1.2
         version: 2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))
@@ -775,14 +775,14 @@ packages:
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
 
-  '@hiyve/rn-core@1.12.3':
-    resolution: {integrity: sha1-HByWjq6lFDzznAxhFavwTq1d5Uw=, tarball: https://api.muziemedia.com/registry/@hiyve/rn-core/-/hiyve-rn-core-1.12.3.tgz}
+  '@hiyve/rn-core@1.14.2':
+    resolution: {integrity: sha1-QXpzLYUsZLZYZUyb8nqvpigJmG4=, tarball: https://api.muziemedia.com/registry/@hiyve/rn-core/-/hiyve-rn-core-1.14.2.tgz}
     peerDependencies:
       '@hiyve/rtc-client-rn': '*'
       react-native-webrtc: '>=118.0.0'
 
-  '@hiyve/rn-react@1.12.3':
-    resolution: {integrity: sha1-d2HcuXALkOqGhA53JJ2UXd7bfNs=, tarball: https://api.muziemedia.com/registry/@hiyve/rn-react/-/hiyve-rn-react-1.12.3.tgz}
+  '@hiyve/rn-react@1.14.2':
+    resolution: {integrity: sha1-d+oVVe52dfh6ro2z4fqGT0tH8E8=, tarball: https://api.muziemedia.com/registry/@hiyve/rn-react/-/hiyve-rn-react-1.14.2.tgz}
     peerDependencies:
       '@hiyve/rn-core': ^1.0.0
       '@hiyve/rtc-client-rn': '*'
@@ -792,8 +792,8 @@ packages:
       react-native-safe-area-context: '>=4.0.0'
       react-native-webrtc: '>=118.0.0'
 
-  '@hiyve/rtc-client-rn@1.12.3':
-    resolution: {integrity: sha1-18a1tQFIMrAYbR/wveR/kG77GIs=, tarball: https://api.muziemedia.com/registry/@hiyve/rtc-client-rn/-/hiyve-rtc-client-rn-1.12.3.tgz}
+  '@hiyve/rtc-client-rn@1.14.2':
+    resolution: {integrity: sha1-uZnB1APiU/U+sdVshWTsQaIMsxY=, tarball: https://api.muziemedia.com/registry/@hiyve/rtc-client-rn/-/hiyve-rtc-client-rn-1.14.2.tgz}
     peerDependencies:
       '@react-native-async-storage/async-storage': '>=1.0.0'
       react-native-webrtc: '>=118.0.0'
@@ -1724,8 +1724,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.313:
-    resolution: {integrity: sha512-QBMrTWEf00GXZmJyx2lbYD45jpI3TUFnNIzJ5BBc8piGUDwMPa1GV6HJWTZVvY/eiN3fSopl7NRbgGp9sZ9LTA==}
+  electron-to-chromium@1.5.321:
+    resolution: {integrity: sha512-L2C7Q279W2D/J4PLZLk7sebOILDSWos7bMsMNN06rK482umHUrh/3lM8G7IlHFOYip2oAg5nha1rCMxr/rs6ZQ==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -4577,22 +4577,22 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@hiyve/rn-core@1.12.3(@hiyve/rtc-client-rn@1.12.3(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))':
+  '@hiyve/rn-core@1.14.2(@hiyve/rtc-client-rn@1.14.2(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))':
     dependencies:
-      '@hiyve/rtc-client-rn': 1.12.3(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
+      '@hiyve/rtc-client-rn': 1.14.2(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
       react-native-webrtc: 124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))
 
-  '@hiyve/rn-react@1.12.3(d2e1c1cca4108fb5a8bcabb5075c2cf8)':
+  '@hiyve/rn-react@1.14.2(756eb27cb65c8ad8b83b7ae033979622)':
     dependencies:
-      '@hiyve/rn-core': 1.12.3(@hiyve/rtc-client-rn@1.12.3(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
-      '@hiyve/rtc-client-rn': 1.12.3(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
+      '@hiyve/rn-core': 1.14.2(@hiyve/rtc-client-rn@1.14.2(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
+      '@hiyve/rtc-client-rn': 1.14.2(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
       '@react-native-vector-icons/material-design-icons': 12.4.3(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react: 19.2.0
       react-native: 0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)
       react-native-safe-area-context: 5.7.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react-native-webrtc: 124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))
 
-  '@hiyve/rtc-client-rn@1.12.3(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))':
+  '@hiyve/rtc-client-rn@1.14.2(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))':
     dependencies:
       '@react-native-async-storage/async-storage': 2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))
       muziertcclientrn: https://s3.amazonaws.com/muzie.media/npm-registry/muziertcclientrn/muziertcclientrn-1.0.5.tgz(@react-native-async-storage/async-storage@2.2.0(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))(react-native-webrtc@124.0.7(react-native@0.83.1(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(typescript@5.9.3))(@react-native/metro-config@0.83.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0)))
@@ -5639,7 +5639,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.10.8
       caniuse-lite: 1.0.30001780
-      electron-to-chromium: 1.5.313
+      electron-to-chromium: 1.5.321
       node-releases: 2.0.36
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
 
@@ -5925,7 +5925,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.313: {}
+  electron-to-chromium@1.5.321: {}
 
   emittery@0.13.1: {}
 

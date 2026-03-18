@@ -18,9 +18,9 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
-    "@hiyve/react-identity": "1.18.3",
-    "@hiyve/utilities": "1.43.3",
-    "@hiyve/identity-client": "1.17.3",
+    "@hiyve/react-identity": "1.20.2",
+    "@hiyve/utilities": "1.45.2",
+    "@hiyve/identity-client": "1.19.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
