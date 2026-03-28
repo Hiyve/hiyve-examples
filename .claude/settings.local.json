@@ -179,7 +179,15 @@
       "Bash(pnpm exec tsc:*)",
       "Skill(validate-docs)",
       "Bash(pnpm test:bail:*)",
-      "Bash(./scripts/test-all.sh:*)"
+      "Bash(./scripts/test-all.sh:*)",
+      "Bash(for dir:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/karl/Development/muzieRTC/hiyve-examples/**)",
+      "Bash(grep -h '\"\"version\"\"' hiyve-react.json hiyve-react-ui.json hiyve-rtc-client.json hiyve-utilities.json hiyve-core.json)",
+      "Bash(for file:*)",
+      "Read(//Users/karl/Development/muzieRTC/hiyve-sdk/**)",
+      "Bash(for pkg:*)",
+      "Read(//Users/karl/Development/muzieRTC/hiyve-examples/packages/$pkg/**)"
     ]
   }
 }
